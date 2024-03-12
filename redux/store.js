@@ -1,7 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistReducer, persistStore } from 'redux-persist';
-import colorsReducer from './slices/colors';
+import homeReducer from './slices/home';
 
 const persistConfig = {
   key: 'root',
@@ -9,7 +9,7 @@ const persistConfig = {
 }
 
 const reducers = combineReducers({
-  colors: colorsReducer,
+  home: homeReducer,
 });
 const persistReducers = persistReducer(persistConfig, reducers)
 
