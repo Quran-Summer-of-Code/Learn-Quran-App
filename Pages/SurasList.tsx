@@ -1,15 +1,22 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { SetCurrentSurahInd } from "../Redux/slices/app";
 
 interface Props {
   suras: string[];
 }
 
 const SurasList: React.FC<Props> = ({ suras }) => {
-  const renderItem = ({ item }: { item: string }) => (
-    <View style={styles.item}>
+  const navigation = useNavigation<any>();
+  const dispatch = useDispatch();
+  const setCurrentSurahInd = (payload: any) => dispatch(SetCurrentSurahInd(payload));
+  const renderItem = ({ item, index }: { item: string; index: number }) => (
+    <TouchableOpacity style={styles.item} onPress={() => { setCurrentSurahInd(index); navigation.navigate("SurahPage")}}>
       <Text style={styles.title}>{item}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (

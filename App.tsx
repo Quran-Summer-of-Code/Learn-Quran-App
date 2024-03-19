@@ -1,8 +1,8 @@
 //  Redux and friends
 import { Provider } from "react-redux";
-import { persistor } from "./redux/store";
+import { persistor } from "./Redux/store";
 import { PersistGate } from "redux-persist/integration/react";
-import { store } from "./redux/store";
+import { store } from "./Redux/store";
 import { RootSiblingParent } from "react-native-root-siblings";
 
 // Status bar
@@ -16,7 +16,7 @@ const AppWrapper = () => {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <RootSiblingParent>
-          <StatusBar style="auto" />
+          <StatusBar style="light" />
           <Navigation />
         </RootSiblingParent>
       </PersistGate>
