@@ -28,7 +28,13 @@ const Drawer = createDrawerNavigator();
 function Navigation() {
   // Load fonts
   const [fontsLoaded] = useFonts({
-    PoppinsRegular: require("./assets/fonts/Poppins-Regular.ttf"),
+    UthmanicHafs: require("./assets/fonts/UthmanicHafs.ttf"),
+    KufyanMedium: require("./assets/fonts/KufyanMedium.ttf"),
+    KufyanBold: require("./assets/fonts/KufyanBold.ttf"),
+    QalamRegular: require("./assets/fonts/QalamRegular.ttf"),
+    NewmetRegular: require("./assets/fonts/NewmetRegular.ttf"),
+    UthmanRegular: require("./assets/fonts/UthmanRegular.ttf"),
+    UthmanBold: require("./assets/fonts/UthmanBold.otf"),
   });
 
   // Central state
@@ -71,7 +77,7 @@ function Navigation() {
                 <Text
                   style={{
                     color: "white",
-                    fontFamily: "PoppinsRegular",
+                    fontFamily: "UthmanRegular",
                     fontSize: 24,
                     marginRight: 10,
                   }}
@@ -109,7 +115,7 @@ const Header: React.FC<Props> = ({ navigation }) => {
       <Text
         style={{
           color: "white",
-          fontFamily: "PoppinsRegular",
+          fontFamily: "UthmanRegular",
           fontSize: 24,
           marginRight: 10,
         }}
@@ -129,7 +135,7 @@ const drawerStyles = {
   },
   drawerLabelStyle: {
     color: "white",
-    fontFamily: "PoppinsRegular",
+    fontFamily: "UthmanRegular",
     letterSpacing: 2,
   },
   headerStyle: {
@@ -159,7 +165,7 @@ const DrawerItems = (props: any) => {
               allowFontScaling={false}
               style={{
                 color: "white",
-                fontFamily: "PoppinsRegular",
+                fontFamily: "UthmanRegular",
                 fontSize: 30,
               }}
             >
@@ -174,7 +180,7 @@ const DrawerItems = (props: any) => {
               allowFontScaling={false}
               style={{
                 color: "white",
-                fontFamily: "PoppinsRegular",
+                fontFamily: "UthmanRegular",
                 letterSpacing: 2,
                 fontSize: 18,
               }}
