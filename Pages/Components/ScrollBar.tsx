@@ -12,7 +12,7 @@ const ScrollBarView = ({ children, styles }: any) => {
         )}
         {!isWeb && (
           <ScrollBar
-            hideTimeout = {200}
+            hideTimeout = {100}
             style={styles.scrollViewWrapper}
             scrollIndicatorStyle={styles.scrollStyle}
           >
