@@ -4,8 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { SetCurrentSurahInd } from "../Redux/slices/app";
-import ScrollBarView from "./Components/ScrollBar";
+import { SetCurrentSurahInd } from "../../Redux/slices/app";
+import ScrollBarView from "../Components/ScrollBar";
 
 interface Props {
   suras: any[];
@@ -48,19 +48,6 @@ const SurasList: React.FC<Props> = ({ suras }) => {
       <ScrollBarView styles={styles}>
         <SurahItemList suras={suras} />
       </ScrollBarView>
-      {/* {isWeb && (
-        <ScrollView style={styles.scrollViewWrapper}>
-          <SurahItemList suras={suras} />
-        </ScrollView>
-      )}
-      {!isWeb && (
-        <ScrollBar
-          style={styles.scrollViewWrapper}
-          scrollIndicatorStyle={styles.scrollStyle}
-        >
-          <SurahItemList suras={suras} />
-        </ScrollBar>
-      )} */}
     </>
   );
 };

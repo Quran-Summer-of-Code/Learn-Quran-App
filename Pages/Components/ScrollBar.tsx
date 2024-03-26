@@ -51,8 +51,6 @@ export default ScrollBarView;
    useEffect(() => {
      scrollViewRef.current.scrollTo({x: 0, y: 1, animated: true});
      }, [selectedDate]);
-  
-
 
     const [fadeAnim] = useState(
         new Animated.Value(shouldIndicatorHide ? 0 : 1),

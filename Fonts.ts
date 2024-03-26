@@ -1,0 +1,15 @@
+export const fonts = {
+    UthmanicHafs: require("./assets/fonts/UthmanicHafs.ttf"),
+    KufyanMedium: require("./assets/fonts/KufyanMedium.ttf"),
+    KufyanBold: require("./assets/fonts/KufyanBold.ttf"),
+    QalamRegular: require("./assets/fonts/QalamRegular.ttf"),
+    NewmetRegular: require("./assets/fonts/NewmetRegular.ttf"),
+    UthmanRegular: require("./assets/fonts/UthmanRegular.ttf"),
+    UthmanBold: require("./assets/fonts/UthmanBold.otf"),
+    Basmala: require("./assets/fonts/Basmala.ttf"),
+    KaalaTaala: require("./assets/fonts/KaalaTaala.ttf"),
+    SurasA: require("./assets/fonts/SurasA.ttf"),
+    SurasB: require("./assets/fonts/SurasB.ttf"),
+    SurasC: require("./assets/fonts/SurasC.ttf"),
+    SurasD: require("./assets/fonts/SurasD.ttf"),
+  }
