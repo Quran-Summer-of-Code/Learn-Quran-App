@@ -1,9 +1,31 @@
 // @ts-nocheck (this is an NPM package that needed to be fixed)
 import React, { useState, useEffect, useRef } from 'react';
-
+import { Platform } from "react-native";
 import { ScrollView, View, StyleSheet, Animated } from 'react-native';
 
-export default ({
+const ScrollBarView = ({ children, styles }: any) => {
+    const isWeb = Platform.OS === "web"; 
+    return (
+      <>
+        {isWeb && (
+          <ScrollView style={styles.scrollViewWrapper}>{children}</ScrollView>
+        )}
+        {!isWeb && (
+          <ScrollBar
+            hideTimeout = {200}
+            style={styles.scrollViewWrapper}
+            scrollIndicatorStyle={styles.scrollStyle}
+          >
+            {children}
+          </ScrollBar>
+        )}
+      </>
+    );
+  };
+
+export default ScrollBarView;
+
+  const ScrollBar = ({
     children,
     indicatorHeight = 200,
     flexibleIndicator = true,

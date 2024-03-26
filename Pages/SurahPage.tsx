@@ -9,6 +9,8 @@ import Suras from "../Quran/Suras.json";
 import surasList from "../Quran/SurasList.json";
 import { englishToArabicNumber } from "../Utils";
 import { SurahHeader } from "../Navigation";
+import ScrollBarView from "./Components/ScrollBar";
+
 
 interface Props {}
 
@@ -37,16 +39,18 @@ const SurahPage: React.FC<Props> = () => {
   }, [navigation, currentSurahInd]);
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-      showsVerticalScrollIndicator={false}
+    <ScrollBarView
+      styles={styles}
+      //contentContainerStyle={styles.contentContainer}
+      //showsVerticalScrollIndicator={false}
     >
       <Text style={styles.basmalaStyle}>
         بِسْمِ اللَّـهِ الرَّحْمَـٰنِ الرَّحِيمِ
       </Text>
       {!ayahListMode && (
-        <Text style={styles.suraStyle}>
+        <Text style={[styles.suraStyle, 
+        {textAlign: (currentSurahInd > 90) ? "center" : "justify"}
+        ]}>
           {currentSurah.map((ayahObj, index) => (
             <Text key={index}>
               <Text style={styles.ayahStyle}>{ayahObj.ayah}</Text>
@@ -79,7 +83,7 @@ const SurahPage: React.FC<Props> = () => {
           ))}
         </View>
       )}
-    </ScrollView>
+    </ScrollBarView>
   );
 };
 
@@ -102,8 +106,17 @@ const styles = StyleSheet.create({
     fontFamily: "NewmetRegular",
     color: "#38a3a5",
   },
+  scrollStyle: {
+    backgroundColor: "#38a3a5",
+    opacity: 1.0,
+  },
+  scrollViewWrapper: {
+    paddingHorizontal: 30,
+    width: "100%",
+    borderColor: "000",
+  },
   suraStyle: {
-    textAlign: "center",
+    textAlign: "justify",
     fontSize: 25,
     color: "#1d1d1d",
   },
@@ -111,5 +124,6 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 25,
     fontFamily: "NewmetRegular",
+    letterSpacing: (Platform.OS === "web")? 0 : 10,
   },
 });
