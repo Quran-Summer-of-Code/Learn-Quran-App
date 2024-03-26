@@ -9,6 +9,7 @@ import {
   DrawerItem,
 } from "@react-navigation/drawer";
 import { Text, View } from "react-native";
+import { Platform } from 'react-native';
 
 // Central state
 import { useDispatch, useSelector } from "react-redux";
@@ -60,32 +61,8 @@ function Navigation() {
             headerShown: true,
             title: "تفسير القرآن الكريم",
             headerTitle: () => <></>,
-            headerRight: () => (
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row-reverse",
-                  marginTop: 3,
-                }}
-              >
-                <Ionicons
-                  name="menu"
-                  size={30}
-                  color="white"
-                  style={{ marginRight: 10 }}
-                />
-                <Text
-                  style={{
-                    color: "white",
-                    fontFamily: "UthmanRegular",
-                    fontSize: 24,
-                    marginRight: 10,
-                  }}
-                >
-                  تفسير القرآن الكريم
-                </Text>
-              </View>
-            ),
+            headerLeft: () => (<></>),
+            headerRight: () => (<></>),
           }}
           component={HomePage}
         />
@@ -109,19 +86,21 @@ interface Props {
   navigation: any;
 }
 const Header: React.FC<Props> = ({ navigation }) => {
+  const isWeb = Platform.OS === 'web';
   return (
-    <View style={{ display: "flex", flexDirection: "row-reverse", marginTop: 3 }}>
-      <Ionicons name="menu" size={30} color="white" style={{ marginRight: 10 }} onPress={() => navigation.openDrawer()} />
+    <View style={{ display: "flex", flexDirection:  isWeb ? "row" : "row-reverse", marginVertical: 3, alignItems: "center" }}>
       <Text
         style={{
           color: "white",
           fontFamily: "UthmanRegular",
           fontSize: 24,
           marginRight: 10,
+          marginLeft: 10,
         }}
       >
         تفسير القرآن الكريم
       </Text>
+      <Ionicons name="menu" size={30} color="white" style={{ marginRight: 10, marginLeft: 10 }} onPress={() => navigation.openDrawer()} />
     </View>
   );
 };
@@ -145,7 +124,7 @@ const drawerStyles = {
   headerTitleStyle: {
     fontWeight: "bold",
   },
-  drawerType: "back",
+  drawerType: "front",
   drawerActiveTintColor: "white",
   initialRouteName: "HomePage",
   drawerPosition: "right",

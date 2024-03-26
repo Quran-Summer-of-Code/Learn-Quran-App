@@ -12,7 +12,7 @@ interface Props {}
 
 const SurahPage: React.FC<Props> = () => {
   I18nManager.allowRTL(true);
-I18nManager.forceRTL(true);
+  I18nManager.forceRTL(true);
   const dispatch = useDispatch();
   const [currentSurahInd, setCurrentSurahInd] = [
     useSelector((state: any) => state.store.currentSurahInd),
@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 25,
     color: "#1d1d1d"
-
   },
   ayahStyle: {
     color: "black",
