@@ -8,8 +8,9 @@ import {
   DrawerItemList,
   DrawerItem,
 } from "@react-navigation/drawer";
+import { LinearGradient } from "expo-linear-gradient";
 import { Text, View } from "react-native";
-import { Platform } from 'react-native';
+import { Platform } from "react-native";
 
 // Central state
 import { useDispatch, useSelector } from "react-redux";
@@ -36,6 +37,12 @@ function Navigation() {
     NewmetRegular: require("./assets/fonts/NewmetRegular.ttf"),
     UthmanRegular: require("./assets/fonts/UthmanRegular.ttf"),
     UthmanBold: require("./assets/fonts/UthmanBold.otf"),
+    Basmala: require("./assets/fonts/Basmala.ttf"),
+    KaalaTaala: require("./assets/fonts/KaalaTaala.ttf"),
+    SurasA: require("./assets/fonts/SurasA.ttf"),
+    SurasB: require("./assets/fonts/SurasB.ttf"),
+    SurasC: require("./assets/fonts/SurasC.ttf"),
+    SurasD: require("./assets/fonts/SurasD.ttf"),
   });
 
   // Central state
@@ -61,14 +68,18 @@ function Navigation() {
             headerShown: true,
             title: "تفسير القرآن الكريم",
             headerTitle: () => <></>,
-            headerLeft: () => (<></>),
-            headerRight: () => (<></>),
+            headerLeft: () => <></>,
+            headerRight: () => <></>,
           }}
           component={HomePage}
         />
         <Drawer.Screen
           name="SurahPage"
-          options={{ headerShown: false }}
+          options={{
+            headerShown: true,
+            headerTitle: () => <></>,
+            headerTitleAlign: 'center'
+          }}
           component={SurahPage}
         />
         <Drawer.Screen
@@ -86,13 +97,20 @@ interface Props {
   navigation: any;
 }
 const Header: React.FC<Props> = ({ navigation }) => {
-  const isWeb = Platform.OS === 'web';
+  const isWeb = Platform.OS === "web";
   return (
-    <View style={{ display: "flex", flexDirection:  isWeb ? "row" : "row-reverse", marginVertical: 3, alignItems: "center" }}>
+    <View
+      style={{
+        display: "flex",
+        flexDirection: isWeb ? "row" : "row-reverse",
+        marginVertical: 3,
+        alignItems: "center",
+      }}
+    >
       <Text
         style={{
           color: "white",
-          fontFamily: "UthmanRegular",
+          fontFamily: "UthmanBold",
           fontSize: 24,
           marginRight: 10,
           marginLeft: 10,
@@ -100,16 +118,69 @@ const Header: React.FC<Props> = ({ navigation }) => {
       >
         تفسير القرآن الكريم
       </Text>
-      <Ionicons name="menu" size={30} color="white" style={{ marginRight: 10, marginLeft: 10 }} onPress={() => navigation.openDrawer()} />
+      <Ionicons
+        name="menu"
+        size={30}
+        color="white"
+        style={{ marginRight: 10, marginLeft: 10 }}
+        onPress={() => navigation.openDrawer()}
+      />
     </View>
   );
 };
 
-export { Header };
+interface SurahProps {
+  navigation: any;
+  title: string;
+  fontFamily: string;
+}
+const SurahHeader: React.FC<SurahProps> = ({ navigation, title, fontFamily }) => {
+  const isWeb = Platform.OS === "web";
+  return (
+    <View
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: isWeb ? "row" : "row-reverse",
+        marginVertical: 3,
+        alignItems: "center",
+        width: "100%",
+      }}
+    >
+      {/* <Ionicons
+        name="menu"
+        size={30}
+        color="white"
+        style={{ marginRight: 10, marginLeft: 10 }}
+        onPress={() => navigation.openDrawer()}
+      /> */}
+      <Text style={{color: "white", fontSize: 40}}>
+      <Text style={{ fontFamily: "UthmanRegular", marginHorizontal: 4 }}>{"﴾ "}</Text>
+      <Text style={{fontFamily: fontFamily, }}>
+        {title}
+        <Text style={{ fontFamily: "KaalaTaala", fontSize: 45 }}>
+          S
+        </Text>
+      </Text>
+      <Text style={{ fontFamily: "UthmanRegular", marginHorizontal: 4}}>{" ﴿"}</Text>
+      </Text>
+      {/* <Ionicons
+        name="menu"
+        size={30}
+        color="white"
+        style={{ marginRight: 10, marginLeft: 10 }}
+        onPress={() => navigation.openDrawer()}
+      /> */}
+      {/* <Ionicons name="menu" size={30} color="white" style={{ marginRight: 10, marginLeft: 10 }} onPress={() => navigation.openDrawer()} /> */}
+    </View>
+  );
+};
+
+export { Header, SurahHeader };
 
 const drawerStyles = {
   drawerStyle: {
-    backgroundColor: "#0096FF",
+    backgroundColor: "#38a3a5",
     width: 270,
   },
   drawerLabelStyle: {
@@ -118,9 +189,10 @@ const drawerStyles = {
     letterSpacing: 2,
   },
   headerStyle: {
-    backgroundColor: "#0096FF",
+    backgroundColor: "#38a3a5",
+    height: (Platform.OS !== "web") ? 90 : 70
   },
-  headerTintColor: "#0096FF",
+  headerTintColor: "#38a3a5",
   headerTitleStyle: {
     fontWeight: "bold",
   },
@@ -128,6 +200,8 @@ const drawerStyles = {
   drawerActiveTintColor: "white",
   initialRouteName: "HomePage",
   drawerPosition: "right",
+  swipeEnabled: false,
+
 };
 
 export default Navigation;
@@ -144,7 +218,7 @@ const DrawerItems = (props: any) => {
               allowFontScaling={false}
               style={{
                 color: "white",
-                fontFamily: "UthmanRegular",
+                fontFamily: "UthmanBold",
                 fontSize: 30,
               }}
             >

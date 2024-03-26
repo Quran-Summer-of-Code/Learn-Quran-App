@@ -3,7 +3,7 @@ import { Platform } from "react-native";
 import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import SurasList from "./SurasList"; // Assuming the component file is in the same directory
-import { suras } from "../Quran/SurasList";
+import  surasList  from "../Quran/SurasList.json";
 import { Ionicons } from "@expo/vector-icons";
 import { Header } from "../Navigation"
 
@@ -13,12 +13,12 @@ const HomePage = () => {
 
     // Set the header of the navigation bar with the header component. Had to do it here as need the navigation object.
     React.useEffect(() => { navigation.setOptions(
-      (isWeb)? {headerRight: () => (<Header navigation={navigation} />)} : {headerLeft: () => (<Header navigation={navigation} />),
+      (isWeb)? {headerRight: () => (<Header navigation={navigation} />)} : {headerTitle: () => (<Header navigation={navigation} />),
     }); }, [navigation]);
 
     return (
       <View style={styles.container}>
-        <SurasList suras={suras} />
+        <SurasList suras={surasList} />
       </View>
     );
   };
