@@ -47,7 +47,7 @@ const SurahPage: React.FC<Props> = () => {
       <Text style={styles.basmalaStyle}>
         بِسْمِ اللَّـهِ الرَّحْمَـٰنِ الرَّحِيمِ
       </Text>
-      {!ayahListMode ? <SurahTextList currentSurah={currentSurah} /> : <SurahText currentSurah={currentSurah} currentSurahInd={currentSurahInd} />}
+      {ayahListMode ? <SurahTextList currentSurah={currentSurah} /> : <SurahText currentSurah={currentSurah} currentSurahInd={currentSurahInd} />}
     </ScrollBarView>
   )
 };
