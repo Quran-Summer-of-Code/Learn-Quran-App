@@ -7,13 +7,14 @@ import { RootSiblingParent } from "react-native-root-siblings";
 
 // Fonts
 import { useFonts } from "expo-font";
-import { fonts } from "./Fonts";
+import { fonts } from "./fonts";
 
 // Status bar
 import { StatusBar } from "expo-status-bar";
 
 // Main app
 import Navigation from "./Navigation";
+
 
 const AppWrapper = () => {
   const [fontsLoaded] = useFonts(fonts);

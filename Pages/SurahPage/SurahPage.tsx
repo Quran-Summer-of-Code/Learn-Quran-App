@@ -11,6 +11,7 @@ import  SurahHeader  from "./SurahHeader";
 import ScrollBarView from "../Components/ScrollBar";
 import SurahTextList  from "./SurahTextList";
 import SurahText from "./SurahText";
+import AudioPlayer from "./Audio/AudioPlayer";
 
 interface Props {}
 
@@ -48,6 +49,7 @@ const SurahPage: React.FC<Props> = () => {
         بِسْمِ اللَّـهِ الرَّحْمَـٰنِ الرَّحِيمِ
       </Text>
       {ayahListMode ? <SurahTextList currentSurah={currentSurah} /> : <SurahText currentSurah={currentSurah} currentSurahInd={currentSurahInd} />}
+      <AudioPlayer currentSurahInd={currentSurahInd} />
     </ScrollBarView>
   )
 };

@@ -1,5 +1,5 @@
 import { Platform } from "react-native";
-
+import { useEffect } from "react";
 // Drawer and navigation
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
@@ -11,10 +11,40 @@ import HomePage from "./Pages/HomePage/HomePage";
 import SurahPage from "./Pages/SurahPage/SurahPage";
 import EmptyPage from "./Pages/EmptyPage/EmptyPage";
 
+// Redux
+import { useDispatch } from "react-redux";
+import { SetAudioList } from "./Redux/slices/app";
 
+// Suras
+import surasList from "./Quran/surasList.json";
 const Drawer = createDrawerNavigator();
 
 function Navigation() {
+  const dispatch = useDispatch();
+  const setAudioList = (payload: any) => dispatch(SetAudioList(payload));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://www.mp3quran.net/api/v3/reciters?language=ar&reciter=123&rewaya=1');
+        const data = await response.json();
+        const base_url = data.reciters[0].moshaf[0].server;
+        const author = data.reciters[0].name;
+        let audioObjs: any[] = [];
+        for (let i = 1; i <= 114; i++) {
+          const paddedNumber = String(i).padStart(3, '0');
+          const url = `${base_url}${paddedNumber}.mp3`;
+          // create audio object
+          const obj: any = { title: surasList[i - 1].name, url: url, author: author, artwork: require('./assets/quran.jpeg') };
+          audioObjs.push(obj);
+        }
+        setAudioList(audioObjs);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <NavigationContainer>
       <Drawer.Navigator

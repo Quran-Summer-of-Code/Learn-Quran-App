@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, Platform, StyleSheet } from "react-native";
-import { englishToArabicNumber } from "../../Helpers";
+import { englishToArabicNumber } from "../../helpers";
 
 interface Ayah {
     ayah: string;
