@@ -7,9 +7,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { SetCurrentSurahInd } from "../../Redux/slices/app";
 import suras from "../../Quran/suras.json";
 import surasList from "../../Quran/surasList.json";
-import  SurahHeader  from "./SurahHeader";
+import SurahHeader from "./SurahHeader";
 import ScrollBarView from "../Components/ScrollBar";
-import SurahTextList  from "./SurahTextList";
+import SurahTextList from "./SurahTextList";
 import SurahText from "./SurahText";
 import AudioPlayer from "./Audio/AudioPlayer";
 
@@ -37,50 +37,87 @@ const SurahPage: React.FC<Props> = () => {
     const surahFontFamily = surasList[currentSurahInd].fontFamily;
     navigation.setOptions(
       isWeb
-        ? { headerTitle: () => <SurahHeader title={surahFontName} fontFamily={surahFontFamily} navigation={navigation} /> }
-        : { headerTitle: () => <SurahHeader title={surahFontName} fontFamily={surahFontFamily} navigation={navigation} /> }
+        ? {
+            headerTitle: () => (
+              <SurahHeader
+                title={surahFontName}
+                fontFamily={surahFontFamily}
+                navigation={navigation}
+              />
+            ),
+          }
+        : {
+            headerTitle: () => (
+              <SurahHeader
+                title={surahFontName}
+                fontFamily={surahFontFamily}
+                navigation={navigation}
+              />
+            ),
+          }
     );
   }, [navigation, currentSurahInd]);
 
-  
   return (
-    <ScrollBarView styles={styles}>
-      <Text style={styles.basmalaStyle}>
-        بِسْمِ اللَّـهِ الرَّحْمَـٰنِ الرَّحِيمِ
-      </Text>
-      {ayahListMode ? <SurahTextList currentSurah={currentSurah} /> : <SurahText currentSurah={currentSurah} currentSurahInd={currentSurahInd} />}
-      <AudioPlayer currentSurahInd={currentSurahInd} />
-    </ScrollBarView>
-  )
+    <>
+      <ScrollBarView styles={(ayahListMode) ? stylesTextList : stylesText} width={3}>
+        {ayahListMode ? (
+          <SurahTextList currentSurah={currentSurah} />
+        ) : (
+          <SurahText
+            currentSurah={currentSurah}
+            currentSurahInd={currentSurahInd}
+          />
+        )}
+      </ScrollBarView>
+      {!isWeb && !ayahListMode && <AudioPlayer />}
+    </>
+  );
 };
 
 export default SurahPage;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 25,
-    marginVertical: 5,
+const stylesText = StyleSheet.create({
+  containerStyle: {
+    display: "flex",
+    flexDirection: "row",
+    height: "76%",
+    marginTop: 10,
+    borderWidth: 2,
+    borderColor: "#38a3a544",
+    padding: 4,
+    borderRadius: 30,
+    marginHorizontal: 12
   },
   contentContainer: {
-    //alignItems: "center",
     justifyContent: "center",
-  },
-  basmalaStyle: {
-    fontSize: 40,
-    padding: 5,
-    textAlign: "center",
-    fontFamily: "NewmetRegular",
-    color: "#38a3a5",
   },
   scrollStyle: {
     backgroundColor: "#38a3a5",
     opacity: 1.0,
   },
   scrollViewWrapper: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 10,
     width: "100%",
     borderColor: "000",
   },
-  
+});
+
+const stylesTextList = StyleSheet.create({
+  containerStyle: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  contentContainer: {
+    justifyContent: "center",
+  },
+  scrollStyle: {
+    backgroundColor: "#38a3a5",
+    opacity: 1.0,
+  },
+  scrollViewWrapper: {
+    paddingHorizontal: 10,
+    width: "100%",
+    borderColor: "000",
+  },
 });

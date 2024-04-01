@@ -34,7 +34,7 @@ function Navigation() {
           const paddedNumber = String(i).padStart(3, '0');
           const url = `${base_url}${paddedNumber}.mp3`;
           // create audio object
-          const obj: any = { title: surasList[i - 1].name, url: url, author: author, artwork: require('./assets/quran.jpeg') };
+          const obj: any = { title: surasList[i - 1].name, url: url, artist: author, artwork: require('./assets/quran.jpeg') };
           audioObjs.push(obj);
         }
         setAudioList(audioObjs);

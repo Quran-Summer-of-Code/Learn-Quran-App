@@ -1,50 +1,78 @@
 import React from "react";
-import { Text, Platform, StyleSheet } from "react-native";
+import { Text, Platform, StyleSheet, View } from "react-native";
 import { englishToArabicNumber } from "../../helpers";
 
 interface Ayah {
-    ayah: string;
-  }
-  
-  interface SurahTextProps {
-    currentSurah: Ayah[];
-    currentSurahInd: number;
-  }
-  
-  const SurahText: React.FC<SurahTextProps> = ({ currentSurah, currentSurahInd }) => {
-    return (
-      <Text style={[styles.suraStyle, { textAlign: (currentSurahInd > 90 || currentSurahInd < 1) ? "center" : "justify" }]}>
-        {currentSurah.map((ayahObj, index) => (
-          <Text key={index}>
-            <Text style={styles.ayahStyle}>{ayahObj.ayah}</Text>
-            <Text
-              style={{ fontFamily: "UthmanRegular", marginHorizontal: 10 }}
-            >
-              {" ﴿"}
-              {englishToArabicNumber(index + 1)}
-              {"﴾ "}
+  ayah: string;
+}
+
+interface SurahTextProps {
+  currentSurah: Ayah[];
+  currentSurahInd: number;
+}
+
+const SurahText: React.FC<SurahTextProps> = ({
+  currentSurah,
+  currentSurahInd,
+}) => {
+  return (
+    <>
+      <View style={styles.container}>
+        <Text style={styles.basmalaStyle}>
+          بِسْمِ اللَّـهِ الرَّحْمَـٰنِ الرَّحِيمِ
+        </Text>
+        <Text
+          style={[
+            styles.suraStyle,
+            {
+              textAlign:
+                currentSurahInd > 90 || currentSurahInd < 1
+                  ? "center"
+                  : "justify",
+            },
+          ]}
+        >
+          {currentSurah.map((ayahObj, index) => (
+            <Text key={index}>
+              <Text style={styles.ayahStyle}>{ayahObj.ayah}</Text>
+              <Text
+                style={{ fontFamily: "UthmanRegular", marginHorizontal: 10 }}
+              >
+                {" ﴿"}
+                {englishToArabicNumber(index + 1)}
+                {"﴾ "}
+              </Text>
             </Text>
-          </Text>
-        ))}
-      </Text>
-    );
-  };
+          ))}
+        </Text>
+      </View>
+    </>
+  );
+};
 
-  export default SurahText;
-  
-
+export default SurahText;
 
 const styles = StyleSheet.create({
-    suraStyle: {
-      textAlign: "justify",
-      fontSize: 25,
-      color: "#1d1d1d",
-    },
-    ayahStyle: {
-      color: "black",
-      fontSize: 25,
-      fontFamily: "NewmetRegular",
-      letterSpacing: (Platform.OS === "web")? 0 : 10,
-    },
-  });
-  
+  container: {
+    flex: 1,
+    marginBottom: 200,
+  },
+  suraStyle: {
+    textAlign: "justify",
+    fontSize: 25,
+    color: "#1d1d1d",
+  },
+  basmalaStyle: {
+    fontSize: 30,
+    padding: 5,
+    textAlign: "center",
+    fontFamily: "NewmetRegular",
+    color: "#38a3a5",
+  },
+  ayahStyle: {
+    color: "black",
+    fontSize: 25,
+    fontFamily: "NewmetRegular",
+    letterSpacing: Platform.OS === "web" ? 0 : 10,
+  },
+});

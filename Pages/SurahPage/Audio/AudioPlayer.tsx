@@ -58,59 +58,55 @@ const AudioPlayer: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
-        <View style={styles.audioText}>
-          <Text style={[styles.audioContent, styles.audioTitle]} numberOfLines={3}>{trackMD.title}</Text>
-          <Text style={[styles.audioContent, styles.audioAuthor]} numberOfLines={2}>{trackMD.author}</Text>
-        </View>
         <View>
           <Slider
             style={styles.progressBar}
             value={progress.position}
             minimumValue={0}
             maximumValue={progress.duration}
-            thumbTintColor="#FFD369"
-            minimumTrackTintColor="#FFD369"
-            maximumTrackTintColor="#fff"
+            thumbTintColor="#38a3a5"
+            minimumTrackTintColor="#38a3a5"
+            maximumTrackTintColor="#717171"
             onSlidingComplete={async value => await TrackPlayer.seekTo(value)}
           />
           <View style={styles.progressLevelDuraiton}>
-            <Text style={styles.progressLabelText}>
-              {formatTime(progress.position)}
+          <Text style={styles.progressLabelText}>
+              {formatTime(progress.duration)}
             </Text>
             <Text style={styles.progressLabelText}>
-              {formatTime(progress.duration)}
+              {formatTime(progress.position)}
             </Text>
           </View>
         </View>
         <View style={styles.audioControlsContainer}>
-          <TouchableOpacity onPress={() => previousTrack(audioCount, currentSurahInd, setCurrentSurahInd, setTrackMD)}>
+          <TouchableOpacity onPress={() => nextTrack(audioCount, currentSurahInd, setCurrentSurahInd, setTrackMD)}>
             <Ionicons
-              name="play-skip-back-outline"
+              name="play-skip-forward-outline"
               size={35}
-              color="#FFD369"
+              color="#38a3a5"
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => togglePlayBack(playBackState)} style={{ minHeight: 75 }}>
             {
               (playBackState.state === State.Loading || playBackState.state === State.Buffering) ?
                 <View style={{ paddingTop: 20 }}>
-                  <ActivityIndicator size="large" color={"#FFD369"} />
+                  <ActivityIndicator size="large" color={"#38a3a5"} />
                 </View>
                 :
                 <Ionicons
                   name={
                     playBackState.state === State.Playing ? 'pause' : 'play'
                   }
-                  size={75}
-                  color="#FFD369"
+                  size={65}
+                  color="#38a3a5"
                 />
             }
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => nextTrack(audioCount, currentSurahInd, setCurrentSurahInd, setTrackMD)}>
+          <TouchableOpacity onPress={() => previousTrack(audioCount, currentSurahInd, setCurrentSurahInd, setTrackMD)}>
             <Ionicons
-              name="play-skip-forward-outline"
+              name="play-skip-back-outline"
               size={35}
-              color="#FFD369"
+              color="#38a3a5"
             />
           </TouchableOpacity>
         </View>
@@ -126,62 +122,45 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#222831',
+    backgroundColor: '#f1f1f1',
+    borderColor: '#38a3a5ff',
+    borderTopWidth: 2,
+    borderRightWidth: 2,
+    borderLeftWidth: 2,
+    padding: 10,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    position: 'absolute',
+    bottom: 0,
+    width: width,
+    height: '20%'
   },
   mainContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  mainWrapper: {
-    width: width,
-    height: width,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageWrapper: {
-    alignSelf: "center",
-    width: '90%',
-    height: '90%',
-    borderRadius: 15,
-  },
-  audioText: {
-    marginTop: 2,
-    height: 70
-  },
-  audioContent: {
-    textAlign: 'center',
-    color: '#EEEEEE',
-  },
-  audioTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  audioAuthor: {
-    fontSize: 16,
-    fontWeight: '300',
-  },
   progressBar: {
     alignSelf: "stretch",
-    marginTop: 40,
+    marginTop: 10,
     marginLeft: 5,
     marginRight: 5
   },
   progressLevelDuraiton: {
-    width: width,
-    padding: 5,
+    width: width * 0.9,
+    paddingVertical: 5,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   progressLabelText: {
-    color: '#FFF',
+    color: '#38a3a5',
   },
   audioControlsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 20,
+
     width: '60%',
   },
 });
