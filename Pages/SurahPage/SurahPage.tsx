@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Platform } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
 import { I18nManager } from "react-native";
@@ -31,6 +31,8 @@ const SurahPage: React.FC<Props> = () => {
   ];
   const currentSurah = suras[currentSurahInd];
   const [ayahListMode, setAyahListMode] = React.useState(false);
+
+
 
   React.useEffect(() => {
     const surahFontName = surasList[currentSurahInd].fontName;

@@ -1,6 +1,8 @@
 import React from "react";
 import { Text, Platform, StyleSheet, View } from "react-native";
 import { englishToArabicNumber } from "../../helpers";
+import { useSelector } from "react-redux";
+import { getLocalAyahInd } from "../../helpers";
 
 interface Ayah {
   ayah: string;
@@ -15,6 +17,7 @@ const SurahText: React.FC<SurahTextProps> = ({
   currentSurah,
   currentSurahInd,
 }) => {
+  const currentAyahInd = useSelector((state: any) => state.store.currentAyahInd);
   return (
     <>
       <View style={styles.container}>
@@ -34,7 +37,7 @@ const SurahText: React.FC<SurahTextProps> = ({
         >
           {currentSurah.map((ayahObj, index) => (
             <Text key={index}>
-              <Text style={styles.ayahStyle}>{ayahObj.ayah}</Text>
+              <Text style={[styles.ayahStyle, getLocalAyahInd(currentAyahInd) === index ? {color: "#38a3a5"}: {}]}>{ayahObj.ayah}</Text>
               <Text
                 style={{ fontFamily: "UthmanRegular", marginHorizontal: 10 }}
               >

@@ -53,27 +53,8 @@ export const togglePlayBack = async (playBackState: any) => {
     }
 };
 
-export const nextTrack = async (audioCount: number, trackIndex: number, setTrackIndex: Function, setTrackMD: Function) => {
-    // handle click to next track
-    if (trackIndex < audioCount - 1) {
-        await TrackPlayer.skipToNext();
-        await getSetTrackData(setTrackIndex, setTrackMD);
-    } else {
-        await TrackPlayer.skip(0);
-        await getSetTrackData(setTrackIndex, setTrackMD);
-    }
-};
 
-export const previousTrack = async (audioCount: number, trackIndex: number, setTrackIndex: Function, setTrackMD: Function) => {
-    // handle click to previous
-    if (trackIndex > 0) {
-        await TrackPlayer.skipToPrevious();
-        await getSetTrackData(setTrackIndex, setTrackMD);
-    } else {
-        await TrackPlayer.skip(audioCount - 1);
-        await getSetTrackData(setTrackIndex, setTrackMD);
-    }
-};
+
 
 export const formatTime = (seconds: number) => {
     seconds = Math.round(seconds);

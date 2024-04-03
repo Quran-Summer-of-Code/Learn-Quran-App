@@ -1,3 +1,5 @@
+import surasList from "./Quran/surasList.json";
+
 export function englishToArabicNumber(englishNumber: number): string {
     const arabicNumbers: { [key: string]: string } = {
         '0': '٠', '1': '١', '2': '٢', '3': '٣',
@@ -15,3 +17,21 @@ export function englishToArabicNumber(englishNumber: number): string {
   }
 
 
+  export function getSurahIndGivenAyah(ayahNum: number) {
+    const firstAyahs = surasList.map((sura: any) => sura.firstAyah);     // indices of first ayah of each surah
+    for (let i = 0; i < firstAyahs.length - 1; i++) {
+        if (ayahNum >= firstAyahs[i] && ayahNum < firstAyahs[i + 1]) {
+            return i;
+        }
+    }
+
+    return 113;       // return last surah (must be >= firstAyah[113])
+}
+
+export function getLocalAyahInd(ayahNum: number) {
+    return ayahNum - surasList[getSurahIndGivenAyah(ayahNum)].firstAyah
+}
+
+export function getGlobalAyahInd(surahInd: number, ayahNum: number) {
+    return surasList[surahInd].firstAyah + ayahNum
+}

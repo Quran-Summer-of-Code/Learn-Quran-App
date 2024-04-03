@@ -17,24 +17,32 @@ import { SetAudioList } from "./Redux/slices/app";
 
 // Suras
 import surasList from "./Quran/surasList.json";
+import suras from "./Quran/suras.json";
+
+import { englishToArabicNumber, getSurahIndGivenAyah, getLocalAyahInd } from "./helpers";
 const Drawer = createDrawerNavigator();
 
 function Navigation() {
   const dispatch = useDispatch();
   const setAudioList = (payload: any) => dispatch(SetAudioList(payload));
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://www.mp3quran.net/api/v3/reciters?language=ar&reciter=123&rewaya=1');
-        const data = await response.json();
-        const base_url = data.reciters[0].moshaf[0].server;
-        const author = data.reciters[0].name;
+        const author = "مشاري العفاسي"    
+        // generalize with https://api.alquran.cloud/v1/edition/format/audio and https://raw.githubusercontent.com/islamic-network/cdn/master/info/cdn.txt 
+        let base_url = "https://cdn.islamic.network/quran/audio/128/ar.alafasy"
         let audioObjs: any[] = [];
-        for (let i = 1; i <= 114; i++) {
-          const paddedNumber = String(i).padStart(3, '0');
-          const url = `${base_url}${paddedNumber}.mp3`;
-          // create audio object
-          const obj: any = { title: surasList[i - 1].name, url: url, artist: author, artwork: require('./assets/quran.jpeg') };
+        for (let i = 2; i <= 6236; i++) {
+          const url = `${base_url}/${i}.mp3`;
+          let title = "q"
+          try {
+            title = suras[getSurahIndGivenAyah(i-2)][getLocalAyahInd(i-2)].ayah;
+          }
+          catch {
+            console.log(i, suras[getSurahIndGivenAyah(i-2)][getLocalAyahInd(i-2)].ayah)
+          }
+          const obj: any = { title: title, url: url, artist: author, artwork: require('./assets/quran.jpeg') };
           audioObjs.push(obj);
         }
         setAudioList(audioObjs);

@@ -1,11 +1,12 @@
 import React from "react";
 import { Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SetCurrentSurahInd } from "../../Redux/slices/app";
 import ScrollBarView from "../Components/ScrollBar";
+import { SetJustEnteredNewSurah } from "../../Redux/slices/app";
 
 interface Props {
   suras: any[];
@@ -19,17 +20,26 @@ const SurasList: React.FC<Props> = ({ suras }) => {
 
   const isWeb = Platform.OS === "web";
 
-  const SurahItem = ({ item, index }: { item: string; index: number }) => (
+  const SurahItem = ({ item, index }: { item: string; index: number }) => {
+    const setJustEnteredSurah = (payload: boolean) => 
+      dispatch(SetJustEnteredNewSurah(payload));
+    const currentSurahInd = useSelector((state: any) => state.store.currentSurahInd);
+    const justEnteredNewSurah = useSelector((state: any) => state.store.justEnteredNewSurah);
+    return (
     <TouchableOpacity
       style={styles.item}
       onPress={() => {
+        if (index !== currentSurahInd) { 
+           // to detect in audio player and go back to 1st Auya
+          setJustEnteredSurah(!justEnteredNewSurah);
+        }  
         setCurrentSurahInd(index);
         navigation.navigate("SurahPage");
       }}
     >
       <Text style={styles.title}>{item}</Text>
     </TouchableOpacity>
-  );
+  )};
 
   const SurahItemList = ({ suras }: { suras: any[] }) => {
     return (
