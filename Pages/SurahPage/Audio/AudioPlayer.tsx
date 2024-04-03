@@ -73,7 +73,6 @@ const AudioPlayer: React.FC = () => {
     };
 
     initializePlayer();
-    console.log("hey")
   }, [justEnteredNewSurah]);
 
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
@@ -128,8 +127,6 @@ const AudioPlayer: React.FC = () => {
       TrackPlayer.play();
     }
   }, [pause]);
- console.log( progress.position/progress.duration)
- const nanHandler = (num:number) => isNaN(num) ? 0 : num
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
