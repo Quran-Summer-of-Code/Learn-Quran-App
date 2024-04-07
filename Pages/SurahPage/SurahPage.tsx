@@ -18,9 +18,11 @@ import { FlatList } from "react-native";
 
 
 
-interface Props {}
+interface Props {
+  audioList: any[];
+}
 
-const SurahPage: React.FC<Props> = () => {
+const SurahPage: React.FC<Props> = ({audioList}) => {
   // RTL
   I18nManager.allowRTL(true);
   I18nManager.forceRTL(true);
@@ -83,7 +85,7 @@ const SurahPage: React.FC<Props> = () => {
           />
         )}
       {/* </ScrollBarView> */}
-      {!isWeb && !ayahListMode && <AudioPlayer />}
+      {!isWeb && !ayahListMode && <AudioPlayer audioList={audioList} />}
     </>
   );
 };

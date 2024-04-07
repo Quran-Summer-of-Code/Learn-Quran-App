@@ -41,7 +41,11 @@ import {
 
 import { englishToArabicNumber } from "../../../helpers";
 
-const AudioPlayer: React.FC = () => {
+interface AudioPlayerProps {
+  audioList: any;
+}
+
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
   const dispatch = useDispatch();
   const setCurrentSurahInd = (payload: number) =>
     dispatch(SetCurrentSurahInd(payload));
@@ -57,7 +61,6 @@ const AudioPlayer: React.FC = () => {
   const justChoseNewAyah = useSelector(
     (state: any) => state.store.justChoseNewAyah
   )
-  const audioList = useSelector((state: any) => state.store.audioList);
   const audioCount = 114; 
   const [trackMD, setTrackMD] = useState<any>(audioList[currentSurahInd]);
   const playBackState = usePlaybackState();
