@@ -12,6 +12,7 @@ import {
   SetCurrentAyahInd,
   SetJustChoseNewAyah,
   SetPause,
+  CurrentAyahInd, 
 } from "../../Redux/slices/app";
 
 import { englishToArabicNumber, getGlobalAyahInd } from "../../helpers";
@@ -31,13 +32,11 @@ interface SurahTextProps {
 }
 
 const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
-  const currentAyahInd = useSelector(
-    (state: any) => state.store.currentAyahInd
-  );
   const dispatch = useDispatch();
-  const setCurrentAyahInd = (payload: any) => {
-    dispatch(SetCurrentAyahInd(payload));
-  };
+  const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+  const [currentAyahInd, setCurrentAyahInd] = [useSelector(CurrentAyahInd), wrapDispatch(SetCurrentAyahInd)];
+  const setPause = wrapDispatch(SetPause);
+  const setJustChoseNewAyah = wrapDispatch(SetJustChoseNewAyah);
 
   const currentSurahByWords = surasByWords[currentSurahInd];
 
@@ -63,7 +62,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
             <Text
               onPress={() => {
                 setCurrentAyahInd(index);
-                dispatch(SetJustChoseNewAyah(true));
+                setJustChoseNewAyah(true);
               }}
             >
               {"\ufd3f"}
@@ -90,7 +89,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
         index: index,
         viewPosition: 0.5,
       });
-      dispatch(SetPause(false));
+      setPause(false);
     } else {
       setTimeout(() => {
         try {
@@ -99,7 +98,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
             animated: true,
             viewPosition: 0.5,
           });
-          dispatch(SetPause(false));
+          setPause(false);
         } catch {
           // Technically never happens
           Toast.show({

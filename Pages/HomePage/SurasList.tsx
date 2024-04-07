@@ -4,9 +4,9 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { SetCurrentSurahInd } from "../../Redux/slices/app";
+import { SetCurrentSurahInd, CurrentSurahInd } from "../../Redux/slices/app";
 import ScrollBarView from "../Components/ScrollBar";
-import { SetJustEnteredNewSurah } from "../../Redux/slices/app";
+import { SetJustEnteredNewSurah, JustEnteredNewSurah } from "../../Redux/slices/app";
 
 interface Props {
   suras: any[];
@@ -15,16 +15,18 @@ interface Props {
 const SurasList: React.FC<Props> = ({ suras }) => {
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
-  const setCurrentSurahInd = (payload: any) =>
-    dispatch(SetCurrentSurahInd(payload));
-
+  const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+  const [currentSurahInd, setCurrentSurahInd] = [
+    useSelector(CurrentSurahInd),
+    wrapDispatch(SetCurrentSurahInd),
+  ]
   const isWeb = Platform.OS === "web";
 
   const SurahItem = ({ item, index }: { item: string; index: number }) => {
-    const setJustEnteredSurah = (payload: boolean) => 
-      dispatch(SetJustEnteredNewSurah(payload));
-    const currentSurahInd = useSelector((state: any) => state.store.currentSurahInd);
-    const justEnteredNewSurah = useSelector((state: any) => state.store.justEnteredNewSurah);
+    const [justEnteredNewSurah, setJustEnteredSurah] = [
+      useSelector(JustEnteredNewSurah),
+      wrapDispatch(SetJustEnteredNewSurah),
+    ]
     return (
     <TouchableOpacity
       style={styles.item}

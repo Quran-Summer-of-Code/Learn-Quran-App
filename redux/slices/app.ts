@@ -4,7 +4,6 @@ interface AppState {
   homeMode: boolean;
   currentSurahInd: number;
   currentAyahInd: number;
-  audioList: any[];
   justEnteredNewSurah: boolean;
   justChoseNewAyah: boolean;
   pause: boolean;
@@ -14,16 +13,9 @@ const initialState: AppState = {
   homeMode: false,
   currentSurahInd: 0,
   currentAyahInd: 0,
-  audioList: [{
-    title: "جاري التحميل",
-    author: '...',
-    artwork: require('../../assets/quran.jpeg'),
-    url: 'https://server8.mp3quran.net/afs/001.mp3',
-  }],
   justEnteredNewSurah: false,
   justChoseNewAyah: false,
-  pause: false
-  
+  pause: false,
 };
 
 const appSlice = createSlice({
@@ -50,10 +42,25 @@ const appSlice = createSlice({
     },
     SetPause(state, action: PayloadAction<boolean>) {
       state.pause = action.payload;
-    }
+    },
+    SetOptimizedText(state, action: PayloadAction<boolean>) {
+      state.optimizedText = action.payload;
+    },
   },
 });
 
-export const { SetHomeMode, SetCurrentSurahInd, SetCurrentAyahInd, SetAudioList, SetJustEnteredNewSurah, SetJustChoseNewAyah, SetPause } = appSlice.actions;
+export const {
+  SetHomeMode,
+  SetCurrentSurahInd,
+  SetCurrentAyahInd,
+  SetJustEnteredNewSurah,
+  SetJustChoseNewAyah,
+  SetPause,
+} = appSlice.actions;
 
+export const CurrentSurahInd = (state:any) => state.store.currentSurahInd;
+export const CurrentAyahInd = (state:any) => state.store.currentAyahInd;
+export const JustEnteredNewSurah = (state:any) => state.store.justEnteredNewSurah;
+export const JustChoseNewAyah = (state:any) => state.store.justChoseNewAyah;
+export const Pause = (state:any) => state.store.pause;
 export default appSlice.reducer;

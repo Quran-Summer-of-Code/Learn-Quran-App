@@ -22,14 +22,20 @@ import Slider from "@react-native-community/slider";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {
   setupPlayer,
-  togglePlayBack,
-  getSetTrackData,
-  formatTime,
 } from "./playerUtils";
 
 import { useSelector, useDispatch } from "react-redux";
-import { SetCurrentSurahInd, SetJustChoseNewAyah } from "../../../Redux/slices/app";
-import { SetCurrentAyahInd, SetPause } from "../../../Redux/slices/app";
+import {
+  CurrentAyahInd,
+  CurrentSurahInd,
+  JustChoseNewAyah,
+  JustEnteredNewSurah,
+  Pause,
+  SetCurrentAyahInd,
+  SetCurrentSurahInd,
+  SetJustChoseNewAyah,
+  SetPause,
+} from "../../../Redux/slices/app";
 
 // surasList
 import surasList from "../../../Quran/surasList.json";
@@ -47,28 +53,21 @@ interface AudioPlayerProps {
 
 const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
   const dispatch = useDispatch();
-  const setCurrentSurahInd = (payload: number) =>
-    dispatch(SetCurrentSurahInd(payload));
-  const setCurrentAyahInd = (payload: number) =>
-    dispatch(SetCurrentAyahInd(payload));
+  const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+  const [currentSurahInd, setCurrentSurahInd] = [useSelector(CurrentSurahInd), wrapDispatch(SetCurrentSurahInd)];
+  const [currentAyahInd, setCurrentAyahInd] = [useSelector(CurrentAyahInd), wrapDispatch(SetCurrentAyahInd)];
+  const [pause, setPause] = [useSelector(Pause), wrapDispatch(SetPause)];
+  const [justChoseNewAyah, setJustChoseNewAyah] = [
+    useSelector(JustChoseNewAyah),
+    wrapDispatch(SetJustChoseNewAyah),
+  ]
+  const justEnteredNewSurah = useSelector(JustEnteredNewSurah);
 
-  const currentSurahInd = useSelector(
-    (state: any) => state.store.currentSurahInd
-  );
-  const currentAyahInd = useSelector(
-    (state: any) => state.store.currentAyahInd
-  );
-  const justChoseNewAyah = useSelector(
-    (state: any) => state.store.justChoseNewAyah
-  )
   const audioCount = 114; 
   const [trackMD, setTrackMD] = useState<any>(audioList[currentSurahInd]);
   const playBackState = usePlaybackState();
-  const justEnteredNewSurah = useSelector(
-    (state: any) => state.store.justEnteredNewSurah
-  )
+
   const progress = useProgress();
-  const [pause, setPause] = [useSelector((state: any) => state.store.pause), (payload:boolean) => dispatch(SetPause(payload))];
 
   useEffect(() => {
     const initializePlayer = async () => {
@@ -88,7 +87,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
   useEffect(() => {
     if (currentAyahInd !== null && justChoseNewAyah) {
       TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, currentAyahInd));
-      dispatch(SetJustChoseNewAyah(false));
+     setJustChoseNewAyah(false);
     }
   }, [currentAyahInd]);
 

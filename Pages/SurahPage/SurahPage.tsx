@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-nati
 import { I18nManager } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
-import { SetCurrentSurahInd } from "../../Redux/slices/app";
+import { SetCurrentSurahInd, CurrentSurahInd } from "../../Redux/slices/app";
 import suras from "../../Quran/suras.json";
 import surasList from "../../Quran/surasList.json";
 import SurahHeader from "./SurahHeader";
@@ -29,12 +29,13 @@ const SurahPage: React.FC<Props> = ({audioList}) => {
   // Basics
   const isWeb = Platform.OS === "web";
   const dispatch = useDispatch();
+  const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
   const navigation = useNavigation();
 
   // States
   const [currentSurahInd, setCurrentSurahInd] = [
-    useSelector((state: any) => state.store.currentSurahInd),
-    (payload: any) => dispatch(SetCurrentSurahInd(payload)),
+    useSelector(CurrentSurahInd),
+    wrapDispatch(SetCurrentSurahInd),
   ];
   const currentSurah = suras[currentSurahInd];
   const [ayahListMode, setAyahListMode] = React.useState(false);
