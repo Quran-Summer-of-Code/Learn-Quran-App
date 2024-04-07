@@ -35,3 +35,13 @@ export function getLocalAyahInd(ayahNum: number) {
 export function getGlobalAyahInd(surahInd: number, ayahNum: number) {
     return surasList[surahInd].firstAyah + ayahNum
 }
+
+export function isWithinRange(x: number, range: number[]) {
+    try {
+      return x >= range[0] && x <= range[1];
+    } catch {
+      return false;
+    }
+  }
+
+

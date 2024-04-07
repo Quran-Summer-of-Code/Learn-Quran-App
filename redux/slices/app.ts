@@ -6,6 +6,8 @@ interface AppState {
   currentAyahInd: number;
   audioList: any[];
   justEnteredNewSurah: boolean;
+  justChoseNewAyah: boolean;
+  pause: boolean;
 }
 
 const initialState: AppState = {
@@ -19,6 +21,9 @@ const initialState: AppState = {
     url: 'https://server8.mp3quran.net/afs/001.mp3',
   }],
   justEnteredNewSurah: false,
+  justChoseNewAyah: false,
+  pause: false
+  
 };
 
 const appSlice = createSlice({
@@ -40,9 +45,15 @@ const appSlice = createSlice({
     SetJustEnteredNewSurah(state, action: PayloadAction<boolean>) {
       state.justEnteredNewSurah = action.payload;
     },
+    SetJustChoseNewAyah(state, action: PayloadAction<boolean>) {
+      state.justChoseNewAyah = action.payload;
+    },
+    SetPause(state, action: PayloadAction<boolean>) {
+      state.pause = action.payload;
+    }
   },
 });
 
-export const { SetHomeMode, SetCurrentSurahInd, SetCurrentAyahInd, SetAudioList, SetJustEnteredNewSurah } = appSlice.actions;
+export const { SetHomeMode, SetCurrentSurahInd, SetCurrentAyahInd, SetAudioList, SetJustEnteredNewSurah, SetJustChoseNewAyah, SetPause } = appSlice.actions;
 
 export default appSlice.reducer;

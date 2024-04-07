@@ -28,8 +28,8 @@ import {
 } from "./playerUtils";
 
 import { useSelector, useDispatch } from "react-redux";
-import { SetCurrentSurahInd } from "../../../Redux/slices/app";
-import { SetCurrentAyahInd } from "../../../Redux/slices/app";
+import { SetCurrentSurahInd, SetJustChoseNewAyah } from "../../../Redux/slices/app";
+import { SetCurrentAyahInd, SetPause } from "../../../Redux/slices/app";
 
 // surasList
 import surasList from "../../../Quran/surasList.json";
@@ -47,12 +47,16 @@ const AudioPlayer: React.FC = () => {
     dispatch(SetCurrentSurahInd(payload));
   const setCurrentAyahInd = (payload: number) =>
     dispatch(SetCurrentAyahInd(payload));
+
   const currentSurahInd = useSelector(
     (state: any) => state.store.currentSurahInd
   );
   const currentAyahInd = useSelector(
     (state: any) => state.store.currentAyahInd
   );
+  const justChoseNewAyah = useSelector(
+    (state: any) => state.store.justChoseNewAyah
+  )
   const audioList = useSelector((state: any) => state.store.audioList);
   const audioCount = 114; 
   const [trackMD, setTrackMD] = useState<any>(audioList[currentSurahInd]);
@@ -61,12 +65,14 @@ const AudioPlayer: React.FC = () => {
     (state: any) => state.store.justEnteredNewSurah
   )
   const progress = useProgress();
+  const [pause, setPause] = [useSelector((state: any) => state.store.pause), (payload:boolean) => dispatch(SetPause(payload))];
 
   useEffect(() => {
     const initializePlayer = async () => {
       try {
         await setupPlayer(audioList);
         TrackPlayer.skip(surasList[currentSurahInd].firstAyah);
+        setPause(playBackState.state !== State.Playing)        
       } catch (error) {
         console.error("Error occurred while setting up player:", error);
       }
@@ -75,12 +81,20 @@ const AudioPlayer: React.FC = () => {
     initializePlayer();
   }, [justEnteredNewSurah]);
 
+  // if currentAyahInd changes replay the current track
+  useEffect(() => {
+    if (currentAyahInd !== null && justChoseNewAyah) {
+      TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, currentAyahInd));
+      dispatch(SetJustChoseNewAyah(false));
+    }
+  }, [currentAyahInd]);
+
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
     if (event.type === "playback-track-changed" && event.nextTrack !== null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
       const newSurahInd = getSurahIndGivenAyah(event.nextTrack);
       setCurrentSurahInd(newSurahInd);
-      setCurrentAyahInd(event.nextTrack);
+      setCurrentAyahInd(getLocalAyahInd(event.nextTrack));
       setTrackMD(track);
     }
   });
@@ -118,7 +132,6 @@ const AudioPlayer: React.FC = () => {
     setCurrentSurahInd(previousIndex);
   };
 
-  const [pause, setPause] = useState<boolean>(playBackState.state !== State.Playing)
 
   useEffect(() => {
     if (pause) {
@@ -150,7 +163,7 @@ const AudioPlayer: React.FC = () => {
               {englishToArabicNumber(parseInt(surasList[currentSurahInd].numAyas))}
             </Text>
             <Text style={styles.progressLabelText}>
-              {englishToArabicNumber(getLocalAyahInd(currentAyahInd) + 1)}
+              {englishToArabicNumber(currentAyahInd + 1)}
             </Text>
           </View>
         </View>
@@ -170,7 +183,7 @@ const AudioPlayer: React.FC = () => {
             style={{ minHeight: 75 }}
           >
             {(playBackState.state === State.Loading ||
-            playBackState.state === State.Buffering) && !(getLocalAyahInd(currentAyahInd) > 0) ? (
+            playBackState.state === State.Buffering) && !(currentAyahInd > 0) ? (
               <View style={{ paddingTop: 20 }}>
                 <ActivityIndicator size="large" color={"#38a3a5"} />
               </View>

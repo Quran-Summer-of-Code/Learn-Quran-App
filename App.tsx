@@ -14,6 +14,7 @@ import { StatusBar } from "expo-status-bar";
 
 // Main app
 import Navigation from "./Navigation";
+import Toast from 'react-native-toast-message';
 
 
 const AppWrapper = () => {
@@ -25,6 +26,7 @@ const AppWrapper = () => {
         <RootSiblingParent>
           <StatusBar style="light" />
           <Navigation />
+          <Toast />
         </RootSiblingParent>
       </PersistGate>
     </Provider>

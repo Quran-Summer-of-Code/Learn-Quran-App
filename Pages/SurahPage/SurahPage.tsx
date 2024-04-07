@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Platform } from "react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { I18nManager } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,6 +12,11 @@ import ScrollBarView from "../Components/ScrollBar";
 import SurahTextList from "./SurahTextList";
 import SurahText from "./SurahText";
 import AudioPlayer from "./Audio/AudioPlayer";
+import { FlatList } from "react-native";
+
+
+
+
 
 interface Props {}
 
@@ -31,7 +36,6 @@ const SurahPage: React.FC<Props> = () => {
   ];
   const currentSurah = suras[currentSurahInd];
   const [ayahListMode, setAyahListMode] = React.useState(false);
-
 
 
   React.useEffect(() => {
@@ -60,18 +64,25 @@ const SurahPage: React.FC<Props> = () => {
     );
   }, [navigation, currentSurahInd]);
 
+
+  const flatListRef = useRef(null);
+
+
+
+
+
+
   return (
     <>
-      <ScrollBarView styles={(ayahListMode) ? stylesTextList : stylesText} width={3}>
+      {/* <ScrollBarView styles={(ayahListMode) ? stylesTextList : stylesText} width={3}> */}
         {ayahListMode ? (
           <SurahTextList currentSurah={currentSurah} />
         ) : (
           <SurahText
-            currentSurah={currentSurah}
             currentSurahInd={currentSurahInd}
           />
         )}
-      </ScrollBarView>
+      {/* </ScrollBarView> */}
       {!isWeb && !ayahListMode && <AudioPlayer />}
     </>
   );
