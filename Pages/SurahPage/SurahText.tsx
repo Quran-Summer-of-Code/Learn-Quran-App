@@ -12,7 +12,7 @@ import {
   SetJustChoseNewAyah,
   SetPause,
   CurrentAyahInd,
-  ShowJuzNameInsideSurah
+  ShowJuzNameInsideSurah,
 } from "../../Redux/slices/app";
 
 import { englishToArabicNumber, getGlobalAyahInd } from "../../helpers";
@@ -57,6 +57,8 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
         currentSurahInd,
         currentAyahInd
       );
+      let sajdaLocs = currentSurahByWords?.sajda
+      const secondSagda = (sajdaLocs && sajdaLocs.length > 1) ? sajdaLocs[1] : -1
       const currentJuzName = getJuzName(
         getGlobalAyahInd(
           currentSurahInd,
@@ -79,6 +81,20 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
             ]}
           >
             {wordObj + " "}
+            {currentSurahByWords.lastWordsinAyah.includes(index) &&
+              (sajdaLocs && (isWithinRange(index,  currentSurahByWords.ayahRanges[sajdaLocs[0]]))
+              || (secondSagda !==-1 && isWithinRange(index, currentSurahByWords.ayahRanges[secondSagda])))
+              && (
+                <Text
+                  style={{
+                    fontFamily: "NewmetRegular",
+                    letterSpacing: 5,
+                    color: "black",
+                  }}
+                >
+                  {"\u06e9"}
+                </Text>
+              )}
             {currentSurahByWords.lastWordsinAyah.includes(index) && (
               <Text
                 style={{
@@ -101,7 +117,8 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
           </Text>
         );
       } else if (
-        showJuzNameInsideSurah && currentSurahByWords.firstWordsinAyah.includes(index + 1) &&
+        showJuzNameInsideSurah &&
+        currentSurahByWords.firstWordsinAyah.includes(index + 1) &&
         currentJuzName !== ""
       ) {
         return (
@@ -112,7 +129,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
                 style={[
                   styles.fullWidth,
                   {
-                    // backgroundColor: "#38a3a577",
+                    // backgroundColor: "#38a3a577", 
                     flexDirection: "column",
                     padding: 3,
                     borderRadius: 24,
@@ -207,13 +224,13 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
         }}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        ListHeaderComponent={() => (
+        ListHeaderComponent={() =>
           currentSurahInd !== 8 && (
             <Text style={styles.basmalaStyle}>
               بِسْمِ اللَّــهِ الرَّحْمَـٰنِ الرَّحِيمِ
             </Text>
           )
-        )}
+        }
       />
     </View>
   );
