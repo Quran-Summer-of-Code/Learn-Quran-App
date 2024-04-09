@@ -7,6 +7,7 @@ interface AppState {
   justEnteredNewSurah: boolean;
   justChoseNewAyah: boolean;
   pause: boolean;
+  showJuzNameInsideSurah: boolean;
 }
 
 const initialState: AppState = {
@@ -15,7 +16,8 @@ const initialState: AppState = {
   currentAyahInd: 0,
   justEnteredNewSurah: false,
   justChoseNewAyah: false,
-  pause: false,
+  pause: true,
+  showJuzNameInsideSurah: false,
 };
 
 const appSlice = createSlice({
@@ -46,6 +48,9 @@ const appSlice = createSlice({
     SetOptimizedText(state, action: PayloadAction<boolean>) {
       state.optimizedText = action.payload;
     },
+    SetShowJuzNameInsideSurah(state, action: PayloadAction<boolean>) {
+      state.showJuzNameInsideSurah = action.payload;
+    }
   },
 });
 
@@ -56,6 +61,7 @@ export const {
   SetJustEnteredNewSurah,
   SetJustChoseNewAyah,
   SetPause,
+  SetShowJuzNameInsideSurah
 } = appSlice.actions;
 
 export const CurrentSurahInd = (state:any) => state.store.currentSurahInd;
@@ -63,4 +69,5 @@ export const CurrentAyahInd = (state:any) => state.store.currentAyahInd;
 export const JustEnteredNewSurah = (state:any) => state.store.justEnteredNewSurah;
 export const JustChoseNewAyah = (state:any) => state.store.justChoseNewAyah;
 export const Pause = (state:any) => state.store.pause;
+export const ShowJuzNameInsideSurah = (state:any) => state.store.showJuzNameInsideSurah;
 export default appSlice.reducer;

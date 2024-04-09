@@ -4,24 +4,29 @@ import {
   Platform,
   StyleSheet,
   View,
-  TouchableOpacity,
-  ScrollView,
   Dimensions,
+  LogBox,
 } from "react-native";
 import {
   SetCurrentAyahInd,
   SetJustChoseNewAyah,
   SetPause,
-  CurrentAyahInd, 
+  CurrentAyahInd,
+  ShowJuzNameInsideSurah
 } from "../../Redux/slices/app";
 
 import { englishToArabicNumber, getGlobalAyahInd } from "../../helpers";
 import { useSelector, useDispatch } from "react-redux";
-import { isWithinRange } from "../../helpers";
+import { isWithinRange, preprocessJuzData, getJuzName } from "../../helpers";
 import Toast from "react-native-toast-message";
 
 import { FlatList } from "react-native";
 import surasByWords from "../../Quran/surasByWords";
+import juzInfo from "../../Quran/juzInfo";
+
+LogBox.ignoreLogs([
+  "`flexWrap: `wrap`` is not supported with the `VirtualizedList` components.Consider using `numColumns` with `FlatList` instead.",
+]);
 
 interface Ayah {
   ayah: string;
@@ -34,48 +39,108 @@ interface SurahTextProps {
 const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
-  const [currentAyahInd, setCurrentAyahInd] = [useSelector(CurrentAyahInd), wrapDispatch(SetCurrentAyahInd)];
+  const [currentAyahInd, setCurrentAyahInd] = [
+    useSelector(CurrentAyahInd),
+    wrapDispatch(SetCurrentAyahInd),
+  ];
   const setPause = wrapDispatch(SetPause);
   const setJustChoseNewAyah = wrapDispatch(SetJustChoseNewAyah);
-
   const currentSurahByWords = surasByWords[currentSurahInd];
+  const juzData = preprocessJuzData(juzInfo);
+  const showJuzNameInsideSurah = useSelector(ShowJuzNameInsideSurah);
 
   const renderItem = useCallback(
-    ({ item: wordObj, index }: any) => (
-      <Text
-        style={[
-          styles.ayahStyle,
-          isWithinRange(index, currentSurahByWords.ayahRanges[currentAyahInd])
-            ? { color: "#38a3a5" }
-            : {},
-        ]}
-      >
-        {wordObj + " "}
-        {currentSurahByWords.lastWordsinAyah.includes(index) && (
+    ({ item: wordObj, index }: any) => {
+      // Assuming `juzData` and `currentSurahByWords` are accessible here
+
+      const currentGlobalAyahInd = getGlobalAyahInd(
+        currentSurahInd,
+        currentAyahInd
+      );
+      const currentJuzName = getJuzName(
+        getGlobalAyahInd(
+          currentSurahInd,
+          currentSurahByWords.firstWordsinAyah.indexOf(index + 1)
+        ),
+        juzData
+      );
+
+      if (wordObj !== "‎") {
+        return (
           <Text
-            style={{
-              fontFamily: "UthmanRegular",
-              letterSpacing: 5,
-              color: "black",
-            }}
+            style={[
+              styles.ayahStyle,
+              isWithinRange(
+                index,
+                currentSurahByWords.ayahRanges[currentAyahInd]
+              )
+                ? { color: "#38a3a5" }
+                : {},
+            ]}
           >
-            <Text
-              onPress={() => {
-                setCurrentAyahInd(index);
-                setJustChoseNewAyah(true);
-              }}
-            >
-              {"\ufd3f"}
-              {englishToArabicNumber(
-                currentSurahByWords.lastWordsinAyah.indexOf(index) + 1
-              )}
-              {"\ufd3e"}
-            </Text>
+            {wordObj + " "}
+            {currentSurahByWords.lastWordsinAyah.includes(index) && (
+              <Text
+                style={{
+                  fontFamily: "UthmanRegular",
+                  letterSpacing: 5,
+                  color: "black",
+                }}
+                onPress={() => {
+                  setCurrentAyahInd(index);
+                  setJustChoseNewAyah(true);
+                }}
+              >
+                {"\ufd3f"}
+                {englishToArabicNumber(
+                  currentSurahByWords.lastWordsinAyah.indexOf(index) + 1
+                )}
+                {"\ufd3e"}
+              </Text>
+            )}
           </Text>
-        )}
-      </Text>
-    ),
-    [currentAyahInd]
+        );
+      } else if (
+        showJuzNameInsideSurah && currentSurahByWords.firstWordsinAyah.includes(index + 1) &&
+        currentJuzName !== ""
+      ) {
+        return (
+          <Text>
+            {wordObj + " "}
+            <View>
+              <View
+                style={[
+                  styles.fullWidth,
+                  {
+                    // backgroundColor: "#38a3a577",
+                    flexDirection: "column",
+                    padding: 3,
+                    borderRadius: 24,
+                  },
+                ]}
+              >
+                <Text
+                  style={{
+                    color: "#38a3a5",
+                    alignSelf: "stretch",
+                    textAlign: "center",
+                    // color: "white",
+                    fontSize: 20,
+                    fontFamily: "UthmanicHafs",
+                  }}
+                >
+                  {"("}
+                  {"بداية  " + currentJuzName}
+                  {")"}
+                </Text>
+              </View>
+            </View>
+          </Text>
+        );
+      }
+      return null; // Or whatever fallback you prefer if conditions aren't met
+    },
+    [currentAyahInd, currentSurahInd]
   );
 
   const flatListRef = useRef(null);
@@ -89,7 +154,6 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
         index: index,
         viewPosition: 0.5,
       });
-      setPause(false);
     } else {
       setTimeout(() => {
         try {
@@ -98,7 +162,6 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
             animated: true,
             viewPosition: 0.5,
           });
-          setPause(false);
         } catch {
           // Technically never happens
           Toast.show({
@@ -117,7 +180,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
         data={currentSurahByWords.words}
         ref={flatListRef}
         style={styles.containerStyle}
-        initialNumToRender={1000}
+        initialNumToRender={100}
         onEndReachedThreshold={0.5}
         maxToRenderPerBatch={300}
         contentContainerStyle={{
@@ -158,12 +221,14 @@ export default SurahText;
 
 const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
+  fullWidth: {
+    width: 0.85 * width,
+  },
   container: {
     flex: 1,
     marginBottom: 200,
   },
   containerStyle: {
-    flexGrow: 0,
     height: "76%",
     marginTop: 10,
     borderWidth: 2,
@@ -188,8 +253,10 @@ const styles = StyleSheet.create({
   ayahStyle: {
     color: "black",
     fontSize: 25,
-
     fontFamily: "NewmetRegular",
     letterSpacing: Platform.OS === "web" ? 0 : 10,
+    alignSelf: "flex-start",
+    // borderColor: "black",
+    // borderWidth: 1
   },
 });
