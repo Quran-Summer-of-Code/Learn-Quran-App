@@ -208,9 +208,11 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         ListHeaderComponent={() => (
-          <Text style={styles.basmalaStyle}>
-            بِسْمِ اللَّـهِ الرَّحْمَـٰنِ الرَّحِيمِ
-          </Text>
+          currentSurahInd !== 8 && (
+            <Text style={styles.basmalaStyle}>
+              بِسْمِ اللَّــهِ الرَّحْمَـٰنِ الرَّحِيمِ
+            </Text>
+          )
         )}
       />
     </View>
