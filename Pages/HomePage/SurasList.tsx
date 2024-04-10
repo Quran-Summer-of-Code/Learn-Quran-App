@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 // Components
@@ -11,7 +11,9 @@ import {
   SetCurrentSurahInd, 
   JustEnteredNewSurah,
   SetJustEnteredNewSurah,
+  SetInHomePage 
 } from "../../Redux/slices/app";
+
 
 interface Props {
   suras: any[];
@@ -34,6 +36,9 @@ const SurasList: React.FC<Props> = ({ suras }) => {
     wrapDispatch(SetJustEnteredNewSurah),
   ];
 
+  // Set in HomePage as false once the user navigates out
+  const  setInHomePage = wrapDispatch(SetInHomePage);
+
   return (
     <>
       <ScrollBarView styles={styles}>
@@ -47,6 +52,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
                   // to detect in audio player and go back to 1st Auya
                   setJustEnteredSurah(!justEnteredNewSurah);
                 }
+                setInHomePage(false)
                 setCurrentSurahInd(index);
                 navigation.navigate("SurahPage");
               }}

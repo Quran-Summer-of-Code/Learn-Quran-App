@@ -15,7 +15,7 @@ import EmptyPage from "./Pages/EmptyPage/EmptyPage";
 
 // Redux
 import { useSelector } from "react-redux";
-import { CurrentAyahInd } from "./Redux/slices/app";
+import { ScrolledFar, InHomePage } from "./Redux/slices/app";
 
 // for loading audio data initially
 import { prepareAudio } from "./helpers";
@@ -39,13 +39,12 @@ function Navigation() {
     prepareAudio(baseUrl, author, img_path, setAudioList);
   }, []);
 
-    // SurahHeader and StatusBar change if currentAyah > 10 (i.e., implies scrolled down)
-    const currentAyahInd = useSelector(CurrentAyahInd);
-    const fullScreen = (currentAyahInd < 10) ? false : true;
-
+    // SurahHeader and StatusBar change if scrolled down far and not in home
+    const scrolledFar = useSelector(ScrolledFar);
+    const inHomePage = useSelector(InHomePage);
   return (
     <>
-      <StatusBar style={(fullScreen) ? "dark" : "light"} />
+      <StatusBar style={(scrolledFar && !inHomePage) ? "dark" : "light"} />
       <NavigationContainer>
         <Drawer.Navigator
           useLegacyImplementation={false}
@@ -68,7 +67,7 @@ function Navigation() {
           <Drawer.Screen
             name="SurahPage"
             options={{
-              headerShown: currentAyahInd < 10 ? true : false,
+              headerShown: scrolledFar ? false : true,
               headerTitle: () => <></>,
               headerTitleAlign: "center",
             }}

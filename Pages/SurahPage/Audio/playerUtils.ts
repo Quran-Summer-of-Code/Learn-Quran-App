@@ -22,12 +22,7 @@ export const setupPlayer = async (audioList: any[]) => {
     catch (error) {
         // harmless error
         //@ts-ignore
-        if (typeof error === 'string' && !error.includes("already been initialized")) {
-            console.log(error)
-        }
-        else {
-            return error;
-        }
+        console.log(error)
     }
 };
 

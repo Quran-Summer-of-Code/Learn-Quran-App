@@ -20,14 +20,22 @@ import { AyahWord, JuzNameDisplay } from "./SurahTextElement";
 import juzInfo from "../../Quran/juzInfo";
 import surasByWords from "../../Quran/surasByWords";
 // State
-import { useSelector } from "react-redux";
-import { CurrentAyahInd, ShowJuzNameInsideSurah } from "../../Redux/slices/app";
+import { useSelector, useDispatch } from "react-redux";
+import { CurrentAyahInd, ShowJuzNameInsideSurah, ScrolledFar, SetScrolledFar } from "../../Redux/slices/app";
 
 interface SurahTextProps {
   currentSurahInd: number;
 }
 
 const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
+  const dispatch = useDispatch();
+  const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+  // to control scrolling status which will control showing/hiding Surah ehader
+  const [scrolledFar, setScrolledFar] = [
+    useSelector(ScrolledFar),
+    wrapDispatch(SetScrolledFar),
+  ];
+
   // load current surah and get current ayah index
   const currentSurahByWords = surasByWords[currentSurahInd];
   const currentAyahInd = useSelector(CurrentAyahInd);
@@ -92,6 +100,11 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
     }
   }, [currentAyahInd]);
 
+  // Reset scrolledFar when currentSurahInd changes
+  React.useEffect(() => {
+    setScrolledFar(false);
+  }, [currentSurahInd]);
+
   return (
     <View style={{ display: "flex", height: "100%" }} key={currentSurahInd}>
       <FlatList
@@ -100,14 +113,21 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
         style={[
           styles.containerStyle,
           {
-            marginTop: currentAyahInd >= 10 ? 30 : 10,
-            height: currentAyahInd >= 10 ? "74%" : "76%",
+            marginTop: scrolledFar ? 30 : 10,
+            height: scrolledFar ? "74%" : "76%",
           },
         ]}
         initialNumToRender={100}
         onEndReachedThreshold={0.5}
         maxToRenderPerBatch={300}
         contentContainerStyle={styles.contentContainerStyle}
+        onScroll={(event) => {
+          const isFar = (event.nativeEvent.contentOffset.y > 300)
+          if(scrolledFar !== isFar) {
+            setScrolledFar(isFar)
+          }
+        }}
+        scrollEventThrottle={16}
         onScrollToIndexFailed={(error) => {
           // @ts-ignore
           flatListRef?.current?.scrollToOffset({
