@@ -154,6 +154,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
             thumbTintColor="#38a3a5"
             minimumTrackTintColor="#38a3a5"
             maximumTrackTintColor="#717171"
+            inverted
             onSlidingComplete={async (value) => {
               await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, value))
               setPause(false)
@@ -162,10 +163,12 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
           />
           <View style={styles.progressLevelDuraiton}>
             <Text style={styles.progressLabelText}>
-              {englishToArabicNumber(parseInt(surasList[currentSurahInd].numAyas))}
+              {"الآية "}
+              {englishToArabicNumber(currentAyahInd + 1)}
             </Text>
             <Text style={styles.progressLabelText}>
-              {englishToArabicNumber(currentAyahInd + 1)}
+              {"الآية "}
+              {englishToArabicNumber(parseInt(surasList[currentSurahInd].numAyas))}
             </Text>
           </View>
         </View>

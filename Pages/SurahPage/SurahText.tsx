@@ -105,7 +105,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
                   color: "black",
                 }}
                 onPress={() => {
-                  setCurrentAyahInd(index);
+                  setCurrentAyahInd(currentSurahByWords.lastWordsinAyah.indexOf(index));
                   setJustChoseNewAyah(true);
                 }}
               >
