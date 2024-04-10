@@ -1,122 +1,55 @@
-import React, { useState, useRef, useCallback, useMemo, memo } from "react";
+import React, { useRef, useCallback } from "react";
 import {
   Text,
   Platform,
   StyleSheet,
   View,
+  FlatList,
   Dimensions,
   LogBox,
 } from "react-native";
-import {
-  SetCurrentAyahInd,
-  SetJustChoseNewAyah,
-  SetPause,
-  CurrentAyahInd,
-  ShowJuzNameInsideSurah,
-} from "../../Redux/slices/app";
-
-import { englishToArabicNumber, getGlobalAyahInd } from "../../helpers";
-import { useSelector, useDispatch } from "react-redux";
-import { isWithinRange, preprocessJuzData, getJuzName } from "../../helpers";
-import Toast from "react-native-toast-message";
-import SurahHeader from "./SurahHeader";
-
-import { FlatList } from "react-native";
-import surasByWords from "../../Quran/surasByWords";
-import juzInfo from "../../Quran/juzInfo";
-
 LogBox.ignoreLogs([
   "`flexWrap: `wrap`` is not supported with the `VirtualizedList` components.Consider using `numColumns` with `FlatList` instead.",
 ]);
-
-interface Ayah {
-  ayah: string;
-}
+// Helpers
+import { getGlobalAyahInd } from "../../helpers";
+import { preprocessJuzData, getJuzName } from "../../helpers";
+// Main Components
+import { AyahWord, JuzNameDisplay } from "./SurahTextElement";
+// Data
+import juzInfo from "../../Quran/juzInfo";
+import surasByWords from "../../Quran/surasByWords";
+// State
+import { useSelector } from "react-redux";
+import { CurrentAyahInd, ShowJuzNameInsideSurah } from "../../Redux/slices/app";
 
 interface SurahTextProps {
   currentSurahInd: number;
 }
 
 const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
-  const dispatch = useDispatch();
-  const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
-  const [currentAyahInd, setCurrentAyahInd] = [
-    useSelector(CurrentAyahInd),
-    wrapDispatch(SetCurrentAyahInd),
-  ];
-  const setPause = wrapDispatch(SetPause);
-  const setJustChoseNewAyah = wrapDispatch(SetJustChoseNewAyah);
+  // load current surah and get current ayah index
   const currentSurahByWords = surasByWords[currentSurahInd];
+  const currentAyahInd = useSelector(CurrentAyahInd);
+
+  // load juzData and whether the juzName can show among Surahs (e.g., after last Ayah in Juz)
   const juzData = preprocessJuzData(juzInfo);
   const showJuzNameInsideSurah = useSelector(ShowJuzNameInsideSurah);
 
-
   const renderItem = useCallback(
     ({ item: wordObj, index }: any) => {
-      // Assuming `juzData` and `currentSurahByWords` are accessible here
+      const ayahInd = currentSurahByWords.firstWordsinAyah.indexOf(index + 1);
+      const globalAyahInd = getGlobalAyahInd(currentSurahInd, ayahInd);
+      const currentJuzName = getJuzName(globalAyahInd, juzData);
 
-      const currentGlobalAyahInd = getGlobalAyahInd(
-        currentSurahInd,
-        currentAyahInd
-      );
-      let sajdaLocs = currentSurahByWords?.sajda
-      const secondSagda = (sajdaLocs && sajdaLocs.length > 1) ? sajdaLocs[1] : -1
-      const currentJuzName = getJuzName(
-        getGlobalAyahInd(
-          currentSurahInd,
-          currentSurahByWords.firstWordsinAyah.indexOf(index + 1)
-        ),
-        juzData
-      );
-
+      // The empty character signifies the start of the Ayah (not included: needed only in case we want to render Juz name)
       if (wordObj !== "‎") {
         return (
-          <Text
-            style={[
-              styles.ayahStyle,
-              isWithinRange(
-                index,
-                currentSurahByWords.ayahRanges[currentAyahInd]
-              )
-                ? { color: "#38a3a5" }
-                : {},
-            ]}
-          >
-            {wordObj + " "}
-            {currentSurahByWords.lastWordsinAyah.includes(index) &&
-              (sajdaLocs && (isWithinRange(index,  currentSurahByWords.ayahRanges[sajdaLocs[0]]))
-              || (secondSagda !==-1 && isWithinRange(index, currentSurahByWords.ayahRanges[secondSagda])))
-              && (
-                <Text
-                  style={{
-                    fontFamily: "NewmetRegular",
-                    letterSpacing: 5,
-                    color: "black",
-                  }}
-                >
-                  {"\u06e9"}
-                </Text>
-              )}
-            {currentSurahByWords.lastWordsinAyah.includes(index) && (
-              <Text
-                style={{
-                  fontFamily: "UthmanRegular",
-                  letterSpacing: 5,
-                  color: "black",
-                }}
-                onPress={() => {
-                  setCurrentAyahInd(currentSurahByWords.lastWordsinAyah.indexOf(index));
-                  setJustChoseNewAyah(true);
-                }}
-              >
-                {"\ufd3f"}
-                {englishToArabicNumber(
-                  currentSurahByWords.lastWordsinAyah.indexOf(index) + 1
-                )}
-                {"\ufd3e"}
-              </Text>
-            )}
-          </Text>
+          <AyahWord
+            wordObj={wordObj}
+            index={index}
+            currentSurahByWords={currentSurahByWords}
+          />
         );
       } else if (
         showJuzNameInsideSurah &&
@@ -124,70 +57,36 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
         currentJuzName !== ""
       ) {
         return (
-          <Text>
-            {wordObj + " "}
-            <View>
-              <View
-                style={[
-                  styles.fullWidth,
-                  {
-                    // backgroundColor: "#38a3a577", 
-                    flexDirection: "column",
-                    padding: 3,
-                    borderRadius: 24,
-                  },
-                ]}
-              >
-                <Text
-                  style={{
-                    color: "#38a3a5",
-                    alignSelf: "stretch",
-                    textAlign: "center",
-                    // color: "white",
-                    fontSize: 20,
-                    fontFamily: "UthmanicHafs",
-                  }}
-                >
-                  {"("}
-                  {"بداية  " + currentJuzName}
-                  {")"}
-                </Text>
-              </View>
-            </View>
-          </Text>
+          <JuzNameDisplay wordObj={wordObj} currentJuzName={currentJuzName} />
         );
       }
-      return null; // Or whatever fallback you prefer if conditions aren't met
+      return null;
     },
     [currentAyahInd, currentSurahInd]
   );
 
   const flatListRef = useRef(null);
+  const scrollToIndex = (index: number) => {
+    //@ts-ignore
+    flatListRef?.current?.scrollToIndex({
+      animated: true,
+      index: index,
+      viewPosition: 0.5,
+    });
+  }
 
-  // when ayah changes
+  // Scroll to Ayah whenever it changes
   React.useEffect(() => {
     let index = currentSurahByWords.lastWordsinAyah[currentAyahInd];
     if (index < currentSurahByWords.words) {
-      flatListRef?.current?.scrollToIndex({
-        animated: true,
-        index: index,
-        viewPosition: 0.5,
-      });
+      scrollToIndex(index);
     } else {
       setTimeout(() => {
         try {
-          flatListRef?.current?.scrollToIndex({
-            index: index,
-            animated: true,
-            viewPosition: 0.5,
-          });
+          scrollToIndex(index);
         } catch {
           // Technically never happens
-          Toast.show({
-            type: "info",
-            text1: "إنها لقفزةٌ عملاقة",
-            text2: "حاول مجدداً بعد تقليصها",
-          });
+          return "error";
         }
       }, 300);
     }
@@ -198,18 +97,17 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
       <FlatList
         data={currentSurahByWords.words}
         ref={flatListRef}
-        style={[styles.containerStyle, {marginTop:(currentAyahInd > 10)? 30 : 10, height: (currentAyahInd > 10)?'74%':'76%'}]}
+        style={[
+          styles.containerStyle,
+          {
+            marginTop: currentAyahInd >= 10 ? 30 : 10,
+            height: currentAyahInd >= 10 ? "74%" : "76%",
+          },
+        ]}
         initialNumToRender={100}
         onEndReachedThreshold={0.5}
         maxToRenderPerBatch={300}
-        contentContainerStyle={[{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "space-around",
-          marginLeft: 10,
-          marginRight: 10,
-          paddingLeft: 5
-        }]}
+        contentContainerStyle={styles.contentContainerStyle}
         onScrollToIndexFailed={(error) => {
           // @ts-ignore
           flatListRef?.current?.scrollToOffset({
@@ -218,11 +116,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
           });
           setTimeout(() => {
             // @ts-ignore
-            flatListRef?.current?.scrollToIndex({
-              index: error.index,
-              animated: true,
-              viewPosition: 0.5,
-            });
+            scrollToIndex(error.index);
           }, 300);
         }}
         renderItem={renderItem}
@@ -246,17 +140,21 @@ const styles = StyleSheet.create({
   fullWidth: {
     width: 0.85 * width,
   },
-  container: {
-    flex: 1,
-    marginBottom: 200,
-  },
   containerStyle: {
     borderWidth: 2,
     borderColor: "#38a3a544",
     borderRadius: 30,
     marginHorizontal: 12,
     paddingBottom: 50,
-    flexGrow: 0
+    flexGrow: 0,
+  },
+  contentContainerStyle: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    marginLeft: 10,
+    marginRight: 10,
+    paddingLeft: 5,
   },
   suraStyle: {
     textAlign: "justify",
@@ -270,14 +168,5 @@ const styles = StyleSheet.create({
     fontFamily: "NewmetRegular",
     color: "#38a3a5",
     width: width,
-  },
-  ayahStyle: {
-    color: "black",
-    fontSize: 25,
-    fontFamily: "NewmetRegular",
-    letterSpacing: Platform.OS === "web" ? 0 : 10,
-    alignSelf: "flex-start",
-    // borderColor: "black",
-    // borderWidth: 1
   },
 });

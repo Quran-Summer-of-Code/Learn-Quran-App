@@ -9,8 +9,6 @@ import { RootSiblingParent } from "react-native-root-siblings";
 import { useFonts } from "expo-font";
 import { fonts } from "./fonts";
 
-// Status bar
-import { StatusBar } from "expo-status-bar";
 
 // Main app
 import Navigation from "./Navigation";
@@ -24,7 +22,6 @@ const AppWrapper = () => {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <RootSiblingParent>
-          <StatusBar style="light" />
           <Navigation />
           <Toast />
         </RootSiblingParent>

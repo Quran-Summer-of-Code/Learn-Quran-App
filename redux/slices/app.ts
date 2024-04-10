@@ -11,13 +11,13 @@ interface AppState {
 }
 
 const initialState: AppState = {
-  homeMode: false,
-  currentSurahInd: 0,
-  currentAyahInd: 0,
-  justEnteredNewSurah: false,
-  justChoseNewAyah: false,
-  pause: true,
-  showJuzNameInsideSurah: false,
+  homeMode: false,                // are we in the home page?
+  currentSurahInd: 0,             // the index of the current surah (i.e., 0-113)
+  currentAyahInd: 0,              // the index of the current ayah (i.e., 0-6234)
+  justEnteredNewSurah: false,     // has the user just entered a new surah? (e.g., reset Ayah and make audio in sync)
+  justChoseNewAyah: false,        // has the user just pressed a new ayah? (e.g., make audio in sync)
+  pause: true,                    // is the audio paused?
+  showJuzNameInsideSurah: false,  // show juz name inside surah?
 };
 
 const appSlice = createSlice({
@@ -33,9 +33,6 @@ const appSlice = createSlice({
     SetCurrentAyahInd(state, action: PayloadAction<number>) {
       state.currentAyahInd = action.payload;
     },
-    SetAudioList(state, action: PayloadAction<any[]>) {
-      state.audioList = action.payload;
-    },
     SetJustEnteredNewSurah(state, action: PayloadAction<boolean>) {
       state.justEnteredNewSurah = action.payload;
     },
@@ -44,9 +41,6 @@ const appSlice = createSlice({
     },
     SetPause(state, action: PayloadAction<boolean>) {
       state.pause = action.payload;
-    },
-    SetOptimizedText(state, action: PayloadAction<boolean>) {
-      state.optimizedText = action.payload;
     },
     SetShowJuzNameInsideSurah(state, action: PayloadAction<boolean>) {
       state.showJuzNameInsideSurah = action.payload;

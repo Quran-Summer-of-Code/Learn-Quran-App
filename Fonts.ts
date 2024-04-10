@@ -11,5 +11,5 @@ export const fonts = {
     SurasA: require("./assets/fonts/SurasA.ttf"),
     SurasB: require("./assets/fonts/SurasB.ttf"),
     SurasC: require("./assets/fonts/SurasC.ttf"),
-    SurasD: require("./assets/fonts/SurasD.ttf"),
+    SurasD: require("./assets/fonts/SurasD.otf"),
   }

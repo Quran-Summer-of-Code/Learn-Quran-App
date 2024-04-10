@@ -1,4 +1,5 @@
 // @ts-nocheck (this is an NPM package that needed to be fixed)
+// It's a scrollbar that looks fancier and accept colors
 import React, { useState, useEffect, useRef } from "react";
 import { Platform } from "react-native";
 import { ScrollView, View, StyleSheet, Animated } from "react-native";

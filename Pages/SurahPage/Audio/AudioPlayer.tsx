@@ -148,9 +148,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
         <View>
           <Slider
             style={styles.progressBar}
-            value={(getLocalAyahInd(currentAyahInd) )}
+            value={(currentAyahInd)}
+            onValueChange={(value) => console.log(value)}
             minimumValue={0}
-            maximumValue={parseInt(surasList[currentSurahInd].numAyas)}
+            maximumValue={parseInt(surasList[currentSurahInd].numAyas)-1}
             thumbTintColor="#38a3a5"
             minimumTrackTintColor="#38a3a5"
             maximumTrackTintColor="#717171"
@@ -175,7 +176,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
         <View style={styles.audioControlsContainer}>
           <TouchableOpacity
             onPress={() =>
-              nextTrack(audioCount, currentSurahInd, setCurrentSurahInd)
+              previousTrack(audioCount, currentSurahInd, setCurrentSurahInd)
             }
           >
             <Ionicons
@@ -203,7 +204,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
-              previousTrack(
+              nextTrack(
                 audioCount,
                 currentSurahInd,
                 setCurrentSurahInd,

@@ -1,11 +1,12 @@
 import * as React from "react";
 import { Platform } from "react-native";
-import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import SurasList from "./SurasList"; // Assuming the component file is in the same directory
-import  surasList  from "../../Quran/surasList.json";
-import { Ionicons } from "@expo/vector-icons";
+//Main Components
 import  HomeHeader  from "./HomeHeader";
+import SurasList from "./SurasList"; // Assuming the component file is in the same directory
+// Data
+import  surasList  from "../../Quran/surasList.json";
 
 const HomePage = () => {
     const navigation = useNavigation();

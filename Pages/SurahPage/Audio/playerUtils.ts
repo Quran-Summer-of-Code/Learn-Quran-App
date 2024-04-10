@@ -26,7 +26,7 @@ export const setupPlayer = async (audioList: any[]) => {
             console.log(error)
         }
         else {
-            console.log("")
+            return error;
         }
     }
 };
