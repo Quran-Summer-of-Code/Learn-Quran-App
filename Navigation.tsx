@@ -12,7 +12,8 @@ import SurahPage from "./Pages/SurahPage/SurahPage";
 import EmptyPage from "./Pages/EmptyPage/EmptyPage";
 
 // Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { CurrentAyahInd } from "./Redux/slices/app";
 
 // Suras
 import surasList from "./Quran/surasList.json";
@@ -27,6 +28,7 @@ const Drawer = createDrawerNavigator();
 
 function Navigation() {
   const dispatch = useDispatch();
+  const currentAyahInd = useSelector(CurrentAyahInd);
   const [audioList, setAudioList] = useState([
     {
       title: "جاري التحميل",
@@ -90,11 +92,10 @@ function Navigation() {
           }}
           component={HomePage}
         />
-        
         <Drawer.Screen
           name="SurahPage"
           options={{
-            headerShown: true,
+            headerShown: (currentAyahInd < 10)? true : false,
             headerTitle: () => <></>,
             headerTitleAlign: "center",
           }}

@@ -19,6 +19,7 @@ import { englishToArabicNumber, getGlobalAyahInd } from "../../helpers";
 import { useSelector, useDispatch } from "react-redux";
 import { isWithinRange, preprocessJuzData, getJuzName } from "../../helpers";
 import Toast from "react-native-toast-message";
+import SurahHeader from "./SurahHeader";
 
 import { FlatList } from "react-native";
 import surasByWords from "../../Quran/surasByWords";
@@ -48,6 +49,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
   const currentSurahByWords = surasByWords[currentSurahInd];
   const juzData = preprocessJuzData(juzInfo);
   const showJuzNameInsideSurah = useSelector(ShowJuzNameInsideSurah);
+
 
   const renderItem = useCallback(
     ({ item: wordObj, index }: any) => {
@@ -196,17 +198,18 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
       <FlatList
         data={currentSurahByWords.words}
         ref={flatListRef}
-        style={styles.containerStyle}
+        style={[styles.containerStyle, {marginTop:(currentAyahInd > 10)? 30 : 10, height: (currentAyahInd > 10)?'74%':'76%'}]}
         initialNumToRender={100}
         onEndReachedThreshold={0.5}
         maxToRenderPerBatch={300}
-        contentContainerStyle={{
+        contentContainerStyle={[{
           flexDirection: "row",
           flexWrap: "wrap",
           justifyContent: "space-around",
-          marginLeft: 15,
-          marginRight: 5,
-        }}
+          marginLeft: 10,
+          marginRight: 10,
+          paddingLeft: 5
+        }]}
         onScrollToIndexFailed={(error) => {
           // @ts-ignore
           flatListRef?.current?.scrollToOffset({
@@ -248,13 +251,12 @@ const styles = StyleSheet.create({
     marginBottom: 200,
   },
   containerStyle: {
-    height: "76%",
-    marginTop: 10,
     borderWidth: 2,
     borderColor: "#38a3a544",
     borderRadius: 30,
     marginHorizontal: 12,
     paddingBottom: 50,
+    flexGrow: 0
   },
   suraStyle: {
     textAlign: "justify",
