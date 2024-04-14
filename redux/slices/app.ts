@@ -23,7 +23,7 @@ const initialState: AppState = {
   showJuzNameInsideSurah: false,  // show juz name inside surah?
   scrolledFar: false,             // has the user scrolled far enough to hide the Surah Header
   juzMode: false,                 // should homepage be viewed by Juz or by Surah
-  tafsirMode: true,               // should Surah view full Surah or per-Ayah tafsir
+  tafsirMode: false,               // should Surah view full Surah or per-Ayah tafsir
 };
 
 const appSlice = createSlice({

@@ -1,11 +1,21 @@
-import { View, StyleSheet, Text, TextInput, Platform } from "react-native";
+import {  Text, Platform } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+//Main Components
 import HomePage from "./HomePage";
 import EmptyPage from "../EmptyPage/EmptyPage";
+//State
+import { useSelector, useDispatch } from "react-redux";
+import { SetTafsirMode } from "../../Redux/slices/app";
 
 const Tab = createBottomTabNavigator();
 
+  // A component for the bottom tab navigation bar
+
 const HomePageWrapper = () => {
+  const dispatch = useDispatch();
+  const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+
+
   return (
     <Tab.Navigator screenOptions={tabStyles}>
       <Tab.Screen
@@ -24,6 +34,11 @@ const HomePageWrapper = () => {
           headerRight: () => <></>,
         }}
         component={HomePage}
+        listeners={({ navigation, route }) => ({
+          tabPress: e => {
+               dispatch(SetTafsirMode(false))
+          },
+        })}
       />
       <Tab.Screen
         name="التفسير"
@@ -41,6 +56,11 @@ const HomePageWrapper = () => {
           headerRight: () => <></>,
         }}
         component={HomePage}
+        listeners={({ navigation, route }) => ({
+          tabPress: e => {
+               dispatch(SetTafsirMode(true))
+          },
+        })}
       />
       <Tab.Screen
         name="الحافظة"
