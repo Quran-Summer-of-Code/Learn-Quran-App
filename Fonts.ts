@@ -12,4 +12,9 @@ export const fonts = {
     SurasB: require("./assets/fonts/SurasB.ttf"),
     SurasC: require("./assets/fonts/SurasC.ttf"),
     SurasD: require("./assets/fonts/SurasD.otf"),
+    Emara: require("./assets/fonts/Emara.ttf"),
+    Camel: require("./assets/fonts/Camel.otf"),
+    Amiri: require("./assets/fonts/Amiri.ttf"),
+    Khatim: require("./assets/fonts/Khatim.ttf"),
+    Tabs: require("./assets/fonts/Tabs.ttf")
   }

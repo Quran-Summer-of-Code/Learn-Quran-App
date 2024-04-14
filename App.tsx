@@ -14,8 +14,16 @@ import { fonts } from "./fonts";
 import Navigation from "./Navigation";
 import Toast from 'react-native-toast-message';
 
+// RTL
+import { I18nManager } from "react-native";
+
+
 
 const AppWrapper = () => {
+  // RTL
+  I18nManager.allowRTL(true);
+  I18nManager.forceRTL(true);
+  // Load fonts
   const [fontsLoaded] = useFonts(fonts);
   if (!fontsLoaded) return null;
   return (
