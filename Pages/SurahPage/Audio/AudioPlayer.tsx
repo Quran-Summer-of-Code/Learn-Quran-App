@@ -152,8 +152,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
             onValueChange={(value) => console.log(value)}
             minimumValue={0}
             maximumValue={parseInt(surasList[currentSurahInd].numAyas)-1}
-            thumbTintColor="#38a3a5"
-            minimumTrackTintColor="#38a3a5"
+            thumbTintColor="#009193"
+            minimumTrackTintColor="#009193"
             maximumTrackTintColor="#717171"
             inverted
             onSlidingComplete={async (value) => {
@@ -182,7 +182,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
             <Ionicons
               name="play-skip-forward-outline"
               size={35}
-              color="#38a3a5"
+              color="#009193"
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -191,13 +191,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
             {(playBackState.state === State.Loading ||
             playBackState.state === State.Buffering) && !(currentAyahInd > 0) ? (
               <View style={{ paddingTop: 20 }}>
-                <ActivityIndicator size="large" color={"#38a3a5"} />
+                <ActivityIndicator size="large" color={"#009193"} />
               </View>
             ) : (
               <Ionicons
               name={(!pause) ? "pause" : "play"}
               size={65}
-              color="#38a3a5"
+              color="#009193"
               onPress={() => {setPause(!pause);}}
             />
             )}
@@ -211,7 +211,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
               )
             }
           >
-            <Ionicons name="play-skip-back-outline" size={35} color="#38a3a5" />
+            <Ionicons name="play-skip-back-outline" size={35} color="#009193" />
           </TouchableOpacity>
         </View>
       </View>
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f1f1f1",
-    borderColor: "#38a3a5ff",
+    borderColor: "#009193ff",
     borderTopWidth: 2,
     borderRightWidth: 2,
     borderLeftWidth: 2,
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   progressLabelText: {
-    color: "#38a3a5",
+    color: "#009193",
   },
   audioControlsContainer: {
     flexDirection: "row",

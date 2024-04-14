@@ -34,7 +34,7 @@ export const AyahWord: React.FC<{
       style={[
         styles.ayahWordStyle,
         isWordInAyah(index, currentAyahInd, currentSurahByWords)
-          ? { color: "#38a3a5" }
+          ? { color: "#009193" }
           : {},
       ]}
     >
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   juzNameStyle: {
-    color: "#38a3a5",
+    color: "#009193",
     alignSelf: "stretch",
     textAlign: "center",
     fontSize: 20,

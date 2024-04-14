@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     borderWidth: 2,
-    borderColor: "#38a3a544",
+    borderColor: "#00919344",
     borderRadius: 30,
     marginHorizontal: 12,
     paddingBottom: 50,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     padding: 5,
     textAlign: "center",
     fontFamily: "NewmetRegular",
-    color: "#38a3a5",
+    color: "#009193",
     width: width,
   },
 });
