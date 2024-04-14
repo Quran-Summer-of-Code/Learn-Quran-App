@@ -9,6 +9,8 @@ interface AppState {
   pause: boolean;
   showJuzNameInsideSurah: boolean;
   scrolledFar: boolean;
+  juzMode: boolean;
+  tafsirMode: boolean;
 }
 
 const initialState: AppState = {
@@ -19,7 +21,9 @@ const initialState: AppState = {
   justChoseNewAyah: false,        // has the user just pressed a new ayah? (e.g., make audio in sync)
   pause: true,                    // is the audio paused?
   showJuzNameInsideSurah: false,  // show juz name inside surah?
-  scrolledFar: false,              // has the user scrolled far enough to hide the Surah Header
+  scrolledFar: false,             // has the user scrolled far enough to hide the Surah Header
+  juzMode: false,                 // should homepage be viewed by Juz or by Surah
+  tafsirMode: true,               // should Surah view full Surah or per-Ayah tafsir
 };
 
 const appSlice = createSlice({
@@ -49,6 +53,12 @@ const appSlice = createSlice({
     },
     SetScrolledFar(state, action: PayloadAction<boolean>) {
       state.scrolledFar = action.payload;
+    },
+    SetJuzMode(state, action: PayloadAction<boolean>) {
+      state.juzMode = action.payload;
+    },
+    SetTafsirMode(state, action: PayloadAction<boolean>) {
+      state.tafsirMode = action.payload;
     }
   },
 });
@@ -61,7 +71,9 @@ export const {
   SetJustChoseNewAyah,
   SetPause,
   SetShowJuzNameInsideSurah,
-  SetScrolledFar
+  SetScrolledFar,
+  SetJuzMode,
+  SetTafsirMode
 } = appSlice.actions;
 
 export const InHomePage = (state:any) => state.store.inHomePage;
@@ -72,4 +84,7 @@ export const JustChoseNewAyah = (state:any) => state.store.justChoseNewAyah;
 export const Pause = (state:any) => state.store.pause;
 export const ShowJuzNameInsideSurah = (state:any) => state.store.showJuzNameInsideSurah;
 export const ScrolledFar = (state:any) => state.store.scrolledFar;
+export const JuzMode = (state:any) => state.store.juzMode;
+export const TafsirMode = (state:any) => state.store.tafsirMode;
+
 export default appSlice.reducer;
