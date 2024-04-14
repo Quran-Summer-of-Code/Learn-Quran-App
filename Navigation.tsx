@@ -9,7 +9,7 @@ import NavigationDrawer from "./NavigationDrawer";
 import { StatusBar } from "expo-status-bar";
 
 // Pages
-import HomePage from "./Pages/HomePage/HomePage";
+import HomePageWrapper from "./Pages/HomePage/HomePageWrapper";
 import SurahPage from "./Pages/SurahPage/SurahPage";
 import EmptyPage from "./Pages/EmptyPage/EmptyPage";
 
@@ -56,13 +56,13 @@ function Navigation() {
           <Drawer.Screen
             name="HomePage"
             options={{
-              headerShown: true,
+              headerShown: false,
               // The header is set at the page itself (here a nothing initialization)
               headerTitle: () => <></>,
               headerLeft: () => <></>,
               headerRight: () => <></>,
             }}
-            component={HomePage}
+            component={HomePageWrapper}
           />
           <Drawer.Screen
             name="SurahPage"
