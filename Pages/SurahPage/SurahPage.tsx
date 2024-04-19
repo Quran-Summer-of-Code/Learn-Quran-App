@@ -3,7 +3,6 @@ import { Platform } from "react-native";
 import { I18nManager } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 // Main Components
-import ScrollBarView from "../Components/ScrollBar";
 import SurahHeader from "./SurahHeader";
 import SurahText from "./SurahText";
 import AudioPlayer from "./Audio/AudioPlayer";
