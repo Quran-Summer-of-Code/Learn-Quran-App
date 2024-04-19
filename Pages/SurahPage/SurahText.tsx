@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useEffect, useState } from "react";
 import {
   Text,
   Platform,
@@ -21,13 +21,27 @@ import juzInfo from "../../Quran/juzInfo";
 import surasByWords from "../../Quran/surasByWords";
 // State
 import { useSelector, useDispatch } from "react-redux";
-import { CurrentAyahInd, ShowJuzNameInsideSurah, ScrolledFar, SetScrolledFar } from "../../Redux/slices/app";
+import {
+  CurrentAyahInd,
+  ShowJuzNameInsideSurah,
+  ScrolledFar,
+  SetScrolledFar,
+
+  PlayBackChanged,
+  SetPlayBackChanged
+} from "../../Redux/slices/app";
+
+
+import { useNavigation } from "@react-navigation/native";
+
 
 interface SurahTextProps {
   currentSurahInd: number;
+  startWordIndForJuz: number;
+  endWordIndForJuz: number;
 }
 
-const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
+const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJuz, endWordIndForJuz}) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
   // to control scrolling status which will control showing/hiding Surah ehader
@@ -36,8 +50,22 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
     wrapDispatch(SetScrolledFar),
   ];
 
+
+
+  const navigation = useNavigation<any>();
+
   // load current surah and get current ayah index
-  const currentSurahByWords = surasByWords[currentSurahInd];
+  let currentSurahByWords = surasByWords[currentSurahInd];
+  let currentSurahByWordsWords = surasByWords[currentSurahInd].words.slice(
+    startWordIndForJuz,
+    endWordIndForJuz + 1
+  );
+
+
+  const flatListRef = useRef(null);
+
+
+
   const currentAyahInd = useSelector(CurrentAyahInd);
 
   // load juzData and whether the juzName can show among Surahs (e.g., after last Ayah in Juz)
@@ -46,7 +74,9 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
 
   const renderItem = useCallback(
     ({ item: wordObj, index }: any) => {
-      const ayahInd = currentSurahByWords.firstWordsinAyah.indexOf(index + 1);
+      const ayahInd = currentSurahByWords.firstWordsinAyah.indexOf(
+        index + startWordIndForJuz + 1
+      );
       const globalAyahInd = getGlobalAyahInd(currentSurahInd, ayahInd);
       const currentJuzName = getJuzName(globalAyahInd, juzData);
 
@@ -55,13 +85,15 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
         return (
           <AyahWord
             wordObj={wordObj}
-            index={index}
+            index={index + startWordIndForJuz}
             currentSurahByWords={currentSurahByWords}
           />
         );
       } else if (
         showJuzNameInsideSurah &&
-        currentSurahByWords.firstWordsinAyah.includes(index + 1) &&
+        currentSurahByWords.firstWordsinAyah.includes(
+          index + 1 + startWordIndForJuz
+        ) &&
         currentJuzName !== ""
       ) {
         return (
@@ -70,10 +102,9 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
       }
       return null;
     },
-    [currentAyahInd, currentSurahInd]
+    [currentAyahInd, currentSurahInd, startWordIndForJuz]
   );
 
-  const flatListRef = useRef(null);
   const scrollToIndex = (index: number) => {
     //@ts-ignore
     flatListRef?.current?.scrollToIndex({
@@ -81,34 +112,35 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
       index: index,
       viewPosition: 0.5,
     });
-  }
+  };
 
   // Scroll to Ayah whenever it changes
   React.useEffect(() => {
-    let index = currentSurahByWords.lastWordsinAyah[currentAyahInd];
-    if (index < currentSurahByWords.words) {
-      scrollToIndex(index);
-    } else {
+    let index =
+      currentSurahByWords.lastWordsinAyah[currentAyahInd] - startWordIndForJuz;
       setTimeout(() => {
         try {
           scrollToIndex(index);
         } catch {
-          // Technically never happens
           return "error";
         }
       }, 300);
-    }
-  }, [currentAyahInd]);
+  }, [currentAyahInd, startWordIndForJuz]);
 
   // Reset scrolledFar when currentSurahInd changes
   React.useEffect(() => {
     setScrolledFar(false);
   }, [currentSurahInd]);
 
+
+
   return (
-    <View style={{ display: "flex", height: "100%" }} key={currentSurahInd}>
+    <View
+      style={{ display: "flex", height: "100%" }}
+      key={currentSurahInd}
+    >
       <FlatList
-        data={currentSurahByWords.words}
+        data={currentSurahByWordsWords}
         ref={flatListRef}
         style={[
           styles.containerStyle,
@@ -122,22 +154,23 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd }) => {
         maxToRenderPerBatch={300}
         contentContainerStyle={styles.contentContainerStyle}
         onScroll={(event) => {
-          const isFar = (event.nativeEvent.contentOffset.y > 300)
-          if(scrolledFar !== isFar) {
-            setScrolledFar(isFar)
+          const isFar = event.nativeEvent.contentOffset.y > 300;
+          if (scrolledFar !== isFar) {
+            setScrolledFar(isFar);
           }
         }}
         scrollEventThrottle={16}
         onScrollToIndexFailed={(error) => {
           // @ts-ignore
-          flatListRef?.current?.scrollToOffset({
-            offset: error.averageItemLength * error.index,
-            animated: true,
-          });
-          setTimeout(() => {
-            // @ts-ignore
-            scrollToIndex(error.index);
-          }, 300);
+          // flatListRef?.current?.scrollToOffset({
+          //   offset: error.averageItemLength * error.index,
+          //   animated: true,
+          // });
+          // console.log("1")
+          // setTimeout(() => {
+          //   // @ts-ignore
+          //   scrollToIndex(error.index);
+          // }, 300);
         }}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}

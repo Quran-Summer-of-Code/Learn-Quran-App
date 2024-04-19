@@ -9,6 +9,7 @@ import HomeHeader from "./HomeHeader";
 import SurasList from "./SurasList"; // Assuming the component file is in the same directory
 // Data
 import surasList from "../../Quran/surasList.json";
+import SurasJuzList from "./SurasJuzList";
 // State
 import { useDispatch, useSelector } from "react-redux";
 import { SetInHomePage } from "../../Redux/slices/app";
@@ -58,36 +59,6 @@ const HomePage = () => {
       >
         {/* Logo */}
         <Text style={styles.logo}>{tafsirMode ? "I" : "A"}</Text>
-        {/* search container */}
-        <View style={styles.searchContainer}>
-          <View
-            style={styles.searchIconContainer}
-          >
-            <Text
-              style={{ fontFamily: "Khatim", color: "white", fontSize: 20 }}
-            >
-              {"\ue906"}
-            </Text>
-          </View>
-          <TextInput
-            placeholder={"البحث باسم السورة او الجزء"}
-            placeholderTextColor="#FFF"
-            style={[
-              // @ts-ignore
-              {
-                backgroundColor: colorize(0.15, "#009193"),
-                paddingVertical: 10,
-                paddingHorizontal: 13,
-                fontFamily: "UthmanRegular",
-                marginTop: 13,
-                borderRadius: 60,
-                width: "90%",
-                fontSize: 18,
-                color: "white",
-              },
-            ]}
-          />
-        </View>
         {/* tabs container */}
         <View
           style={styles.tabContainer}
@@ -108,7 +79,7 @@ const HomePage = () => {
         </View>
       </View>
       {/* Suras list */}
-      <SurasList suras={surasList} />
+      {(!juzMode)?<SurasList suras={surasList} />:<SurasJuzList suras={surasList} />}
     </View>
   );
 };

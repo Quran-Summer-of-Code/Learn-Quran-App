@@ -5,12 +5,16 @@ interface AppState {
   currentSurahInd: number;
   currentAyahInd: number;
   justEnteredNewSurah: boolean;
+  justEnteredNewSurahJuz: boolean;
   justChoseNewAyah: boolean;
   pause: boolean;
   showJuzNameInsideSurah: boolean;
   scrolledFar: boolean;
   juzMode: boolean;
   tafsirMode: boolean;
+  currentJuzInd: number;
+  juzCollapse: boolean[];
+  playBackChanged: boolean;
 }
 
 const initialState: AppState = {
@@ -18,12 +22,16 @@ const initialState: AppState = {
   currentSurahInd: 0,             // the index of the current surah (i.e., 0-113)
   currentAyahInd: 0,              // the index of the current ayah (i.e., 0-6234)
   justEnteredNewSurah: false,     // has the user just entered a new surah? (e.g., reset Ayah and make audio in sync)
+  justEnteredNewSurahJuz: false,  // has the user just entered a new juz subset (e.g., part of Surah)
   justChoseNewAyah: false,        // has the user just pressed a new ayah? (e.g., make audio in sync)
   pause: true,                    // is the audio paused?
   showJuzNameInsideSurah: false,  // show juz name inside surah?
   scrolledFar: false,             // has the user scrolled far enough to hide the Surah Header
   juzMode: false,                 // should homepage be viewed by Juz or by Surah
   tafsirMode: false,               // should Surah view full Surah or per-Ayah tafsir
+  currentJuzInd: 0,                  // the current juz (i.e., 0-29)
+  juzCollapse: Array(30).fill(false), // whether each juz list item is collapsed
+  playBackChanged: false,          // has the user changed the playback speed?
 };
 
 const appSlice = createSlice({
@@ -42,6 +50,9 @@ const appSlice = createSlice({
     SetJustEnteredNewSurah(state, action: PayloadAction<boolean>) {
       state.justEnteredNewSurah = action.payload;
     },
+    SetJustEnteredNewSurahJuz(state, action: PayloadAction<boolean>) {
+      state.justEnteredNewSurahJuz = action.payload;
+    },
     SetJustChoseNewAyah(state, action: PayloadAction<boolean>) {
       state.justChoseNewAyah = action.payload;
     },
@@ -59,6 +70,15 @@ const appSlice = createSlice({
     },
     SetTafsirMode(state, action: PayloadAction<boolean>) {
       state.tafsirMode = action.payload;
+    },
+    SetCurrentJuzInd(state, action: PayloadAction<number>) {
+      state.currentJuzInd = action.payload;
+    },
+    SetJuzCollapse(state, action: PayloadAction<boolean[]>) {
+      state.juzCollapse = action.payload;
+    },
+    SetPlayBackChanged(state, action: PayloadAction<boolean>) {
+      state.playBackChanged = action.payload;
     }
   },
 });
@@ -68,23 +88,31 @@ export const {
   SetCurrentSurahInd,
   SetCurrentAyahInd,
   SetJustEnteredNewSurah,
+  SetJustEnteredNewSurahJuz,
   SetJustChoseNewAyah,
   SetPause,
   SetShowJuzNameInsideSurah,
   SetScrolledFar,
   SetJuzMode,
-  SetTafsirMode
+  SetTafsirMode,
+  SetCurrentJuzInd,
+  SetJuzCollapse,
+  SetPlayBackChanged
 } = appSlice.actions;
 
 export const InHomePage = (state:any) => state.store.inHomePage;
 export const CurrentSurahInd = (state:any) => state.store.currentSurahInd;
 export const CurrentAyahInd = (state:any) => state.store.currentAyahInd;
 export const JustEnteredNewSurah = (state:any) => state.store.justEnteredNewSurah;
+export const JustEnteredNewSurahJuz = (state:any) => state.store.justEnteredNewSurahJuz;
 export const JustChoseNewAyah = (state:any) => state.store.justChoseNewAyah;
 export const Pause = (state:any) => state.store.pause;
 export const ShowJuzNameInsideSurah = (state:any) => state.store.showJuzNameInsideSurah;
 export const ScrolledFar = (state:any) => state.store.scrolledFar;
 export const JuzMode = (state:any) => state.store.juzMode;
 export const TafsirMode = (state:any) => state.store.tafsirMode;
+export const CurrentJuzInd = (state:any) => state.store.currentJuzInd;
+export const JuzCollapse = (state:any) => state.store.juzCollapse;
+export const PlayBackChanged = (state:any) => state.store.playBackChanged;
 
 export default appSlice.reducer;

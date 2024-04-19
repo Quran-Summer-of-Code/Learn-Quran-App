@@ -30,22 +30,33 @@ import {
   CurrentSurahInd,
   JustChoseNewAyah,
   JustEnteredNewSurah,
+  JustEnteredNewSurahJuz,
   Pause,
   SetCurrentAyahInd,
   SetCurrentSurahInd,
   SetJustChoseNewAyah,
+  SetCurrentJuzInd,
   SetPause,
+  JuzMode,
+  CurrentJuzInd,
+  PlayBackChanged,
+  SetPlayBackChanged
 } from "../../../Redux/slices/app";
-
 // surasList
 import surasList from "../../../Quran/surasList.json";
+import juzInfo from "../../../Quran/juzInfo.json";
+//state 
 import {
   getSurahIndGivenAyah,
   getLocalAyahInd,
   getGlobalAyahInd,
+  findJuzSurahAyahIndex
 } from "../../../helpers";
 
 import { englishToArabicNumber } from "../../../helpers";
+
+import { useNavigation } from "@react-navigation/native";
+
 
 interface AudioPlayerProps {
   audioList: any;
@@ -62,26 +73,76 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
     wrapDispatch(SetJustChoseNewAyah),
   ]
   const justEnteredNewSurah = useSelector(JustEnteredNewSurah);
+  const justEnteredNewSurahJuz = useSelector(JustEnteredNewSurahJuz);
+  const juzMode = useSelector(JuzMode);
+  const currentJuzInd = useSelector(CurrentJuzInd);
+  const setCurrentJuzInd = wrapDispatch(SetCurrentJuzInd);
 
-  const audioCount = 114; 
+  const surasCount = 114; 
+  const juzSuras = 135;
   const [trackMD, setTrackMD] = useState<any>(audioList[currentSurahInd]);
   const playBackState = usePlaybackState();
 
   const progress = useProgress();
 
+  const [startAyahIndForJuz, setStartAyahIndForJuz] = React.useState(0);
+  const [endAyahIndForJuz, setEndAyahIndForJuz] = React.useState(parseInt(surasList[currentSurahInd].numAyas)-1)
+
+  const navigation = useNavigation<any>();
+
+
   useEffect(() => {
     const initializePlayer = async () => {
       try {
         await setupPlayer(audioList);
-        TrackPlayer.skip(surasList[currentSurahInd].firstAyah);
-        setPause(playBackState.state !== State.Playing)        
+        if (juzMode && currentJuzInd < 29) {
+          let suras = juzInfo[currentJuzInd].juzSuras
+          let ayahSplits = juzInfo[currentJuzInd].splits
+          let firstAyah = ayahSplits[suras.indexOf(currentSurahInd)][1];
+          let lastAyah = ayahSplits[suras.indexOf(currentSurahInd)][0];
+          setStartAyahIndForJuz(firstAyah)
+          setEndAyahIndForJuz(lastAyah)
+          TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, firstAyah));
+        }
+        else {
+          setStartAyahIndForJuz(0)
+          setEndAyahIndForJuz(parseInt(surasList[currentSurahInd].numAyas)-1)
+          TrackPlayer.skip(surasList[currentSurahInd].firstAyah);
+        }
+        setPause(playBackState.state !== State.Playing);        
       } catch (error) {
         console.error("Error occurred while setting up player:", error);
       }
     };
 
     initializePlayer();
-  }, [justEnteredNewSurah]);
+  }, [justEnteredNewSurah, justEnteredNewSurahJuz]);
+
+  const [playBackChanged, setPlayBackChanged] = [
+    useSelector(PlayBackChanged), wrapDispatch(SetPlayBackChanged)
+  ]
+
+  useEffect(() => {
+    console.log("currentJuzInds", currentJuzInd)
+
+    if (!juzMode || currentJuzInd == 29 || currentJuzInd == null) {
+    setStartAyahIndForJuz(0)
+    setEndAyahIndForJuz(parseInt(surasList[currentSurahInd].numAyas)-1)
+    } else {
+      let suras = juzInfo[currentJuzInd].juzSuras
+      let ayahSplits = juzInfo[currentJuzInd].splits
+      let firstAyah = ayahSplits[suras.indexOf(currentSurahInd)][1];
+      let lastAyah = ayahSplits[suras.indexOf(currentSurahInd)][0];
+      setStartAyahIndForJuz(firstAyah)
+      setEndAyahIndForJuz(lastAyah)
+      // console.log("test")
+      // console.log(firstAyah, lastAyah)
+      // console.log(startAyahIndForJuz, endAyahIndForJuz)
+    }
+
+  }, [playBackChanged, currentSurahInd])
+
+
 
   // if currentAyahInd changes replay the current track
   useEffect(() => {
@@ -98,6 +159,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
       setCurrentSurahInd(newSurahInd);
       setCurrentAyahInd(getLocalAyahInd(event.nextTrack));
       setTrackMD(track);
+      if (juzMode) {
+        const newJuzInd = findJuzSurahAyahIndex(juzInfo, newSurahInd, getLocalAyahInd(event.nextTrack))
+        setCurrentJuzInd(newJuzInd)
+      }
+      setPlayBackChanged(!playBackChanged)
     }
   });
 
@@ -112,26 +178,86 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
       setPause(false);
     }
   });
+  // TODOS:
+  // Write a function that gets the local Ayah of the next part: it would see if the current juz has a next/previous surah and if not go to first/last surah of next/previous juz
+  // such function would also return the navigated to surahInd (corresponding to the localAyah ind) and juz so we can set both
 
+  // for the scrollToTop issue: search more for rerender or force call scrollToTop on playbackchange
 
   const nextTrack = async (
-    audioCount: number,
     currentSurahInd: number,
     setCurrentSurahInd: Function,
   ) => {
-    const nextIndex = (currentSurahInd + 1) % audioCount;
-    await TrackPlayer.skip(surasList[nextIndex].firstAyah);
+    if (!juzMode || currentJuzInd == 29 || currentJuzInd == null){
+    const nextIndex = (currentSurahInd + 1) % surasCount;
     setCurrentSurahInd(nextIndex);
+    if (juzMode && nextIndex == 0) {
+      setCurrentJuzInd(0);
+    }
+    await TrackPlayer.skip(surasList[nextIndex].firstAyah);
+    }
+    else {
+      let currentSurahIndForJuz = juzInfo[currentJuzInd].juzSuras.indexOf(currentSurahInd);
+      let numSurasInJuz = juzInfo[currentJuzInd].juzSuras.length;
+      if (currentSurahIndForJuz < numSurasInJuz - 1){
+        let newSurahInd = juzInfo[currentJuzInd].juzSuras[currentSurahIndForJuz + 1];
+       setCurrentSurahInd(newSurahInd);
+       await TrackPlayer.skip(surasList[newSurahInd].firstAyah);
+      }
+      else if (currentSurahIndForJuz == numSurasInJuz - 1 && currentJuzInd < 28){
+        let newLocalAyahNum = juzInfo[currentJuzInd+1].splits[0][1]
+        let newAyahNum = getGlobalAyahInd(currentSurahInd, newLocalAyahNum)
+        setCurrentJuzInd(currentJuzInd + 1);
+        setCurrentSurahInd(juzInfo[currentJuzInd + 1].juzSuras[0]);
+        await TrackPlayer.skip(newAyahNum);
+      }
+      else if (currentSurahIndForJuz == numSurasInJuz - 1 && currentJuzInd == 28) {
+        const nextIndex = (currentSurahInd + 1) % surasCount;
+        setCurrentSurahInd(nextIndex);
+        setCurrentJuzInd(29);
+        await TrackPlayer.skip(surasList[nextIndex].firstAyah);
+      }
+    }
   };
 
   const previousTrack = async (
-    audioCount: number,
     currentSurahInd: number,
     setCurrentSurahInd: Function,
   ) => {
-    const previousIndex = (currentSurahInd - 1 + audioCount) % audioCount;
+    if (!juzMode || currentJuzInd == 29 || currentJuzInd == null) {
+    const previousIndex = (currentSurahInd - 1 + surasCount) % surasCount;
     await TrackPlayer.skip(surasList[previousIndex].firstAyah);
     setCurrentSurahInd(previousIndex);
+    }
+    else {
+      let currentSurahIndForJuz = juzInfo[currentJuzInd].juzSuras.indexOf(currentSurahInd);
+      let numSurasInJuz = juzInfo[currentJuzInd].juzSuras.length;
+      console.log("cc", currentSurahIndForJuz)
+      if (currentSurahIndForJuz > 0){
+        let newSurahInd = juzInfo[currentJuzInd].juzSuras[currentSurahIndForJuz - 1];
+       setCurrentSurahInd(newSurahInd);
+       let newLocalAyahNum = juzInfo[currentJuzInd].splits[currentSurahIndForJuz -1][1]
+        let newAyahNum = getGlobalAyahInd(newSurahInd , newLocalAyahNum)
+       await TrackPlayer.skip(newAyahNum);
+      }
+      else if (currentSurahIndForJuz == 0){
+        if (currentJuzInd > 0) {
+        let newJuzSplitsLength = juzInfo[currentJuzInd-1].splits.length
+        let newLocalAyahNum = juzInfo[currentJuzInd-1].splits[newJuzSplitsLength-1][1]
+        let newAyahNum = getGlobalAyahInd(currentSurahInd, newLocalAyahNum)
+        setCurrentJuzInd(currentJuzInd - 1);
+        setCurrentSurahInd(juzInfo[currentJuzInd - 1].juzSuras[newJuzSplitsLength-1]);
+        await TrackPlayer.skip(newAyahNum);
+        }
+        else {
+          setCurrentJuzInd(29);
+          setCurrentSurahInd(113)
+          await TrackPlayer.skip(getGlobalAyahInd(113, 0));
+        }
+      }
+      
+    } 
+
   };
 
 
@@ -150,8 +276,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
             style={styles.progressBar}
             value={(currentAyahInd)}
             onValueChange={(value) => console.log(value)}
-            minimumValue={0}
-            maximumValue={parseInt(surasList[currentSurahInd].numAyas)-1}
+            minimumValue={startAyahIndForJuz}
+            maximumValue={endAyahIndForJuz}
             thumbTintColor="#009193"
             minimumTrackTintColor="#009193"
             maximumTrackTintColor="#717171"
@@ -162,21 +288,21 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
             }
             }
           />
-          <View style={styles.progressLevelDuraiton}>
+          <View style={styles.progressLevelDuraiton} key={currentSurahInd + currentJuzInd}>
             <Text style={styles.progressLabelText}>
               {"الآية "}
               {englishToArabicNumber(currentAyahInd + 1)}
             </Text>
             <Text style={styles.progressLabelText}>
               {"الآية "}
-              {englishToArabicNumber(parseInt(surasList[currentSurahInd].numAyas))}
+              {englishToArabicNumber(endAyahIndForJuz + 1)}
             </Text>
           </View>
         </View>
         <View style={styles.audioControlsContainer}>
           <TouchableOpacity
             onPress={() =>
-              previousTrack(audioCount, currentSurahInd, setCurrentSurahInd)
+              previousTrack(currentSurahInd, setCurrentSurahInd)
             }
           >
             <Ionicons
@@ -205,7 +331,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
           <TouchableOpacity
             onPress={() =>
               nextTrack(
-                audioCount,
                 currentSurahInd,
                 setCurrentSurahInd,
               )

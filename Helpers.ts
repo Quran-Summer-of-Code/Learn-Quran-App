@@ -98,6 +98,22 @@ export function getJuzName(index: number, juzData: Record<number, string>): stri
     return juzData[index] || "";
 }
 
+// get the index of juz given the surahInd and its local ayahInd
+export function findJuzSurahAyahIndex(juzData:any, surahIndex:number, ayahIndex:number) {
+    for (let i = 0; i < juzData.length; i++) {
+        const juz = juzData[i];
+        if (juz.juzSuras.includes(surahIndex)) {
+            const surahSplitIndex = juz.juzSuras.indexOf(surahIndex);
+            const correspondingSplit = juz.splits[surahSplitIndex];
+            if (correspondingSplit && correspondingSplit[1] <= ayahIndex && ayahIndex <= correspondingSplit[0]) {
+                return i;
+            }
+        }
+    }
+    return null;
+}
+
+
 // Copied from https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
 // Helps brighten or darken a given color (and more stuff)
 // @ts-nocheck
