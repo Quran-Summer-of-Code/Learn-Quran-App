@@ -6,11 +6,7 @@ import {
   View,
   FlatList,
   Dimensions,
-  LogBox,
 } from "react-native";
-LogBox.ignoreLogs([
-  "`flexWrap: `wrap`` is not supported with the `VirtualizedList` components.Consider using `numColumns` with `FlatList` instead.",
-]);
 // Helpers
 import { getGlobalAyahInd } from "../../helpers";
 import { preprocessJuzData, getJuzName } from "../../helpers";
@@ -161,16 +157,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
         }}
         scrollEventThrottle={16}
         onScrollToIndexFailed={(error) => {
-          // @ts-ignore
-          // flatListRef?.current?.scrollToOffset({
-          //   offset: error.averageItemLength * error.index,
-          //   animated: true,
-          // });
-          // console.log("1")
-          // setTimeout(() => {
-          //   // @ts-ignore
-          //   scrollToIndex(error.index);
-          // }, 300);
+          // ignore it. it's a long scroll!
         }}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}

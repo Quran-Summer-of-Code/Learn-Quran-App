@@ -123,7 +123,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
   ]
 
   useEffect(() => {
-    console.log("currentJuzInds", currentJuzInd)
 
     if (!juzMode || currentJuzInd == 29 || currentJuzInd == null) {
     setStartAyahIndForJuz(0)
@@ -135,9 +134,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
       let lastAyah = ayahSplits[suras.indexOf(currentSurahInd)][0];
       setStartAyahIndForJuz(firstAyah)
       setEndAyahIndForJuz(lastAyah)
-      // console.log("test")
-      // console.log(firstAyah, lastAyah)
-      // console.log(startAyahIndForJuz, endAyahIndForJuz)
     }
 
   }, [playBackChanged, currentSurahInd])
@@ -232,7 +228,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
     else {
       let currentSurahIndForJuz = juzInfo[currentJuzInd].juzSuras.indexOf(currentSurahInd);
       let numSurasInJuz = juzInfo[currentJuzInd].juzSuras.length;
-      console.log("cc", currentSurahIndForJuz)
       if (currentSurahIndForJuz > 0){
         let newSurahInd = juzInfo[currentJuzInd].juzSuras[currentSurahIndForJuz - 1];
        setCurrentSurahInd(newSurahInd);
@@ -275,7 +270,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
           <Slider
             style={styles.progressBar}
             value={(currentAyahInd)}
-            onValueChange={(value) => console.log(value)}
+            // onValueChange={(value) => console.log(value)}
             minimumValue={startAyahIndForJuz}
             maximumValue={endAyahIndForJuz}
             thumbTintColor="#009193"
