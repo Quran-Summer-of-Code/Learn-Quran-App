@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
-import { Platform } from "react-native";
+import { Platform, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 // Components
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import ScrollBarView from "../Components/ScrollBar";
 // Helpers
 import { englishToArabicNumber, colorize } from "../../helpers";
 // State
@@ -31,7 +30,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
     useSelector(CurrentSurahInd),
     wrapDispatch(SetCurrentSurahInd),
   ];
-  // Get whether the user just entered a new surah (both used to synchornize audio)
+  // Get whether the user just entered a new surah (both used to synchronize audio)
   const [justEnteredNewSurah, setJustEnteredSurah] = [
     useSelector(JustEnteredNewSurah),
     wrapDispatch(SetJustEnteredNewSurah),
@@ -40,72 +39,75 @@ const SurasList: React.FC<Props> = ({ suras }) => {
   // Set in HomePage as false once the user navigates out
   const setInHomePage = wrapDispatch(SetInHomePage);
 
-  return (
-    <>
-      <ScrollBarView styles={styles}>
-        <View style={styles.container}>
-          {suras.map((surah: any, index: number) => (
-            <TouchableOpacity
-              style={styles.itemWrapper}
-              key={index.toString()}
-              onPress={() => {
-                if (index !== currentSurahInd) {
-                  // to detect in audio player and go back to 1st Auya
-                  setJustEnteredSurah(!justEnteredNewSurah);
-                }
-                setInHomePage(false);
-                setCurrentSurahInd(index);
-                navigation.navigate("SurahPage");
+  const renderItem = ({ item, index }: { item: any; index: number }) => (
+    <TouchableOpacity
+      style={styles.itemWrapper}
+      onPress={() => {
+        if (index !== currentSurahInd) {
+          // to detect in audio player and go back to 1st Ayah
+          setJustEnteredSurah(!justEnteredNewSurah);
+        }
+        setInHomePage(false);
+        setCurrentSurahInd(index);
+        navigation.navigate("SurahPage");
+      }}
+    >
+      <View style={styles.item}>
+        {/* contains khatim containing number then Surah Name */}
+        <View style={styles.surahAndNumberContainer}>
+          <Text style={styles.khatim}>{"\ue901"}</Text>
+          <View
+            style={{
+              position: "absolute",
+              left: index < 10 ? 19 : 15,
+            }}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                fontFamily: "UthmanBold",
+                fontSize: 17,
+                color: "white",
               }}
             >
-              <View style={styles.item}>
-                {/* contains khatim containing number then Surah Name */}
-                <View style={styles.surahAndNumberContainer}>
-                  <Text style={styles.khatim}>{"\ue901"}</Text>
-                  <View
-                    style={{
-                      position: "absolute",
-                      left: index < 10 ? 19 : 15,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        textAlign: "center",
-                        fontFamily: "UthmanBold",
-                        fontSize: 17,
-                        color: "white",
-                      }}
-                    >
-                      {englishToArabicNumber(index + 1)}
-                    </Text>
-                  </View>
-                  <View>
-                    <Text style={styles.title}>{"سُورَةُ " + surah.name}</Text>
-                  </View>
-                </View>
-                {/* contains the string with number of Ayas */}
-                <View style={{ position: "absolute", right: 90 }}>
-                  <Text
-                    style={[
-                      styles.title,
-                      { fontFamily: "UthmanRegular", fontSize: 20 },
-                    ]}
-                  >
-                    {englishToArabicNumber(surah.numAyas)}
-                    {surah.numAyas > 10 ? " آية" : " آيات"}
-                  </Text>
-                </View>
-                {/* contains whether surah is makeya or madaneya */}
-                <View>
-                  <Text style={styles.locIcon}>
-                    {surah.locType == 1 ? "\ue905" : "\ue902"}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
+              {englishToArabicNumber(index + 1)}
+            </Text>
+          </View>
+          <View>
+            <Text style={styles.title}>{"سُورَةُ " + item.name}</Text>
+          </View>
         </View>
-      </ScrollBarView>
+        {/* contains the string with number of Ayas */}
+        <View style={{ position: "absolute", right: 90 }}>
+          <Text
+            style={[
+              styles.title,
+              { fontFamily: "UthmanRegular", fontSize: 20 },
+            ]}
+          >
+            {englishToArabicNumber(item.numAyas)}
+            {item.numAyas > 10 ? " آية" : " آيات"}
+          </Text>
+        </View>
+        {/* contains whether surah is Makkiya or Madaniyya */}
+        <View>
+          <Text style={styles.locIcon}>
+            {item.locType == 1 ? "\ue905" : "\ue902"}
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+
+  return (
+    <>
+      <View style={styles.containerStyle}>
+        <FlatList
+          data={suras}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
     </>
   );
 };
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
   },
   scrollStyle: {
     opacity: 1.0,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff99",
   },
   surahAndNumberContainer: {
     flexDirection: "row",

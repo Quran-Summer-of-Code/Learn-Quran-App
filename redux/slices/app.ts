@@ -30,7 +30,7 @@ const initialState: AppState = {
   juzMode: false,                 // should homepage be viewed by Juz or by Surah
   tafsirMode: false,               // should Surah view full Surah or per-Ayah tafsir
   currentJuzInd: 0,                  // the current juz (i.e., 0-29)
-  juzCollapse: Array(30).fill(false), // whether each juz list item is collapsed
+  juzCollapse: Array(30).fill(true), // whether each juz list item is collapsed
   playBackChanged: false,          // has the user changed the playback speed?
 };
 
