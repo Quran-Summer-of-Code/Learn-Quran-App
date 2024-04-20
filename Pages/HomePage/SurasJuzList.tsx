@@ -28,6 +28,7 @@ import {
   SetCurrentJuzInd,
   SetJustEnteredNewSurahJuz,
   JustEnteredNewSurahJuz,
+  JuzMode,
 } from "../../Redux/slices/app";
 // Data
 import juzInfo from "../../Quran/juzInfo.json";
@@ -41,6 +42,8 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
   const isWeb = Platform.OS === "web";
+
+  const juzMode = useSelector(JuzMode);
 
   // Get index of current surah
   const [currentSurahInd, setCurrentSurahInd] = [
@@ -179,10 +182,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                 alignItems: "center",
               }}
               onPress={() => {
-                if (
-                  index !== currentJuzInd ||
-                  surahInd !== currentSurahInd
-                ) {
+                if (index !== currentJuzInd || surahInd !== currentSurahInd) {
                   setJustEnteredNewSurahJuz(!justEnteredNewSurahJuz);
                 }
                 setInHomePage(false);
@@ -195,19 +195,18 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                 <Text style={[styles.title, { textAlign: "center" }]}>
                   {suras[surahInd].name}{" "}
                 </Text>
-                {index < 29 &&
-                  !containsFullSurah(item, surahInd, ind) && (
-                    <Text
-                      style={{
-                        fontFamily: "UthmanRegular",
-                        fontSize: 19,
-                        color: "#fff",
-                      }}
-                    >
-                      ({englishToArabicNumber(item.splits[ind][0] + 1)}:
-                      {englishToArabicNumber(item.splits[ind][1] + 1)})
-                    </Text>
-                  )}
+                {index < 29 && !containsFullSurah(item, surahInd, ind) && (
+                  <Text
+                    style={{
+                      fontFamily: "UthmanRegular",
+                      fontSize: 19,
+                      color: "#fff",
+                    }}
+                  >
+                    ({englishToArabicNumber(item.splits[ind][0] + 1)}:
+                    {englishToArabicNumber(item.splits[ind][1] + 1)})
+                  </Text>
+                )}
               </Text>
             </TouchableOpacity>
           ))}
@@ -217,15 +216,15 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
   );
 
   return (
-    <>
-      <View style={styles.containerStyle}>
-        <FlatList
-          data={juzInfo}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </View >
-    </>
+    <View
+      style={[styles.containerStyle, { display: juzMode ? "flex" : "none" }]}
+    >
+      <FlatList
+        data={juzInfo}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    </View>
   );
 };
 

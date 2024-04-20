@@ -13,6 +13,7 @@ import {
   JustEnteredNewSurah,
   SetJustEnteredNewSurah,
   SetInHomePage,
+  JuzMode,
 } from "../../Redux/slices/app";
 
 interface Props {
@@ -24,6 +25,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
   const isWeb = Platform.OS === "web";
+  const juzMode = useSelector(JuzMode);
 
   // Get index of current surah
   const [currentSurahInd, setCurrentSurahInd] = [
@@ -101,7 +103,9 @@ const SurasList: React.FC<Props> = ({ suras }) => {
 
   return (
     <>
-      <View style={styles.containerStyle}>
+      <View
+        style={[styles.containerStyle, { display: !juzMode ? "flex" : "none" }]}
+      >
         <FlatList
           data={suras}
           renderItem={renderItem}

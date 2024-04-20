@@ -78,8 +78,9 @@ const HomePage = () => {
           />
         </View>
       </View>
-      {/* Suras list */}
-      {(!juzMode)?<SurasList suras={surasList} />:<SurasJuzList suras={surasList} />}
+      {/* Suras list: style controls which to display based on juzMode */}
+      <SurasList suras={surasList} />
+      <SurasJuzList suras={surasList} />
     </View>
   );
 };
