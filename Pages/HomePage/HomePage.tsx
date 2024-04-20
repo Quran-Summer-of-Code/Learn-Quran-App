@@ -12,7 +12,7 @@ import SurasJuzList from "./SurasJuzList";
 import { useDispatch, useSelector } from "react-redux";
 import { SetInHomePage } from "../../Redux/slices/app";
 import { JuzMode, SetJuzMode } from "../../Redux/slices/app";
-import { TafsirMode } from "../../Redux/slices/app";
+import { TafsirMode, AppColor } from "../../Redux/slices/app";
 // Helpers
 import { colorize } from "../../helpers";
 // CSS related
@@ -36,19 +36,19 @@ const HomePage = () => {
     wrapDispatch(SetJuzMode),
   ];
 
-
   // tafsirState to decide logo
   const tafsirMode = useSelector(TafsirMode);
+  const appColor = useSelector(AppColor);
 
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container, backgroundColor: appColor }}>
       {/* Container just before Surah list */}
       <View
         style={{
           marginTop: Constants.statusBarHeight,
           paddingVertical: 20,
           width: "100%",
-          backgroundColor: "#009193",
+          backgroundColor: appColor,
         }}
       >
         {/* Logo */}
@@ -56,26 +56,26 @@ const HomePage = () => {
         {/* tabs container */}
         <View style={styles.tabContainer}>
           <Pressable
-           onPress={()=>setJuzMode(false)}
+            onPress={() => setJuzMode(false)}
             style={[
               styles.singleTabContainer,
               {
                 backgroundColor: juzMode
-                  ? colorize(+0.1, "#009193")
-                  : colorize(-0.3, "#009193"),
+                  ? colorize(+0.1, appColor)
+                  : colorize(-0.3, appColor),
               },
             ]}
           >
             <Text style={styles.tabText}>{"السورة"}</Text>
           </Pressable>
           <Pressable
-            onPress={()=>setJuzMode(true)}
+            onPress={() => setJuzMode(true)}
             style={[
               styles.singleTabContainer,
               {
                 backgroundColor: juzMode
-                  ? colorize(-0.3, "#009193")
-                  : colorize(+0.1, "#009193"),
+                  ? colorize(-0.3, appColor)
+                  : colorize(+0.1, appColor),
               },
             ]}
           >
@@ -95,7 +95,6 @@ export default HomePage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#009193",
     alignItems: "center",
   },
   logo: {
@@ -119,22 +118,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     marginBottom: -48,
-    marginTop: 10
-
+    marginTop: 10,
   },
   singleTabContainer: {
     borderRadius: 50,
     marginTop: 10,
     paddingHorizontal: 35,
     paddingVertical: 3,
-    height:50,
-
+    height: 50,
   },
   tabText: {
-    
     color: "#f1f1f1",
     fontSize: 15,
-    fontWeight: 'bold'
-
-  }
+    fontWeight: "bold",
+  },
 });

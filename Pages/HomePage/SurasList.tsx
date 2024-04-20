@@ -14,6 +14,7 @@ import {
   SetJustEnteredNewSurah,
   SetInHomePage,
   JuzMode,
+  AppColor,
 } from "../../Redux/slices/app";
 
 interface Props {
@@ -26,6 +27,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
   const isWeb = Platform.OS === "web";
   const juzMode = useSelector(JuzMode);
+  const appColor = useSelector(AppColor);
 
   // Get index of current surah
   const [currentSurahInd, setCurrentSurahInd] = [
@@ -43,7 +45,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
 
   const renderItem = ({ item, index }: { item: any; index: number }) => (
     <TouchableOpacity
-      style={styles.itemWrapper}
+      style={{ ...styles.itemWrapper, borderBottomColor: appColor }}
       onPress={() => {
         if (index !== currentSurahInd) {
           // to detect in audio player and go back to 1st Ayah
@@ -57,7 +59,9 @@ const SurasList: React.FC<Props> = ({ suras }) => {
       <View style={styles.item}>
         {/* contains khatim containing number then Surah Name */}
         <View style={styles.surahAndNumberContainer}>
-          <Text style={styles.khatim}>{"\ue901"}</Text>
+          <Text style={{ ...styles.khatim, color: colorize(0.2, appColor) }}>
+            {"\ue901"}
+          </Text>
           <View
             style={{
               position: "absolute",
@@ -93,7 +97,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
         </View>
         {/* contains whether surah is Makkiya or Madaniyya */}
         <View>
-          <Text style={styles.locIcon}>
+          <Text style={{ ...styles.locIcon, color: colorize(0.8, appColor) }}>
             {item.locType == 1 ? "\ue905" : "\ue902"}
           </Text>
         </View>
@@ -104,7 +108,13 @@ const SurasList: React.FC<Props> = ({ suras }) => {
   return (
     <>
       <View
-        style={[styles.containerStyle, { display: !juzMode ? "flex" : "none" }]}
+        style={[
+          styles.containerStyle,
+          {
+            display: (!juzMode) ? "flex" : "none",
+            backgroundColor: colorize(-0.3, appColor),
+          },
+        ]}
       >
         <FlatList
           data={suras}
@@ -128,8 +138,6 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-
-    backgroundColor: colorize(-0.3, "#009193"),
     padding: 6,
   },
   scrollViewWrapper: {
@@ -151,7 +159,6 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     borderRadius: 30,
     width: "100%",
-    borderBottomColor: "#009193",
     borderBottomWidth: 2,
     flexDirection: "row",
     justifyContent: "flex-start",
@@ -165,7 +172,6 @@ const styles = StyleSheet.create({
   },
   khatim: {
     fontFamily: "Khatim",
-    color: colorize(0.2, "#009193"),
     fontSize: 48,
   },
   title: {
@@ -176,7 +182,6 @@ const styles = StyleSheet.create({
   },
   locIcon: {
     fontFamily: "Khatim",
-    color: colorize(0.8, "#009193"),
     fontSize: 40,
   },
 });

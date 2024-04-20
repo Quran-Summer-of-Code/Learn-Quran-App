@@ -15,10 +15,10 @@ import EmptyPage from "./Pages/EmptyPage/EmptyPage";
 
 // Redux
 import { useSelector } from "react-redux";
-import { ScrolledFar, InHomePage } from "./Redux/slices/app";
+import { ScrolledFar, InHomePage, AppColor } from "./Redux/slices/app";
 
 // for loading audio data initially
-import { prepareAudio } from "./helpers";
+import { prepareAudio, colorize } from "./helpers";
 
 const Drawer = createDrawerNavigator();
 
@@ -38,6 +38,33 @@ function Navigation() {
     const img_path = require("./assets/quran.jpeg")
     prepareAudio(baseUrl, author, img_path, setAudioList);
   }, []);
+  
+  const appColor = useSelector(AppColor);
+
+  const drawerStyles = {
+    drawerStyle: {
+      backgroundColor: colorize(-0.1, appColor),
+      width: 270,
+    },
+    drawerLabelStyle: {
+      color: "white",
+      fontFamily: "UthmanRegular",
+      letterSpacing: 2,
+    },
+    headerStyle: {
+      backgroundColor: colorize(-0.1, appColor),
+      height: Platform.OS !== "web" ? 90 : 70,
+    },
+    headerTintColor: colorize(-0.1, appColor),
+    headerTitleStyle: {
+      fontWeight: "bold",
+    },
+    drawerType: "front",
+    drawerActiveTintColor: "white",
+    initialRouteName: "HomePage",
+    drawerPosition: "right",
+    swipeEnabled: false,
+  };
 
     // SurahHeader and StatusBar change if scrolled down far and not in home
     const scrolledFar = useSelector(ScrolledFar);
@@ -85,29 +112,6 @@ function Navigation() {
   );
 }
 
-const drawerStyles = {
-  drawerStyle: {
-    backgroundColor: "#38a3a5",
-    width: 270,
-  },
-  drawerLabelStyle: {
-    color: "white",
-    fontFamily: "UthmanRegular",
-    letterSpacing: 2,
-  },
-  headerStyle: {
-    backgroundColor: "#38a3a5",
-    height: Platform.OS !== "web" ? 90 : 70,
-  },
-  headerTintColor: "#38a3a5",
-  headerTitleStyle: {
-    fontWeight: "bold",
-  },
-  drawerType: "front",
-  drawerActiveTintColor: "white",
-  initialRouteName: "HomePage",
-  drawerPosition: "right",
-  swipeEnabled: false,
-};
+
 
 export default Navigation;

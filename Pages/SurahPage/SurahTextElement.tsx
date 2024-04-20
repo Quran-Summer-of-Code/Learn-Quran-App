@@ -9,6 +9,7 @@ import {
   SetCurrentAyahInd,
   SetJustChoseNewAyah,
   CurrentAyahInd,
+  AppColor
 } from "../../Redux/slices/app";
 
 export const AyahWord: React.FC<{
@@ -24,6 +25,7 @@ export const AyahWord: React.FC<{
     wrapDispatch(SetCurrentAyahInd),
   ];
   const setJustChoseNewAyah = wrapDispatch(SetJustChoseNewAyah);
+  const appColor = useSelector(AppColor);
 
   // get sajda locations
   let sajdaLocs = currentSurahByWords?.sajda;
@@ -34,7 +36,7 @@ export const AyahWord: React.FC<{
       style={[
         styles.ayahWordStyle,
         isWordInAyah(index, currentAyahInd, currentSurahByWords)
-          ? { color: "#009193" }
+          ? { color: appColor}
           : {},
       ]}
     >
@@ -73,7 +75,8 @@ export const AyahWord: React.FC<{
 export const JuzNameDisplay: React.FC<{
   wordObj: string;
   currentJuzName: string;
-}> = ({ wordObj, currentJuzName }) => {
+  appColor: string;
+}> = ({ wordObj, currentJuzName, appColor }) => {
   // render the juz name
   return (
     <Text>
@@ -81,7 +84,7 @@ export const JuzNameDisplay: React.FC<{
       {wordObj + " "}
       <View>
         <View style={[styles.fullWidth]}>
-          <Text style={styles.juzNameStyle}>
+          <Text style={{...styles.juzNameStyle, color: appColor}}>
             {"("}
             {"بداية  " + currentJuzName}
             {")"}
@@ -118,7 +121,6 @@ const styles = StyleSheet.create({
     color: "black",
   },
   juzNameStyle: {
-    color: "#009193",
     alignSelf: "stretch",
     textAlign: "center",
     fontSize: 20,

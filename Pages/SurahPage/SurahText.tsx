@@ -9,7 +9,7 @@ import {
 } from "react-native";
 // Helpers
 import { getGlobalAyahInd } from "../../helpers";
-import { preprocessJuzData, getJuzName } from "../../helpers";
+import { preprocessJuzData, getJuzName, colorize } from "../../helpers";
 // Main Components
 import { AyahWord, JuzNameDisplay } from "./SurahTextElement";
 // Data
@@ -24,7 +24,8 @@ import {
   SetScrolledFar,
 
   PlayBackChanged,
-  SetPlayBackChanged
+  SetPlayBackChanged,
+  AppColor
 } from "../../Redux/slices/app";
 
 
@@ -93,7 +94,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
         currentJuzName !== ""
       ) {
         return (
-          <JuzNameDisplay wordObj={wordObj} currentJuzName={currentJuzName} />
+          <JuzNameDisplay wordObj={wordObj} currentJuzName={currentJuzName} appColor={appColor}/>
         );
       }
       return null;
@@ -129,6 +130,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
   }, [currentSurahInd]);
 
 
+  const appColor = useSelector(AppColor);
 
   return (
     <View
@@ -141,6 +143,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
         style={[
           styles.containerStyle,
           {
+            borderColor: colorize(0.5, appColor),
             marginTop: scrolledFar ? 30 : 10,
             height: scrolledFar ? "74%" : "76%",
           },
@@ -163,7 +166,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
         keyExtractor={(item, index) => index.toString()}
         ListHeaderComponent={() =>
           currentSurahInd !== 8 && (
-            <Text style={styles.basmalaStyle}>
+            <Text style={{...styles.basmalaStyle, color: appColor}}>
               بِسْمِ اللَّــهِ الرَّحْمَـٰنِ الرَّحِيمِ
             </Text>
           )
@@ -182,7 +185,6 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     borderWidth: 2,
-    borderColor: "#00919344",
     borderRadius: 30,
     marginHorizontal: 12,
     paddingBottom: 50,
@@ -206,7 +208,6 @@ const styles = StyleSheet.create({
     padding: 5,
     textAlign: "center",
     fontFamily: "NewmetRegular",
-    color: "#009193",
     width: width,
   },
 });

@@ -15,6 +15,7 @@ interface AppState {
   currentJuzInd: number;
   juzCollapse: boolean[];
   playBackChanged: boolean;
+  appColor: string;
 }
 
 const initialState: AppState = {
@@ -32,6 +33,7 @@ const initialState: AppState = {
   currentJuzInd: 0,                  // the current juz (i.e., 0-29)
   juzCollapse: Array(30).fill(true), // whether each juz list item is collapsed
   playBackChanged: false,          // has the user changed the playback speed?
+  appColor: "#009193"
 };
 
 const appSlice = createSlice({
@@ -79,6 +81,9 @@ const appSlice = createSlice({
     },
     SetPlayBackChanged(state, action: PayloadAction<boolean>) {
       state.playBackChanged = action.payload;
+    },
+    SetAppColor(state, action: PayloadAction<string>) {
+      state.appColor = action.payload;
     }
   },
 });
@@ -97,7 +102,8 @@ export const {
   SetTafsirMode,
   SetCurrentJuzInd,
   SetJuzCollapse,
-  SetPlayBackChanged
+  SetPlayBackChanged,
+  SetAppColor
 } = appSlice.actions;
 
 export const InHomePage = (state:any) => state.store.inHomePage;
@@ -114,5 +120,6 @@ export const TafsirMode = (state:any) => state.store.tafsirMode;
 export const CurrentJuzInd = (state:any) => state.store.currentJuzInd;
 export const JuzCollapse = (state:any) => state.store.juzCollapse;
 export const PlayBackChanged = (state:any) => state.store.playBackChanged;
+export const AppColor = (state:any) => state.store.appColor;
 
 export default appSlice.reducer;
