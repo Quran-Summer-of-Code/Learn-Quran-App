@@ -1,11 +1,9 @@
 import React, { useMemo, useEffect } from "react";
-import { Platform } from "react-native";
+import { Platform, Pressable } from "react-native";
 import { View, StyleSheet, Text, TextInput } from "react-native";
-import RNSwitchTabs from "rn-switch-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
 //Main Components
-import HomeHeader from "./HomeHeader";
 import SurasList from "./SurasList"; // Assuming the component file is in the same directory
 // Data
 import surasList from "../../Quran/surasList.json";
@@ -13,7 +11,7 @@ import SurasJuzList from "./SurasJuzList";
 // State
 import { useDispatch, useSelector } from "react-redux";
 import { SetInHomePage } from "../../Redux/slices/app";
-import { JuzMode, SetJuzMode} from "../../Redux/slices/app";
+import { JuzMode, SetJuzMode } from "../../Redux/slices/app";
 import { TafsirMode } from "../../Redux/slices/app";
 // Helpers
 import { colorize } from "../../helpers";
@@ -33,15 +31,11 @@ const HomePage = () => {
   }, [focus]);
 
   // Juz state (for Juz/Surah tabs)
-  const [juzMode, setJuzMode] = [useSelector(JuzMode), wrapDispatch(SetJuzMode)];
-  const juzOptions = [
-    { key: "1", value: "السورة" },
-    { key: "2", value: "الجزء" },
+  const [juzMode, setJuzMode] = [
+    useSelector(JuzMode),
+    wrapDispatch(SetJuzMode),
   ];
-  const handleJuzPress = (item: any) => {
-    item.key == "1" && setJuzMode(false);
-    item.key == "2" && setJuzMode(true);
-  };
+
 
   // tafsirState to decide logo
   const tafsirMode = useSelector(TafsirMode);
@@ -60,22 +54,33 @@ const HomePage = () => {
         {/* Logo */}
         <Text style={styles.logo}>{tafsirMode ? "I" : "A"}</Text>
         {/* tabs container */}
-        <View
-          style={styles.tabContainer}
-        >
-          <RNSwitchTabs
-            options={juzOptions}
-            onPress={handleJuzPress}
-            selectedColor={colorize(-0.3, "#009193")}
-            unSelectedColor={colorize(+0.3, "#00919355")}
-            containerStyle={styles.singleTabContainer}
-            textStyle={{
-              position: "absolute",
-              top: 3,
-            }}
-            selectedTextColor="#f1f1f1"
-            unSelectedTextColor="#f1f1f1"
-          />
+        <View style={styles.tabContainer}>
+          <Pressable
+           onPress={()=>setJuzMode(false)}
+            style={[
+              styles.singleTabContainer,
+              {
+                backgroundColor: juzMode
+                  ? colorize(+0.1, "#009193")
+                  : colorize(-0.3, "#009193"),
+              },
+            ]}
+          >
+            <Text style={styles.tabText}>{"السورة"}</Text>
+          </Pressable>
+          <Pressable
+            onPress={()=>setJuzMode(true)}
+            style={[
+              styles.singleTabContainer,
+              {
+                backgroundColor: juzMode
+                  ? colorize(-0.3, "#009193")
+                  : colorize(+0.1, "#009193"),
+              },
+            ]}
+          >
+            <Text style={styles.tabText}>{"الجزء"}</Text>
+          </Pressable>
         </View>
       </View>
       {/* Suras list: style controls which to display based on juzMode */}
@@ -99,24 +104,37 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
   },
-  searchContainer: { 
-    justifyContent: "center", 
-    alignItems: "center" 
+  searchContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
-  searchIconContainer : { 
-    position: "absolute", 
-    right: 30, 
-    top: 28, 
-    zIndex: 10 
+  searchIconContainer: {
+    position: "absolute",
+    right: 30,
+    top: 28,
+    zIndex: 10,
   },
   tabContainer: {
     justifyContent: "center",
     flexDirection: "row",
+    gap: 10,
     marginBottom: -48,
+    marginTop: 10
+
   },
   singleTabContainer: {
-    borderRadius: 40,
+    borderRadius: 50,
     marginTop: 10,
-    alignItems: "center",
+    paddingHorizontal: 35,
+    paddingVertical: 3,
+    height:50,
+
+  },
+  tabText: {
+    
+    color: "#f1f1f1",
+    fontSize: 15,
+    fontWeight: 'bold'
+
   }
 });
