@@ -61,7 +61,7 @@ export const AyahWord: React.FC<{
       {/* render the ayah number */}
       {currentSurahByWords.lastWordsinAyah.includes(index) && (
         <Text
-          style={styles.ayahNumStyle}
+          style={{...styles.ayahNumStyle, fontSize: ayahFontSize}}
           onPress={() => {
             setCurrentAyahInd(
               currentSurahByWords.lastWordsinAyah.indexOf(index)
@@ -80,28 +80,6 @@ export const AyahWord: React.FC<{
   );
 };
 
-export const JuzNameDisplay: React.FC<{
-  wordObj: string;
-  currentJuzName: string;
-  appColor: string;
-}> = ({ wordObj, currentJuzName, appColor }) => {
-  // render the juz name
-  return (
-    <Text>
-      {/* wordObj will be expected to be empty space to handle a bug  */}
-      {wordObj + " "}
-      <View>
-        <View style={[styles.fullWidth]}>
-          <Text style={{...styles.juzNameStyle, color: appColor}}>
-            {"("}
-            {"بداية  " + currentJuzName}
-            {")"}
-          </Text>
-        </View>
-      </View>
-    </Text>
-  );
-};
 
 const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
@@ -114,7 +92,7 @@ const styles = StyleSheet.create({
   ayahWordStyle: {
     color: "black",
     letterSpacing: Platform.OS === "web" ? 0 : 5,
-    alignSelf: "flex-start",
+    alignSelf:'flex-start'
   },
   sajdaStyle: {
     fontFamily: "NewmetRegular",

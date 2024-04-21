@@ -159,7 +159,7 @@ const SettingsPage: React.FC<Props> = () => {
             maximumTrackTintColor="#919191"
             inverted
             onSlidingComplete={(value) => {
-              setAyahFontSize(Math.round(value));
+              setAyahFontSize(Math.round(value* 10)/10);
             }}
           />
           <View style={{ ...styles.progressLevelDuraiton }}>

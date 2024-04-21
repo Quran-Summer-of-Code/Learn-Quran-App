@@ -8,7 +8,6 @@ interface AppState {
   justEnteredNewSurahJuz: boolean;
   justChoseNewAyah: boolean;
   pause: boolean;
-  showJuzNameInsideSurah: boolean;
   scrolledFar: boolean;
   juzMode: boolean;
   tafsirMode: boolean;
@@ -29,7 +28,6 @@ const initialState: AppState = {
   justEnteredNewSurahJuz: false,  // has the user just entered a new juz subset (e.g., part of Surah)
   justChoseNewAyah: false,        // has the user just pressed a new ayah? (e.g., make audio in sync)
   pause: true,                    // is the audio paused?
-  showJuzNameInsideSurah: false,  // show juz name inside surah?
   scrolledFar: false,             // has the user scrolled far enough to hide the Surah Header
   juzMode: false,                 // should homepage be viewed by Juz or by Surah
   tafsirMode: false,               // should Surah view full Surah or per-Ayah tafsir
@@ -66,9 +64,6 @@ const appSlice = createSlice({
     },
     SetPause(state, action: PayloadAction<boolean>) {
       state.pause = action.payload;
-    },
-    SetShowJuzNameInsideSurah(state, action: PayloadAction<boolean>) {
-      state.showJuzNameInsideSurah = action.payload;
     },
     SetScrolledFar(state, action: PayloadAction<boolean>) {
       state.scrolledFar = action.payload;
@@ -111,7 +106,6 @@ export const {
   SetJustEnteredNewSurahJuz,
   SetJustChoseNewAyah,
   SetPause,
-  SetShowJuzNameInsideSurah,
   SetScrolledFar,
   SetJuzMode,
   SetTafsirMode,
@@ -131,7 +125,6 @@ export const JustEnteredNewSurah = (state:any) => state.store.justEnteredNewSura
 export const JustEnteredNewSurahJuz = (state:any) => state.store.justEnteredNewSurahJuz;
 export const JustChoseNewAyah = (state:any) => state.store.justChoseNewAyah;
 export const Pause = (state:any) => state.store.pause;
-export const ShowJuzNameInsideSurah = (state:any) => state.store.showJuzNameInsideSurah;
 export const ScrolledFar = (state:any) => state.store.scrolledFar;
 export const JuzMode = (state:any) => state.store.juzMode;
 export const TafsirMode = (state:any) => state.store.tafsirMode;

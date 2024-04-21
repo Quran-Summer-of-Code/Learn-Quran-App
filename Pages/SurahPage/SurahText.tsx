@@ -9,9 +9,9 @@ import {
 } from "react-native";
 // Helpers
 import { getGlobalAyahInd } from "../../helpers";
-import { preprocessJuzData, getJuzName, colorize } from "../../helpers";
+import { colorize } from "../../helpers";
 // Main Components
-import { AyahWord, JuzNameDisplay } from "./SurahTextElement";
+import { AyahWord} from "./SurahTextElement";
 // Data
 import juzInfo from "../../Quran/juzInfo";
 import surasByWords from "../../Quran/surasByWords";
@@ -19,7 +19,6 @@ import surasByWords from "../../Quran/surasByWords";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CurrentAyahInd,
-  ShowJuzNameInsideSurah,
   ScrolledFar,
   SetScrolledFar,
   PlayBackChanged,
@@ -58,6 +57,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
     startWordIndForJuz,
     endWordIndForJuz + 1
   );
+  currentSurahByWordsWords = [...currentSurahByWordsWords, ...'⠀'.repeat(10)]
 
 
   const flatListRef = useRef(null);
@@ -66,9 +66,6 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
 
   const currentAyahInd = useSelector(CurrentAyahInd);
 
-  // load juzData and whether the juzName can show among Surahs (e.g., after last Ayah in Juz)
-  const juzData = preprocessJuzData(juzInfo);
-  const showJuzNameInsideSurah = useSelector(ShowJuzNameInsideSurah);
 
   const renderItem = useCallback(
     ({ item: wordObj, index }: any) => {
@@ -76,7 +73,6 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
         index + startWordIndForJuz + 1
       );
       const globalAyahInd = getGlobalAyahInd(currentSurahInd, ayahInd);
-      const currentJuzName = getJuzName(globalAyahInd, juzData);
 
       // The empty character signifies the start of the Ayah (not included: needed only in case we want to render Juz name)
       if (wordObj !== "‎") {
@@ -86,16 +82,6 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
             index={index + startWordIndForJuz}
             currentSurahByWords={currentSurahByWords}
           />
-        );
-      } else if (
-        showJuzNameInsideSurah &&
-        currentSurahByWords.firstWordsinAyah.includes(
-          index + 1 + startWordIndForJuz
-        ) &&
-        currentJuzName !== ""
-      ) {
-        return (
-          <JuzNameDisplay wordObj={wordObj} currentJuzName={currentJuzName} appColor={appColor}/>
         );
       }
       return null;
@@ -201,6 +187,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     paddingLeft: 5,
+    paddingBottom: 30
   },
   basmalaStyle: {
     fontSize: 35,

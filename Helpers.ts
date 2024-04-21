@@ -84,19 +84,6 @@ export function isWordInAyah(wordInd:number, ayahInd:number, currentSurahByWords
     return  isWithinRange(wordInd, currentSurahByWords.ayahRanges[ayahInd])
 }
 
-// Create a mapping from juz index to juz name given array of juz objects (as in juzInfo.json)
-export function preprocessJuzData(juzList: any[]): Record<number, string> {
-    const juzData: Record<number, string> = {};
-    for (const juz of juzList) {
-        juzData[juz.ind] = juz.name;
-    }
-    return juzData;
-}
-
-// Get juz name given juz index (assumes juzInfo is preprocessed with preprocessJuzData)
-export function getJuzName(index: number, juzData: Record<number, string>): string {
-    return juzData[index] || "";
-}
 
 // get the index of juz given the surahInd and its local ayahInd
 export function findJuzSurahAyahIndex(juzData:any, surahIndex:number, ayahIndex:number) {
