@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //Main Components
 import HomePage from "./HomePage";
 import EmptyPage from "../EmptyPage/EmptyPage";
+import BookmarksPage from "../BookmarksPage/BookmarksPage";
 import SettingsPage from "../SettingsPage/SettingsPage";
 //State
 import { useSelector, useDispatch } from "react-redux";
@@ -96,7 +97,24 @@ const HomePageWrapper = () => {
       <Tab.Screen
         name="الحافظة"
         options={{
-          headerShown: false,
+          headerShown: true,
+          headerTitle: () => (
+            <View
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "row-reverse",
+                marginVertical: 3,
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 30,  fontFamily: "UthmanRegular", marginHorizontal: 4, }}>
+                <Text>{"الحافظة"}</Text>
+              </Text>
+            </View>
+          ),
+          headerTitleAlign: "center",
           tabBarIcon: ({ color, size }) => (
             <Text
               style={{
@@ -111,7 +129,7 @@ const HomePageWrapper = () => {
             </Text>
           ),
         }}
-        component={EmptyPage}
+        component={BookmarksPage}
       />
       <Tab.Screen
         name="الإعدادات"
