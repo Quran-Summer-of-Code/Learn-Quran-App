@@ -1,23 +1,26 @@
 import { Text, Platform, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 //Main Components
 import HomePage from "./HomePage";
 import EmptyPage from "../EmptyPage/EmptyPage";
 import BookmarksPage from "../BookmarksPage/BookmarksPage";
 import SettingsPage from "../SettingsPage/SettingsPage";
+
 //State
 import { useSelector, useDispatch } from "react-redux";
 import { SetTafsirMode, AppColor } from "../../Redux/slices/app";
 
 const Tab = createBottomTabNavigator();
 
-// A component for the bottom tab navigation bar
-
 const HomePageWrapper = () => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+
+  // color from settings
   const appColor = useSelector(AppColor);
 
+  // styling for bottom tab navigation bar
   const tabStyles = {
     tabBarStyle: {
       backgroundColor: appColor,
@@ -38,6 +41,7 @@ const HomePageWrapper = () => {
 
   return (
     <Tab.Navigator screenOptions={tabStyles}>
+      {/* Reading */}
       <Tab.Screen
         name="القرائة"
         options={{
@@ -66,6 +70,7 @@ const HomePageWrapper = () => {
           },
         })}
       />
+      {/* Tafsir */}
       <Tab.Screen
         name="التفسير"
         options={{
@@ -94,6 +99,7 @@ const HomePageWrapper = () => {
           },
         })}
       />
+      {/* Bookmarks */}
       <Tab.Screen
         name="الحافظة"
         options={{
@@ -131,6 +137,7 @@ const HomePageWrapper = () => {
         }}
         component={BookmarksPage}
       />
+      {/* Settings */}
       <Tab.Screen
         name="الإعدادات"
         options={{
@@ -176,3 +183,6 @@ const HomePageWrapper = () => {
 export default HomePageWrapper;
 
 
+/*
+Homepage wrapper that introduces the tab navigation bar.
+*/

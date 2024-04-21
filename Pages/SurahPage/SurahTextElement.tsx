@@ -1,8 +1,10 @@
 import React from "react";
 import { Text, View, Platform, StyleSheet, Dimensions } from "react-native";
+
 // Helpers
 import { englishToArabicNumber, getGlobalAyahInd } from "../../helpers";
 import { isWordInAyah } from "../../helpers";
+
 // State
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -11,27 +13,36 @@ import {
   CurrentAyahInd,
   AppColor,
   AyahFontFamily,
-  AyahFontSize
+  AyahFontSize,
 } from "../../Redux/slices/app";
 
-export const AyahWord: React.FC<{
+interface AyahWordProps {
   wordObj: string;
   index: number;
   currentSurahByWords: any;
-}> = ({ wordObj, index, currentSurahByWords }) => {
-  // get Ayah related states to allow playing upon press
+}
+
+export const AyahWord: React.FC<AyahWordProps> = ({
+  wordObj,
+  index,
+  currentSurahByWords,
+}) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+
+  // Applying settings
+  const appColor = useSelector(AppColor);
+  const ayahFontSize = useSelector(AyahFontSize);
+  const ayahFontFamily = useSelector(AyahFontFamily);
+
+  // Get Ayah related states to allow playing upon press
   const [currentAyahInd, setCurrentAyahInd] = [
     useSelector(CurrentAyahInd),
     wrapDispatch(SetCurrentAyahInd),
   ];
   const setJustChoseNewAyah = wrapDispatch(SetJustChoseNewAyah);
-  const appColor = useSelector(AppColor);
-  const ayahFontSize = useSelector(AyahFontSize);
-  const ayahFontFamily = useSelector(AyahFontFamily);
 
-  // get sajda locations
+  // Get sajda locations
   let sajdaLocs = currentSurahByWords?.sajda;
   const secondSagda = sajdaLocs && sajdaLocs.length > 1 ? sajdaLocs[1] : -1; // Surah Al-Haj only
 
@@ -44,7 +55,7 @@ export const AyahWord: React.FC<{
           fontFamily: ayahFontFamily,
         },
         isWordInAyah(index, currentAyahInd, currentSurahByWords)
-          ? { color: appColor}
+          ? { color: appColor }
           : {},
       ]}
     >
@@ -61,7 +72,7 @@ export const AyahWord: React.FC<{
       {/* render the ayah number */}
       {currentSurahByWords.lastWordsinAyah.includes(index) && (
         <Text
-          style={{...styles.ayahNumStyle, fontSize: ayahFontSize}}
+          style={{ ...styles.ayahNumStyle, fontSize: ayahFontSize }}
           onPress={() => {
             setCurrentAyahInd(
               currentSurahByWords.lastWordsinAyah.indexOf(index)
@@ -80,7 +91,6 @@ export const AyahWord: React.FC<{
   );
 };
 
-
 const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   fullWidth: {
@@ -92,7 +102,7 @@ const styles = StyleSheet.create({
   ayahWordStyle: {
     color: "black",
     letterSpacing: Platform.OS === "web" ? 0 : 5,
-    alignSelf:'flex-start'
+    alignSelf: "flex-start",
   },
   sajdaStyle: {
     fontFamily: "NewmetRegular",
@@ -104,10 +114,8 @@ const styles = StyleSheet.create({
     letterSpacing: 5,
     color: "black",
   },
-  juzNameStyle: {
-    alignSelf: "stretch",
-    textAlign: "center",
-    fontSize: 20,
-    fontFamily: "UthmanicHafs",
-  },
 });
+
+/*
+This helps render a single word of a Surah in SurahText. There is loops on all words in a Surah.
+*/

@@ -20,29 +20,31 @@ interface AppState {
   sheikh: string;
 }
 
+// Remember: can CTRL+Shift+F to find where it's being used
 const initialState: AppState = {
-  inHomePage: true,                // are we in the home page?
-  currentSurahInd: 0,             // the index of the current surah (i.e., 0-113)
-  currentAyahInd: 0,              // the index of the current ayah (i.e., 0-6234)
-  justEnteredNewSurah: false,     // has the user just entered a new surah? (e.g., reset Ayah and make audio in sync)
-  justEnteredNewSurahJuz: false,  // has the user just entered a new juz subset (e.g., part of Surah)
-  justChoseNewAyah: false,        // has the user just pressed a new ayah? (e.g., make audio in sync)
-  pause: true,                    // is the audio paused?
-  scrolledFar: false,             // has the user scrolled far enough to hide the Surah Header
-  juzMode: false,                 // should homepage be viewed by Juz or by Surah
-  tafsirMode: false,               // should Surah view full Surah or per-Ayah tafsir
+  inHomePage: true,                  // are we in the home page?
+  currentSurahInd: 0,                // the index of the current surah (i.e., 0-113)
+  currentAyahInd: 0,                 // the index of the current ayah (i.e., 0-6234)
+  justEnteredNewSurah: false,        // has the user just entered a new surah? (e.g., reset Ayah and make audio in sync): edge triggered
+  justEnteredNewSurahJuz: false,     // has the user just entered a new juz subset (e.g., part of Surah): edge triggered
+  justChoseNewAyah: false,           // has the user just pressed a new ayah? (e.g., make audio in sync)
+  playBackChanged: false,            // has the Ayah just changed while in juzMode: it's edge triggered
+  pause: true,                       // is the audio paused?
+  scrolledFar: false,                // has the user scrolled far enough to hide the Surah Header
+  juzMode: false,                    // should homepage be viewed by Juz or by Surah
+  tafsirMode: false,                 // should Surah view full Surah or per-Ayah tafsir
   currentJuzInd: 0,                  // the current juz (i.e., 0-29)
   juzCollapse: Array(30).fill(true), // whether each juz list item is collapsed
-  playBackChanged: false,          // has the user changed the playback speed?
-  appColor: "#009193",
-  ayahFontSize: 25,
-  ayahFontFamily: 'NewmetRegular',
-  sheikh: "Afasi"
+  appColor: "#009193",               // app theme picked in the settings
+  ayahFontSize: 25,                  // app ayah font size picked in the settings
+  ayahFontFamily: 'NewmetRegular',   // app ayah font family picked in the settings
+  sheikh: "Afasi"                    // reciter of ayahs in the app
 };
 
 const appSlice = createSlice({
   name: "store",
   initialState,
+  // setter functions all follow the same template:
   reducers: {
     SetInHomePage(state, action: PayloadAction<boolean>) {
       state.inHomePage = action.payload;
@@ -137,3 +139,7 @@ export const AyahFontFamily = (state:any) => state.store.ayahFontFamily;
 export const Sheikh = (state:any) => state.store.sheikh;
 
 export default appSlice.reducer;
+
+/*
+All centralized persistent state exists here and is imported in individual components.
+*/

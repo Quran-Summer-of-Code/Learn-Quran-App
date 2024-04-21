@@ -1,4 +1,5 @@
 import React from "react";
+
 //  Redux and friends
 import { Provider } from "react-redux";
 import { persistor } from "./Redux/store";
@@ -25,10 +26,12 @@ const AppWrapper = () => {
   // RTL
   I18nManager.allowRTL(true);
   I18nManager.forceRTL(true);
+
   //Ignore app screen warnings (still show in terminal)
   React.useEffect(() => {
     LogBox.ignoreAllLogs(true)
  }, [])
+
   // Load fonts
   const [fontsLoaded] = useFonts(fonts);
   if (!fontsLoaded) return null;
@@ -37,10 +40,15 @@ const AppWrapper = () => {
       <PersistGate persistor={persistor}>
         <RootSiblingParent>
           <Navigation />
-          <Toast />
+          {/* Allows showing toast messages anywhere with Toast.show({...}) */}
+          <Toast />           
         </RootSiblingParent>
       </PersistGate>
     </Provider>
   );
 };
 export default AppWrapper;
+
+/*
+This is the entry point to the program it has wrappers to allow for persistent centralized states with Redux.
+*/

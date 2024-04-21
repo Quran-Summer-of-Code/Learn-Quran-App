@@ -39,3 +39,7 @@ interface Props {
   };
 
   export default HomeHeader;
+
+/*
+Logo at the top of the home page
+*/

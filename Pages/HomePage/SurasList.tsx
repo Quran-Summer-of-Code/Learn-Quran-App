@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
 import { Platform, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+
 // Components
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+
 // Helpers
 import { englishToArabicNumber, colorize } from "../../helpers";
+
 // State
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -105,6 +108,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
     </TouchableOpacity>
   );
 
+  // Now let's loop on all Suras and show entry of each in a vertical list
   return (
     <>
       <View
@@ -187,3 +191,7 @@ const styles = StyleSheet.create({
 });
 
 export default SurasList;
+
+/*
+Used in the HomePage component and renders the suras list when juzMode is false
+*/

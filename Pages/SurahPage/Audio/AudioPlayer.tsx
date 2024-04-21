@@ -4,11 +4,10 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   Dimensions,
   TouchableOpacity,
-  Image,
 } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import TrackPlayer, {
   Event,
   State,
@@ -16,13 +15,12 @@ import TrackPlayer, {
   useTrackPlayerEvents,
   useProgress,
 } from "react-native-track-player";
-import Slider from "@react-native-community/slider";
-// @ts-ignore
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { setupPlayer } from "./playerUtils";
+import Slider from "@react-native-community/slider";
 
+// States
 import { useSelector, useDispatch } from "react-redux";
-import app, {
+import {
   CurrentAyahInd,
   CurrentSurahInd,
   JustChoseNewAyah,
@@ -40,20 +38,21 @@ import app, {
   SetPlayBackChanged,
   AppColor,
 } from "../../../Redux/slices/app";
-// surasList
+
+// Data
 import surasList from "../../../Quran/surasList.json";
 import juzInfo from "../../../Quran/juzInfo.json";
-//state
+
+// Helper functions
 import {
   getSurahIndGivenAyah,
   getLocalAyahInd,
   getGlobalAyahInd,
   findJuzSurahAyahIndex,
+  englishToArabicNumber 
 } from "../../../helpers";
 
-import { englishToArabicNumber } from "../../../helpers";
 
-import { useNavigation } from "@react-navigation/native";
 
 interface AudioPlayerProps {
   audioList: any;
@@ -62,6 +61,8 @@ interface AudioPlayerProps {
 const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+
+  // Basic states (see definitions in Redux/slices/app.ts)
   const [currentSurahInd, setCurrentSurahInd] = [
     useSelector(CurrentSurahInd),
     wrapDispatch(SetCurrentSurahInd),
@@ -82,25 +83,24 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
   const setCurrentJuzInd = wrapDispatch(SetCurrentJuzInd);
 
   const surasCount = 114;
-  const juzSuras = 135;
   const [trackMD, setTrackMD] = useState<any>(audioList[currentSurahInd]);
-  const playBackState = usePlaybackState();
-
-  const progress = useProgress();
 
   const [startAyahIndForJuz, setStartAyahIndForJuz] = React.useState(0);
   const [endAyahIndForJuz, setEndAyahIndForJuz] = React.useState(
     parseInt(surasList[currentSurahInd].numAyas) - 1
   );
+
   const appColor = useSelector<string>(AppColor);
 
-  const navigation = useNavigation<any>();
-
+  // Start playing from first Ayah of surah or first Ayah of juz
+  const playBackState = usePlaybackState();
   useEffect(() => {
     const initializePlayer = async () => {
       try {
         await setupPlayer(audioList);
+        // last juz has disjoint suras so it's treated as if we are not in juzMode
         if (juzMode && currentJuzInd < 29) {
+          // Go to first Ayah of the current surah in the current juz
           let suras = juzInfo[currentJuzInd].juzSuras;
           let ayahSplits = juzInfo[currentJuzInd].splits;
           let firstAyah = ayahSplits[suras.indexOf(currentSurahInd)][1];
@@ -109,6 +109,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
           setEndAyahIndForJuz(lastAyah);
           TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, firstAyah));
         } else {
+          // Otherwise, just start from the actual first Ayah of the surah
           setStartAyahIndForJuz(0);
           setEndAyahIndForJuz(parseInt(surasList[currentSurahInd].numAyas) - 1);
           TrackPlayer.skip(surasList[currentSurahInd].firstAyah);
@@ -127,6 +128,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
     wrapDispatch(SetPlayBackChanged),
   ];
 
+  // If they Ayah changes, juz or surah may change and we need to adjust firstAyah/lastAyah of current surah
   useEffect(() => {
     if (!juzMode || currentJuzInd == 29 || currentJuzInd == null) {
       setStartAyahIndForJuz(0);
@@ -141,7 +143,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
     }
   }, [playBackChanged, currentSurahInd]);
 
-  // if currentAyahInd changes replay the current track
+  // if currentAyahInd changes start playing from the Ayah
   useEffect(() => {
     if (currentAyahInd !== null && justChoseNewAyah) {
       TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, currentAyahInd));
@@ -149,6 +151,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
     }
   }, [currentAyahInd]);
 
+  // Change Juz and Surah as necessary whenever another track (i.e., Ayah plays): e.g., next Ayah
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
     if (event.type === "playback-track-changed" && event.nextTrack !== null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
@@ -168,23 +171,21 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
     }
   });
 
+  // To allow control from the navigation bar
   useTrackPlayerEvents([Event.RemotePause], async (event) => {
     if (event.type === "remote-pause") {
       setPause(true);
     }
   });
-
   useTrackPlayerEvents([Event.RemotePlay], async (event) => {
     if (event.type === "remote-play") {
       setPause(false);
     }
   });
-  // TODOS:
-  // Write a function that gets the local Ayah of the next part: it would see if the current juz has a next/previous surah and if not go to first/last surah of next/previous juz
-  // such function would also return the navigated to surahInd (corresponding to the localAyah ind) and juz so we can set both
 
-  // for the scrollToTop issue: search more for rerender or force call scrollToTop on playbackchange
-
+  // The next two plates of spaghetti handle transitioning with audio player buttons
+  // It's nontrivial because in juzMode, the transition may or may not get you out of the current surah
+  // So all  the calculations needed for that are done here.
   const nextTrack = async (
     currentSurahInd: number,
     setCurrentSurahInd: Function
@@ -237,7 +238,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
     } else {
       let currentSurahIndForJuz =
         juzInfo[currentJuzInd].juzSuras.indexOf(currentSurahInd);
-      let numSurasInJuz = juzInfo[currentJuzInd].juzSuras.length;
       if (currentSurahIndForJuz > 0) {
         let newSurahInd =
           juzInfo[currentJuzInd].juzSuras[currentSurahIndForJuz - 1];
@@ -266,6 +266,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
     }
   };
 
+  // pausing logic
   useEffect(() => {
     if (pause) {
       TrackPlayer.pause();
@@ -273,10 +274,12 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
       TrackPlayer.play();
     }
   }, [pause]);
+
   return (
     <View style={{ ...styles.container, borderColor: appColor }}>
       <View style={styles.mainContainer}>
         <View>
+          {/* Slider and Ayah numbers */}
           <Slider
             style={styles.progressBar}
             value={currentAyahInd}
@@ -306,6 +309,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
             </Text>
           </View>
         </View>
+        {/* Audio controller */}
         <View style={styles.audioControlsContainer}>
           <TouchableOpacity
             onPress={() => previousTrack(currentSurahInd, setCurrentSurahInd)}
@@ -394,3 +398,7 @@ const styles = StyleSheet.create({
     width: "60%",
   },
 });
+
+/*
+Audio player appearing at the bottom in each SurahPage.
+*/

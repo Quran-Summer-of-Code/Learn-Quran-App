@@ -1,9 +1,17 @@
-// @ts-nocheck
+// @ts-nocheck (due to icon packages)
 import React, { useState } from "react";
 import { View, StyleSheet, Text, ScrollView, Dimensions } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { colorize, englishToArabicNumber } from "../../helpers";
+
+// External components
 import ColorPicker, { Swatches } from "reanimated-color-picker";
+import Slider from "@react-native-community/slider";
+import { Dropdown } from "react-native-element-dropdown";
+
+// Helper functions
+import { colorize, englishToArabicNumber } from "../../helpers";
+
+// States
+import { useDispatch, useSelector } from "react-redux";
 import {
   AppColor,
   SetAppColor,
@@ -14,42 +22,42 @@ import {
   Sheikh,
   SetSheikh,
 } from "../../Redux/slices/app";
-import { useDispatch, useSelector } from "react-redux";
+
+// Icons
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Slider from "@react-native-community/slider";
-import { Dropdown } from "react-native-element-dropdown";
+
 
 interface Props {}
 
 const SettingsPage: React.FC<Props> = () => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
 
-  const [appColor, setAppColor] = [
-    useSelector(AppColor),
-    wrapDispatch(SetAppColor),
-  ];
-  const [ayahFontSize, setAyahFontSize] = [
-    useSelector(AyahFontSize),
-    wrapDispatch(SetAyahFontSize),
-  ];
-  const colors = [
-    "#009193",
-    "#026670",
-    "#3D52A0",
-    "#2E9CCA",
-    "#124e66",
-    "#314455",
-  ];
-
+  // Settings allowed options
   const fontsMap = [
     { label: "عثماني", value: "UthmanBold" },
     { label: "كوفيان", value: "KufyanMedium" },
     { label: "قلم", value: "QalamRegular" },
     { label: "نيومت", value: "NewmetRegular" },
     { label: "اميري", value: "Amiri" },
+  ];
+
+  const sheiksMap = [{ label: "مشاري العفاسي", value: "Afasi" }];
+
+  const colors = [
+    "#009193",
+    "#036670",
+    "#3D52A0",
+    "#2E9CCA",
+    "#124e66",
+    "#08895f",
+  ];
+
+  // Corresponding state
+  const [ayahFontSize, setAyahFontSize] = [
+    useSelector(AyahFontSize),
+    wrapDispatch(SetAyahFontSize),
   ];
   const [ayahFontFamily, setAyahFontFamily] = [
     useSelector(AyahFontFamily),
@@ -59,9 +67,12 @@ const SettingsPage: React.FC<Props> = () => {
     useSelector(Sheikh),
     wrapDispatch(SetSheikh),
   ]
+  const [appColor, setAppColor] = [
+    useSelector(AppColor),
+    wrapDispatch(SetAppColor),
+  ];
+  // for dropdown
   const [isFocus, setIsFocus] = useState(false);
-
-  const sheiksMap = [{ label: "مشاري العفاسي", value: "Afasi" }];
 
   return (
     <View
@@ -71,12 +82,14 @@ const SettingsPage: React.FC<Props> = () => {
       }}
     >
       <ScrollView>
+        {/* Example Ayah for Testing Settings */}
         <View style={{backgroundColor: colorize(-0.1, appColor), margin: 20, borderRadius: 30, padding: 10}}>
           <Text style={{...styles.ayahWordStyle, textAlign:'center', fontFamily:ayahFontFamily, fontSize:ayahFontSize, color: '#fff'}}>
             {/* <Text style={{fontFamily:'KaalaTaala', fontSize: ayahFontSize+5}}>4</Text> */}
           إِنَّا أَنذَرْنَاكُمْ عَذَاباً قَرِيباً يَوْمَ يَنظُرُ الْمَرْءُ مَا قَدَّمَتْ يَدَاهُ وَيَقُولُ الْكَافِرُ يَا لَيْتَنِي كُنتُ تُرَاباً  
           </Text>
         </View>
+        {/* Choose type of font */}
         <View style={styles.itemWrapper}>
           <View
             style={{
@@ -125,6 +138,7 @@ const SettingsPage: React.FC<Props> = () => {
             iconColor={"#fff"}
           />
         </View>
+        {/* Choose size of font */}
         <View style={styles.itemWrapper}>
           <View
             style={{
@@ -171,6 +185,7 @@ const SettingsPage: React.FC<Props> = () => {
             </Text>
           </View>
         </View>
+        {/* Choose reciter */}
         <View style={styles.itemWrapper}>
           <View
             style={{
@@ -219,6 +234,7 @@ const SettingsPage: React.FC<Props> = () => {
             iconColor={"#fff"}
           />
         </View>
+        {/* Choose app theme */}
         <View style={styles.itemWrapper}>
           <View
             style={{
@@ -334,3 +350,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
 });
+
+/*
+Represents the settings page in the app
+*/

@@ -23,3 +23,7 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store)
+
+/*
+This allows centralized persistent state with Redux and wraps App.js.
+*/

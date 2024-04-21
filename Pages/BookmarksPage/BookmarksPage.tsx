@@ -38,3 +38,6 @@ const BookmarksPage: React.FC<Props>  = () => {
     },
   });
   
+/*
+Bookmarks page in the app.
+*/

@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import NavigationDrawer from "./NavigationDrawer";
 import { StatusBar } from "expo-status-bar";
 
 // Pages
@@ -23,7 +22,7 @@ import { prepareAudio, colorize } from "./helpers";
 const Drawer = createDrawerNavigator();
 
 function Navigation() {
-  // Setup the audio data needed (temporary initialization then full population on first load) 
+  // Setup the audio data needed (temporary initialization then full population on first load)
   const [audioList, setAudioList] = useState([
     {
       title: "جاري التحميل",
@@ -33,14 +32,19 @@ function Navigation() {
     },
   ]);
   useEffect(() => {
-    const author = "مشاري العفاسي";
+    const author = "مشاري العفاسي"; // easily generalize later
     const baseUrl = "https://cdn.islamic.network/quran/audio/128/ar.alafasy";
-    const img_path = require("./assets/quran.jpeg")
+    const img_path = require("./assets/quran.jpeg");
     prepareAudio(baseUrl, author, img_path, setAudioList);
   }, []);
-  
-  const appColor = useSelector(AppColor);
 
+  // External State
+  const appColor = useSelector(AppColor);               // chosen in settings
+  // SurahHeader hides and StatusBar change if scrolled down far and not in home
+  const scrolledFar = useSelector(ScrolledFar);
+  const inHomePage = useSelector(InHomePage);
+
+  // Styles for the drawer
   const drawerStyles = {
     drawerStyle: {
       backgroundColor: colorize(-0.1, appColor),
@@ -66,18 +70,15 @@ function Navigation() {
     swipeEnabled: false,
   };
 
-    // SurahHeader and StatusBar change if scrolled down far and not in home
-    const scrolledFar = useSelector(ScrolledFar);
-    const inHomePage = useSelector(InHomePage);
+
   return (
     <>
-      <StatusBar style={(scrolledFar && !inHomePage) ? "dark" : "light"} />
+      <StatusBar style={scrolledFar && !inHomePage ? "dark" : "light"} />
       <NavigationContainer>
         <Drawer.Navigator
           useLegacyImplementation={false}
           //@ts-ignore
           screenOptions={drawerStyles}
-          drawerContent={(props) => <NavigationDrawer {...props} />}
         >
           {/* Pages => navigation.navigate("PageName") to show the component */}
           <Drawer.Screen
@@ -101,17 +102,17 @@ function Navigation() {
           >
             {(props) => <SurahPage audioList={audioList} />}
           </Drawer.Screen>
-          <Drawer.Screen
-            name="Settings"
-            options={{ headerShown: false }}
-            component={EmptyPage}
-          />
         </Drawer.Navigator>
       </NavigationContainer>
     </>
   );
 }
 
-
-
 export default Navigation;
+/*
+This file makes it possible to navigate between Home and Surah pages and show them in  a drawer.
+That said, the drawer functionality is not used because we have a tab navigator as shown in the bottom.
+The main reason this exists:
+the SurahPage can't be part of the tab navigator which exposes different entry points to the program only
+(e.g., Qera', Tafsir, Hafeza, Settings) and includes no more nesting for SurahPage or TafsirPage.
+*/

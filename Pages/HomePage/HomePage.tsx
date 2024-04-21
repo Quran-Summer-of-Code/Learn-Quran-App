@@ -1,28 +1,30 @@
 import React, { useMemo, useEffect } from "react";
 import { Platform, Pressable } from "react-native";
 import { View, StyleSheet, Text, TextInput } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
+
 //Main Components
 import SurasList from "./SurasList"; // Assuming the component file is in the same directory
+
 // Data
 import surasList from "../../Quran/surasList.json";
 import SurasJuzList from "./SurasJuzList";
+
 // State
 import { useDispatch, useSelector } from "react-redux";
 import { SetInHomePage } from "../../Redux/slices/app";
 import { JuzMode, SetJuzMode } from "../../Redux/slices/app";
 import { TafsirMode, AppColor } from "../../Redux/slices/app";
+
 // Helpers
 import { colorize } from "../../helpers";
+
 // CSS related
 import Constants from "expo-constants";
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
-  const navigation = useNavigation();
-  const isWeb = Platform.OS === "web";
 
   // Set in HomePage as true once the user navigates in
   const focus = useIsFocused();
@@ -133,3 +135,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+
+/*
+Actual homepage component (what you see once you get into the app excluding the tab navigation bar)
+*/

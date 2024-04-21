@@ -29,3 +29,6 @@ const EmptyPage: React.FC<Props>  = () => {
     },
   });
   
+/*
+An empty page to copy-paste while making new components
+*/

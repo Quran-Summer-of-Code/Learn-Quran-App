@@ -3,4 +3,4 @@ import TrackPlayer from 'react-native-track-player';
 import App from './App';
 
 registerRootComponent(App);
-TrackPlayer.registerPlaybackService(() => require('./backgroundAudioService'));
+TrackPlayer.registerPlaybackService(() => require('./backgroundAudioService')); // for audio playing purposes

@@ -22,13 +22,6 @@ const SurahHeader: React.FC<SurahHeaderProps> = ({
         width: "100%",
       }}
     >
-      {/* <Ionicons
-          name="menu"
-          size={30}
-          color="white"
-          style={{ marginRight: 10, marginLeft: 10 }}
-          onPress={() => navigation.openDrawer()}
-        /> */}
       <Text style={{ color: "white", fontSize: 40 }}>
         <Text style={{ fontFamily: "UthmanRegular", marginHorizontal: 4 }}>
           {"﴾ "}
@@ -41,16 +34,13 @@ const SurahHeader: React.FC<SurahHeaderProps> = ({
           {" ﴿"}
         </Text>
       </Text>
-      {/* <Ionicons
-          name="menu"
-          size={30}
-          color="white"
-          style={{ marginRight: 10, marginLeft: 10 }}
-          onPress={() => navigation.openDrawer()}
-        /> */}
-      {/* <Ionicons name="menu" size={30} color="white" style={{ marginRight: 10, marginLeft: 10 }} onPress={() => navigation.openDrawer()} /> */}
     </View>
   );
 };
 
 export default SurahHeader;
+
+
+/*
+The header containing surah name which appears in the top. It's used in SurahPage.
+*/

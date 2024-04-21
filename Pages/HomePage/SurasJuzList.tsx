@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Platform, FlatList } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { useNavigation } from "@react-navigation/native";
+
 // Components
 import {
   View,
@@ -10,10 +11,13 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
+
 //Icons
 import { AntDesign } from "@expo/vector-icons";
+
 // Helpers
 import { englishToArabicNumber, colorize } from "../../helpers";
+
 // State
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -31,6 +35,7 @@ import {
   JuzMode,
   AppColor,
 } from "../../Redux/slices/app";
+
 // Data
 import juzInfo from "../../Quran/juzInfo.json";
 
@@ -47,34 +52,32 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
   const juzMode = useSelector(JuzMode);
   const appColor = useSelector(AppColor);
 
-  // Get index of current surah
+  // Set and Get index of current surah and juz
   const [currentSurahInd, setCurrentSurahInd] = [
     useSelector(CurrentSurahInd),
     wrapDispatch(SetCurrentSurahInd),
   ];
-  // Get whether the user just entered a new surah (both used to synchornize audio)
-  const [justEnteredNewSurah, setJustEnteredSurah] = [
-    useSelector(JustEnteredNewSurah),
-    wrapDispatch(SetJustEnteredNewSurah),
-  ];
-  const [justEnteredNewSurahJuz, setJustEnteredNewSurahJuz] = [
-    useSelector(JustEnteredNewSurahJuz),
-    wrapDispatch(SetJustEnteredNewSurahJuz),
-  ];
-
-  // Set in HomePage as false once the user navigates out
-  const setInHomePage = wrapDispatch(SetInHomePage);
-
-  const [juzCollapse, setJuzCollapse] = [
-    useSelector(JuzCollapse),
-    wrapDispatch(SetJuzCollapse),
-  ];
-
   const [currentJuzInd, setCurrentJuzInd] = [
     useSelector(CurrentJuzInd),
     wrapDispatch(SetCurrentJuzInd),
   ];
 
+  // Get whether the user just entered a new surah (both used to synchornize audio)
+  const [justEnteredNewSurahJuz, setJustEnteredNewSurahJuz] = [
+    useSelector(JustEnteredNewSurahJuz),
+    wrapDispatch(SetJustEnteredNewSurahJuz),
+  ];
+
+  // To set in HomePage as false once the user navigates out
+  const setInHomePage = wrapDispatch(SetInHomePage);
+
+  // Whether each juz is collapsed or shows suras under it
+  const [juzCollapse, setJuzCollapse] = [
+    useSelector(JuzCollapse),
+    wrapDispatch(SetJuzCollapse),
+  ];
+
+  // To uncollapse individual juz items upon press
   const updateCollapse = (index: number, value: boolean) => {
     if (index >= 0 && index < juzCollapse.length) {
       const newJuzCollapse = [...juzCollapse];
@@ -83,7 +86,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
     }
   };
 
-  // Check if juz contains full surah
+  // Check if juz contains full surah (in which case no need to display numbers)
   const containsFullSurah = (
     juz: any,
     surahIndex: number,
@@ -96,8 +99,10 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
     );
   };
 
+  // Single juz entry with suras bellow it
   const renderItem = ({ item, index }: { item: any; index: number }) => (
     <View key={index.toString()}>
+      {/* View = Item showing Juz + item showing suras under it */}
       <Pressable
         style={{ ...styles.itemWrapper, borderBottomColor: appColor }}
         key={index.toString()}
@@ -162,6 +167,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
           )}
         </View>
       </Pressable>
+      {/* Shows suras under the juz */}
       {!juzCollapse[index] && (
         <Animatable.View
           animation={!juzCollapse[index] ? "zoomInUp" : "zoomOutDown"}
@@ -195,6 +201,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                 navigation.navigate("SurahPage");
               }}
             >
+              {/* show surah name and Ayah range */}
               <Text>
                 <Text style={[styles.title, { textAlign: "center" }]}>
                   {suras[surahInd].name}{" "}
@@ -219,6 +226,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
     </View>
   );
 
+  // Now let's loop on all Juz and show entry of each in a vertical list
   return (
     <View
       style={[
@@ -292,3 +300,7 @@ const styles = StyleSheet.create({
 });
 
 export default SurasJuzList;
+
+/*
+Used in the HomePage component and renders the juz list with suras when juzMode is true
+*/

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import surasList from "./Quran/surasList.json";
 import suras from "./Quran/suras.json";
 
@@ -80,6 +81,7 @@ export function isWithinRange(x: number, range: number[]) {
     }
 }
 
+// Given index of a word in some Surah and index os some ayah in the same surah see if the word exists in the Ayah
 export function isWordInAyah(wordInd:number, ayahInd:number, currentSurahByWords:any) {
     return  isWithinRange(wordInd, currentSurahByWords.ayahRanges[ayahInd])
 }
@@ -102,8 +104,7 @@ export function findJuzSurahAyahIndex(juzData:any, surahIndex:number, ayahIndex:
 
 
 // Copied from https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
-// Helps brighten or darken a given color (and more stuff)
-// @ts-nocheck
+// Helps brighten or darken a given color (and more stuff) which is used for styling
 export const colorize=(p,c0,c1=null,l=null)=>{
     let r,g,b,P,f,t,h,i=parseInt,m=Math.round,a=typeof(c1)=="string";
     if(typeof(p)!="number"||p<-1||p>1||typeof(c0)!="string"||(c0[0]!='r'&&c0[0]!='#')||(c1&&!a))return "";
@@ -128,3 +129,7 @@ export const colorize=(p,c0,c1=null,l=null)=>{
     if(h)return"rgb"+(f?"a(":"(")+r+","+g+","+b+(f?","+m(a*1000)/1000:"")+")";
     else return"#"+(4294967296+r*16777216+g*65536+b*256+(f?m(a*255):0)).toString(16).slice(1,f?undefined:-2)
 }
+
+/*
+This file has helper functions used throughout the app (e.g., mapping words, juzs, ayahs together).
+*/

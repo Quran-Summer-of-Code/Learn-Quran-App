@@ -1,28 +1,28 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import {
   Text,
-  Platform,
   StyleSheet,
   View,
   FlatList,
   Dimensions,
 } from "react-native";
+
 // Helpers
-import { getGlobalAyahInd } from "../../helpers";
-import { colorize } from "../../helpers";
+import { getGlobalAyahInd, colorize } from "../../helpers";
+
 // Main Components
 import { AyahWord} from "./SurahTextElement";
+
 // Data
 import juzInfo from "../../Quran/juzInfo";
 import surasByWords from "../../Quran/surasByWords";
+
 // State
 import { useSelector, useDispatch } from "react-redux";
 import {
   CurrentAyahInd,
   ScrolledFar,
   SetScrolledFar,
-  PlayBackChanged,
-  SetPlayBackChanged,
   AppColor,
   AyahFontFamily,
   AyahFontSize
@@ -39,42 +39,31 @@ interface SurahTextProps {
 }
 
 const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJuz, endWordIndForJuz}) => {
+  const navigation = useNavigation<any>();
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
-  // to control scrolling status which will control showing/hiding Surah ehader
+
+  // To control scrolling status which will control showing/hiding Surah ehader
   const [scrolledFar, setScrolledFar] = [
     useSelector(ScrolledFar),
     wrapDispatch(SetScrolledFar),
   ];
 
 
-
-  const navigation = useNavigation<any>();
-
-  // load current surah and get current ayah index
+  // Load current surah and slice it based on current juz (if juzMode is false, slicing is no-op)
   let currentSurahByWords = surasByWords[currentSurahInd];
   let currentSurahByWordsWords = surasByWords[currentSurahInd].words.slice(
     startWordIndForJuz,
     endWordIndForJuz + 1
   );
   currentSurahByWordsWords = [...currentSurahByWordsWords, ...'⠀'.repeat(10)]
-
-
-  const flatListRef = useRef(null);
-
-
-
+  // index of current Ayah
   const currentAyahInd = useSelector(CurrentAyahInd);
 
 
   const renderItem = useCallback(
     ({ item: wordObj, index }: any) => {
-      const ayahInd = currentSurahByWords.firstWordsinAyah.indexOf(
-        index + startWordIndForJuz + 1
-      );
-      const globalAyahInd = getGlobalAyahInd(currentSurahInd, ayahInd);
-
-      // The empty character signifies the start of the Ayah (not included: needed only in case we want to render Juz name)
+      // The empty character signifies the start of the Ayah (not included but can be used later to insert text (e.g., titles before some Ayah))
       if (wordObj !== "‎") {
         return (
           <AyahWord
@@ -89,6 +78,9 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
     [currentAyahInd, currentSurahInd, startWordIndForJuz]
   );
 
+  // To control scroll
+  const flatListRef = useRef(null);
+  
   const scrollToIndex = (index: number) => {
     //@ts-ignore
     flatListRef?.current?.scrollToIndex({
@@ -107,18 +99,18 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
           scrollToIndex(index);
         } catch {
           return "error";
+          // in other words, just ignore it
         }
       }, 300);
   }, [currentAyahInd, startWordIndForJuz]);
 
-  // Reset scrolledFar when currentSurahInd changes
+  // Reset scrolledFar when currentSurahInd changes (controls showing or hiding surah header)
   React.useEffect(() => {
     setScrolledFar(false);
   }, [currentSurahInd]);
 
-
+  // Settings states
   const appColor = useSelector(AppColor);
-
   const ayahFontSize = useSelector(AyahFontSize);
   const ayahFontFamily = useSelector(AyahFontFamily)
 
@@ -196,3 +188,8 @@ const styles = StyleSheet.create({
     width: width,
   },
 });
+
+
+/*
+This helps render a single surah or a subset thereof that is part of a Juz depending on juzMode and is controlled by SurahPage.
+*/
