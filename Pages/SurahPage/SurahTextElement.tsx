@@ -9,7 +9,9 @@ import {
   SetCurrentAyahInd,
   SetJustChoseNewAyah,
   CurrentAyahInd,
-  AppColor
+  AppColor,
+  AyahFontFamily,
+  AyahFontSize
 } from "../../Redux/slices/app";
 
 export const AyahWord: React.FC<{
@@ -26,6 +28,8 @@ export const AyahWord: React.FC<{
   ];
   const setJustChoseNewAyah = wrapDispatch(SetJustChoseNewAyah);
   const appColor = useSelector(AppColor);
+  const ayahFontSize = useSelector(AyahFontSize);
+  const ayahFontFamily = useSelector(AyahFontFamily);
 
   // get sajda locations
   let sajdaLocs = currentSurahByWords?.sajda;
@@ -35,6 +39,10 @@ export const AyahWord: React.FC<{
     <Text
       style={[
         styles.ayahWordStyle,
+        {
+          fontSize: ayahFontSize,
+          fontFamily: ayahFontFamily,
+        },
         isWordInAyah(index, currentAyahInd, currentSurahByWords)
           ? { color: appColor}
           : {},
@@ -105,8 +113,6 @@ const styles = StyleSheet.create({
   },
   ayahWordStyle: {
     color: "black",
-    fontSize: 25,
-    fontFamily: "NewmetRegular",
     letterSpacing: Platform.OS === "web" ? 0 : 5,
     alignSelf: "flex-start",
   },

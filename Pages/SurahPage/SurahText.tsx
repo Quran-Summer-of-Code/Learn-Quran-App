@@ -22,10 +22,11 @@ import {
   ShowJuzNameInsideSurah,
   ScrolledFar,
   SetScrolledFar,
-
   PlayBackChanged,
   SetPlayBackChanged,
-  AppColor
+  AppColor,
+  AyahFontFamily,
+  AyahFontSize
 } from "../../Redux/slices/app";
 
 
@@ -132,6 +133,9 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
 
   const appColor = useSelector(AppColor);
 
+  const ayahFontSize = useSelector(AyahFontSize);
+  const ayahFontFamily = useSelector(AyahFontFamily)
+
   return (
     <View
       style={{ display: "flex", height: "100%" }}
@@ -166,7 +170,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
         keyExtractor={(item, index) => index.toString()}
         ListHeaderComponent={() =>
           currentSurahInd !== 8 && (
-            <Text style={{...styles.basmalaStyle, color: appColor}}>
+            <Text style={{...styles.basmalaStyle, color: appColor, fontSize: ayahFontSize + 8, fontFamily: ayahFontFamily}}>
               بِسْمِ اللَّــهِ الرَّحْمَـٰنِ الرَّحِيمِ
             </Text>
           )
@@ -198,16 +202,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
     paddingLeft: 5,
   },
-  suraStyle: {
-    textAlign: "justify",
-    fontSize: 25,
-    color: "#1d1d1d",
-  },
   basmalaStyle: {
     fontSize: 35,
     padding: 5,
     textAlign: "center",
-    fontFamily: "NewmetRegular",
     width: width,
   },
 });

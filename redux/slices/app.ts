@@ -16,6 +16,9 @@ interface AppState {
   juzCollapse: boolean[];
   playBackChanged: boolean;
   appColor: string;
+  ayahFontSize: number;
+  ayahFontFamily: string;
+  sheikh: string;
 }
 
 const initialState: AppState = {
@@ -33,7 +36,10 @@ const initialState: AppState = {
   currentJuzInd: 0,                  // the current juz (i.e., 0-29)
   juzCollapse: Array(30).fill(true), // whether each juz list item is collapsed
   playBackChanged: false,          // has the user changed the playback speed?
-  appColor: "#009193"
+  appColor: "#009193",
+  ayahFontSize: 25,
+  ayahFontFamily: 'NewmetRegular',
+  sheikh: "Afasi"
 };
 
 const appSlice = createSlice({
@@ -84,6 +90,15 @@ const appSlice = createSlice({
     },
     SetAppColor(state, action: PayloadAction<string>) {
       state.appColor = action.payload;
+    },
+    SetAyahFontSize(state, action: PayloadAction<number>) {
+      state.ayahFontSize = action.payload;
+    },
+    SetAyahFontFamily(state, action: PayloadAction<string>) {
+      state.ayahFontFamily = action.payload;
+    },
+    SetSheikh(state, action: PayloadAction<string>) {
+      state.sheikh = action.payload;
     }
   },
 });
@@ -103,7 +118,10 @@ export const {
   SetCurrentJuzInd,
   SetJuzCollapse,
   SetPlayBackChanged,
-  SetAppColor
+  SetAppColor,
+  SetAyahFontSize,
+  SetAyahFontFamily,
+  SetSheikh
 } = appSlice.actions;
 
 export const InHomePage = (state:any) => state.store.inHomePage;
@@ -121,5 +139,8 @@ export const CurrentJuzInd = (state:any) => state.store.currentJuzInd;
 export const JuzCollapse = (state:any) => state.store.juzCollapse;
 export const PlayBackChanged = (state:any) => state.store.playBackChanged;
 export const AppColor = (state:any) => state.store.appColor;
+export const AyahFontSize = (state:any) => state.store.ayahFontSize; 
+export const AyahFontFamily = (state:any) => state.store.ayahFontFamily; 
+export const Sheikh = (state:any) => state.store.sheikh;
 
 export default appSlice.reducer;
