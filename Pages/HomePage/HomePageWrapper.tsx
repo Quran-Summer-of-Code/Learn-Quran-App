@@ -9,7 +9,7 @@ import SettingsPage from "../SettingsPage/SettingsPage";
 
 //State
 import { useSelector, useDispatch } from "react-redux";
-import { SetTafsirMode, AppColor } from "../../Redux/slices/app";
+import { SetTafsirMode, AppColor, TafsirMode } from "../../Redux/slices/app";
 
 const Tab = createBottomTabNavigator();
 
@@ -19,6 +19,7 @@ const HomePageWrapper = () => {
 
   // color from settings
   const appColor = useSelector(AppColor);
+  const tafsirMode = useSelector(TafsirMode);
 
   // styling for bottom tab navigation bar
   const tabStyles = {
@@ -40,7 +41,7 @@ const HomePageWrapper = () => {
   };
 
   return (
-    <Tab.Navigator screenOptions={tabStyles}>
+    <Tab.Navigator screenOptions={tabStyles} initialRouteName={(tafsirMode) ? "التفسير" : "القرائة"}>
       {/* Reading */}
       <Tab.Screen
         name="القرائة"

@@ -18,6 +18,7 @@ import {
   SetInHomePage,
   JuzMode,
   AppColor,
+  TafsirMode
 } from "../../Redux/slices/app";
 
 interface Props {
@@ -30,6 +31,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
   const isWeb = Platform.OS === "web";
   const juzMode = useSelector(JuzMode);
+  const tafsirMode = useSelector(TafsirMode);
   const appColor = useSelector(AppColor);
 
   // Get index of current surah
@@ -50,6 +52,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
     <TouchableOpacity
       style={{ ...styles.itemWrapper, borderBottomColor: appColor }}
       onPress={() => {
+        if (!tafsirMode) {
         if (index !== currentSurahInd) {
           // to detect in audio player and go back to 1st Ayah
           setJustEnteredSurah(!justEnteredNewSurah);
@@ -57,6 +60,12 @@ const SurasList: React.FC<Props> = ({ suras }) => {
         setInHomePage(false);
         setCurrentSurahInd(index);
         navigation.navigate("SurahPage");
+      }
+      else {
+        setInHomePage(false);
+        setCurrentSurahInd(index);
+        navigation.navigate("TafsirPage");
+      }
       }}
     >
       <View style={styles.item}>

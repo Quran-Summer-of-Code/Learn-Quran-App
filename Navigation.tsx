@@ -10,11 +10,12 @@ import { StatusBar } from "expo-status-bar";
 // Pages
 import HomePageWrapper from "./Pages/HomePage/HomePageWrapper";
 import SurahPage from "./Pages/SurahPage/SurahPage";
+import TafsirPage from "./Pages/TafsirPage/TafsirPage";
 import EmptyPage from "./Pages/EmptyPage/EmptyPage";
 
 // Redux
 import { useSelector } from "react-redux";
-import { ScrolledFar, InHomePage, AppColor } from "./Redux/slices/app";
+import { ScrolledFar, InHomePage, AppColor, TafsirMode } from "./Redux/slices/app";
 
 // for loading audio data initially
 import { prepareAudio, colorize } from "./helpers";
@@ -40,6 +41,8 @@ function Navigation() {
 
   // External State
   const appColor = useSelector(AppColor);               // chosen in settings
+  const tafsirMode = useSelector(TafsirMode);
+
   // SurahHeader hides and StatusBar change if scrolled down far and not in home
   const scrolledFar = useSelector(ScrolledFar);
   const inHomePage = useSelector(InHomePage);
@@ -73,7 +76,7 @@ function Navigation() {
 
   return (
     <>
-      <StatusBar style={scrolledFar && !inHomePage ? "dark" : "light"} />
+      <StatusBar style={((scrolledFar || tafsirMode) && !inHomePage) ? "dark" : "light"} />
       <NavigationContainer>
         <Drawer.Navigator
           useLegacyImplementation={false}
@@ -101,6 +104,16 @@ function Navigation() {
             }}
           >
             {(props) => <SurahPage audioList={audioList} />}
+          </Drawer.Screen>
+          <Drawer.Screen
+            name="TafsirPage"
+            options={{
+              headerShown:  false,
+              headerTitle: () => <></>,
+              headerTitleAlign: "center",
+            }}
+          >
+            {(props) => <TafsirPage />}
           </Drawer.Screen>
         </Drawer.Navigator>
       </NavigationContainer>
