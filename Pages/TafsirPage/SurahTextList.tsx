@@ -13,8 +13,8 @@ import surasList from "../../Quran/surasList.json";
 import surahTafsirs from "../../Quran/surahTafsirs.json";
 import surahSections from "../../Quran/surahSectionsUpdated.json";
 
-import { AppColor, AyahFontFamily, AyahFontSize } from "../../Redux/slices/app";
-import { useSelector } from "react-redux";
+import { AppColor, AyahFontFamily, AyahFontSize, TafsirFontSize, SectionsDisplay, ScrolledFarTafsir, SetScrolledFarTafsir,} from "../../Redux/slices/app";
+import { useDispatch, useSelector } from "react-redux";
 import HTML from "react-native-render-html";
 
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
@@ -22,6 +22,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import * as Clipboard from "expo-clipboard";
 import { Audio } from "expo-av";
 import { ToastAndroid } from "react-native";
+import Constants from "expo-constants";
 
 interface Ayah {
   ayah: string;
@@ -42,11 +43,17 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   const surahFontName = surasList[currentSurahInd].fontName;
   const surahFontFamily = surasList[currentSurahInd].fontFamily;
   const { width } = useWindowDimensions();
+  const dispatch = useDispatch();
+  const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
 
   // Settings states
   const appColor = useSelector(AppColor);
   const ayahFontSize = useSelector(AyahFontSize);
   const ayahFontFamily = useSelector(AyahFontFamily);
+  const tafsirFontSize = useSelector(TafsirFontSize);
+  const sectionsDisplay = useSelector(SectionsDisplay);
+  const scrolledFarTafsir = useSelector(ScrolledFarTafsir);
+  const setScrolledFarTafsir = wrapDispatch(SetScrolledFarTafsir);
 
   const numAyas = parseInt(surasList[currentSurahInd].numAyas);
   const currentSurahSections = surahSections[currentSurahInd];
@@ -64,12 +71,12 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
 
   const renderItem = ({ item, index }: { item: Ayah; index: number }) => (
     <View style={{ marginBottom: 15 }}>
-      {currentSurahSections.hasOwnProperty(`${index + 1}`) && (
+      {sectionsDisplay &&currentSurahSections.hasOwnProperty(`${index + 1}`) && (
         <>
         {currentSurahSections.hasOwnProperty(`${index + 1}S`) && 
         <View style={{backgroundColor: appColor, marginHorizontal: 20, borderRadius: 30, marginBottom: -20}}>
         <Text style={{
-          ...styles.ayahStyle, textAlign:'center', color: '#fff'}}>{currentSurahSections[`${index + 1}S`]}</Text>
+          ...styles.ayahStyle, textAlign:'center', color: '#fff', padding:9}}>{currentSurahSections[`${index + 1}S`]}</Text>
           </View>
         }
         <LinearGradient
@@ -101,7 +108,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
           marginTop: 0,
         }}
       >
-        <Text style={[styles.ayahStyle, { textAlign: "justify" }]}>
+        <Text style={[styles.ayahStyle, { textAlign: "justify", }]}>
           {item.ayah}
         </Text>
         <LinearGradient
@@ -211,6 +218,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
                 body: {
                   textAlign: "justify",
                   lineHeight: 20,
+                  fontSize: tafsirFontSize
                 },
               }}
             />
@@ -226,6 +234,12 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
         data={currentSurah}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
+        onScroll={(event) => {
+          const isFar = event.nativeEvent.contentOffset.y > 50;
+          if (scrolledFarTafsir !== isFar) {
+            setScrolledFarTafsir(isFar);
+          }
+        }}
         ListHeaderComponent={
           <>
             <View
@@ -233,11 +247,11 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
                 display: "flex",
                 justifyContent: "center",
                 flexDirection: "row-reverse",
-                marginTop: 35,
+                marginTop: Constants.statusBarHeight,
                 alignItems: "center",
                 backgroundColor: appColor,
-                marginHorizontal: 20,
-                borderRadius: 20,
+                // marginHorizontal: 20,
+                // borderRadius: 20,
                 padding: 10,
               }}
             >

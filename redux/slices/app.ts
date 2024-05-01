@@ -9,6 +9,7 @@ interface AppState {
   justChoseNewAyah: boolean;
   pause: boolean;
   scrolledFar: boolean;
+  scrolledFarTafsir: boolean;
   juzMode: boolean;
   tafsirMode: boolean;
   currentJuzInd: number;
@@ -18,6 +19,9 @@ interface AppState {
   ayahFontSize: number;
   ayahFontFamily: string;
   sheikh: string;
+  tafsirBook: string;
+  tafsirFontSize: number;
+  sectionsDisplay: boolean;
 }
 
 // Remember: can CTRL+Shift+F to find where it's being used
@@ -38,7 +42,11 @@ const initialState: AppState = {
   appColor: "#009193",               // app theme picked in the settings
   ayahFontSize: 25,                  // app ayah font size picked in the settings
   ayahFontFamily: 'NewmetRegular',   // app ayah font family picked in the settings
-  sheikh: "Afasi"                    // reciter of ayahs in the app
+  sheikh: "Afasi",                   // reciter of ayahs in the app
+  tafsirBook: "Waseet",              // tafsir book of the app
+  tafsirFontSize: 16,                // tafsir font size in the app
+  sectionsDisplay: true,             // whether to display sections for each surah
+  scrolledFarTafsir: false          // whether or not scrolled far in tafsit (control status bar bgcolor)
 };
 
 const appSlice = createSlice({
@@ -96,6 +104,18 @@ const appSlice = createSlice({
     },
     SetSheikh(state, action: PayloadAction<string>) {
       state.sheikh = action.payload;
+    },
+    SetTafsirBook(state, action: PayloadAction<string>) {
+      state.tafsirBook = action.payload;
+    },
+    SetTafsirFontSize(state, action: PayloadAction<number>) {
+      state.tafsirFontSize = action.payload;
+    },
+    SetSectionsDisplay(state, action: PayloadAction<boolean>) {
+      state.sectionsDisplay = action.payload;
+    },
+    SetScrolledFarTafsir(state, action: PayloadAction<boolean>) {
+      state.scrolledFarTafsir = action.payload;
     }
   },
 });
@@ -117,7 +137,11 @@ export const {
   SetAppColor,
   SetAyahFontSize,
   SetAyahFontFamily,
-  SetSheikh
+  SetSheikh,
+  SetTafsirBook,
+  SetSectionsDisplay,
+  SetTafsirFontSize,
+  SetScrolledFarTafsir
 } = appSlice.actions;
 
 export const InHomePage = (state:any) => state.store.inHomePage;
@@ -137,6 +161,10 @@ export const AppColor = (state:any) => state.store.appColor;
 export const AyahFontSize = (state:any) => state.store.ayahFontSize; 
 export const AyahFontFamily = (state:any) => state.store.ayahFontFamily; 
 export const Sheikh = (state:any) => state.store.sheikh;
+export const TafsirBook = (state:any) => state.store.tafsirBook;
+export const TafsirFontSize = (state:any) => state.store.tafsirFontSize;
+export const SectionsDisplay = (state:any) => state.store.sectionsDisplay;
+export const ScrolledFarTafsir = (state:any) => state.store.scrolledFarTafsir;
 
 export default appSlice.reducer;
 

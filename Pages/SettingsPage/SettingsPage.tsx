@@ -17,16 +17,22 @@ import {
   SetAppColor,
   AyahFontSize,
   SetAyahFontSize,
+  TafsirFontSize,
+  SetTafsirFontSize,
   AyahFontFamily,
   SetAyahFontFamily,
+  SectionsDisplay,
+  SetSectionsDisplay,
   Sheikh,
   SetSheikh,
+  TafsirBook,
+  SetTafsirBook,
 } from "../../Redux/slices/app";
 
 // Icons
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { FontAwesome6 } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 
 interface Props {}
 
@@ -45,6 +51,15 @@ const SettingsPage: React.FC<Props> = () => {
 
   const sheiksMap = [{ label: "مشاري العفاسي", value: "Afasi" }];
 
+  const tafsirsMap = [
+    { label: "كتاب التفسير الوسيط لطنطاوي", value: "Waseet" },
+  ];
+
+  const allowSectionsMap = [
+    {label: "نعم", value: true},
+    {label: "لا", value: false}
+  ]
+
   const colors = [
     "#009193",
     "#036670",
@@ -59,14 +74,23 @@ const SettingsPage: React.FC<Props> = () => {
     useSelector(AyahFontSize),
     wrapDispatch(SetAyahFontSize),
   ];
+  const [tafsirFontSize, setTafsirFontSize] = [
+    useSelector(TafsirFontSize),
+    wrapDispatch(SetTafsirFontSize),
+  ];
   const [ayahFontFamily, setAyahFontFamily] = [
     useSelector(AyahFontFamily),
     wrapDispatch(SetAyahFontFamily),
   ];
-  const [sheikh, setSheikh] = [
-    useSelector(Sheikh),
-    wrapDispatch(SetSheikh),
-  ]
+  const [sheikh, setSheikh] = [useSelector(Sheikh), wrapDispatch(SetSheikh)];
+  const [tafsirBook, setTafsirBook] = [
+    useSelector(TafsirBook),
+    wrapDispatch(SetTafsirBook),
+  ];
+  const [sectionsDisplay, setSectionsDisplay] = [
+    useSelector(SectionsDisplay),
+    wrapDispatch(SetSectionsDisplay),
+  ];
   const [appColor, setAppColor] = [
     useSelector(AppColor),
     wrapDispatch(SetAppColor),
@@ -83,10 +107,26 @@ const SettingsPage: React.FC<Props> = () => {
     >
       <ScrollView>
         {/* Example Ayah for Testing Settings */}
-        <View style={{backgroundColor: colorize(-0.1, appColor), margin: 20, borderRadius: 30, padding: 10}}>
-          <Text style={{...styles.ayahWordStyle, textAlign:'center', fontFamily:ayahFontFamily, fontSize:ayahFontSize, color: '#fff'}}>
+        <View
+          style={{
+            backgroundColor: colorize(-0.1, appColor),
+            margin: 20,
+            borderRadius: 30,
+            padding: 10,
+          }}
+        >
+          <Text
+            style={{
+              ...styles.ayahWordStyle,
+              textAlign: "center",
+              fontFamily: ayahFontFamily,
+              fontSize: ayahFontSize,
+              color: "#fff",
+            }}
+          >
             {/* <Text style={{fontFamily:'KaalaTaala', fontSize: ayahFontSize+5}}>4</Text> */}
-          إِنَّا أَنذَرْنَاكُمْ عَذَاباً قَرِيباً يَوْمَ يَنظُرُ الْمَرْءُ مَا قَدَّمَتْ يَدَاهُ وَيَقُولُ الْكَافِرُ يَا لَيْتَنِي كُنتُ تُرَاباً  
+            إِنَّا أَنذَرْنَاكُمْ عَذَاباً قَرِيباً يَوْمَ يَنظُرُ الْمَرْءُ مَا
+            قَدَّمَتْ يَدَاهُ وَيَقُولُ الْكَافِرُ يَا لَيْتَنِي كُنتُ تُرَاباً
           </Text>
         </View>
         {/* Choose type of font */}
@@ -155,7 +195,7 @@ const SettingsPage: React.FC<Props> = () => {
               style={{ fontSize: 24 }}
             />
             <Text style={styles.textItem}>حجم خط الآيات</Text>
-            <View style={{ width: 30, height: 30, marginLeft: "47%" }}>
+            <View style={{ width: 30, height: 30, position: 'absolute', right: 15}}>
               <Text
                 style={{ color: "white", fontSize: 20, textAlign: "center" }}
               >
@@ -173,7 +213,7 @@ const SettingsPage: React.FC<Props> = () => {
             maximumTrackTintColor="#919191"
             inverted
             onSlidingComplete={(value) => {
-              setAyahFontSize(Math.round(value* 10)/10);
+              setAyahFontSize(Math.round(value * 10) / 10);
             }}
           />
           <View style={{ ...styles.progressLevelDuraiton }}>
@@ -182,6 +222,53 @@ const SettingsPage: React.FC<Props> = () => {
             </Text>
             <Text style={{ color: "#fff", fontWeight: 700 }}>
               {englishToArabicNumber(35)}
+            </Text>
+          </View>
+        </View>
+        {/* Choose size of font for tafsir */}
+        <View style={styles.itemWrapper}>
+          <View
+            style={{
+              ...styles.itemContainer,
+              backgroundColor: colorize(-0.1, appColor),
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="abjad-arabic"
+              color={"#fff"}
+              style={{ fontSize: 24 }}
+            />
+            <Text style={styles.textItem}>حجم خط التفسير</Text>
+            <View style={{ width: 30, height: 30, position: 'absolute', right: 15 }}>
+              <Text
+                style={{ color: "white", fontSize: 20, textAlign: "center" }}
+              >
+                {englishToArabicNumber(tafsirFontSize)}
+              </Text>
+            </View>
+          </View>
+          <Slider
+            style={{ paddingVertical: 10 }}
+            value={tafsirFontSize}
+            minimumValue={10}
+            maximumValue={26}
+            thumbTintColor={colorize(0.5, appColor)}
+            minimumTrackTintColor={colorize(0.5, appColor)}
+            maximumTrackTintColor="#919191"
+            inverted
+            onSlidingComplete={(value) => {
+              setTafsirFontSize(Math.round(value * 10) / 10);
+            }}
+          />
+          <View style={{ ...styles.progressLevelDuraiton }}>
+            <Text style={{ color: "#fff", fontWeight: 700 }}>
+              {englishToArabicNumber(10)}
+            </Text>
+            <Text style={{ color: "#fff", fontWeight: 700 }}>
+              {englishToArabicNumber(26)}
             </Text>
           </View>
         </View>
@@ -228,6 +315,104 @@ const SettingsPage: React.FC<Props> = () => {
             onBlur={() => setIsFocus(false)}
             onChange={(item) => {
               setSheik(item.value);
+              setIsFocus(false);
+            }}
+            fontFamily="UthmanBold"
+            iconColor={"#fff"}
+          />
+        </View>
+        {/* Choose tafsir book */}
+        <View style={styles.itemWrapper}>
+          <View
+            style={{
+              ...styles.itemContainer,
+              backgroundColor: colorize(-0.1, appColor),
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 9,
+              marginBottom: 15,
+            }}
+          >
+            <FontAwesome
+              name="book"
+              color={"#fff"}
+              style={{ fontSize: 22 }}
+            />
+            <Text style={styles.textItem}>كتاب التفسير</Text>
+            <View style={{ width: 30, height: 30, marginLeft: "55%" }}></View>
+          </View>
+          <Dropdown
+            style={[styles.dropdown]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            containerStyle={{
+              backgroundColor: appColor,
+              borderRadius: 10,
+              borderWidth: 0.5,
+              borderColor: "#ffffff44",
+            }}
+            itemTextStyle={{ color: "#fff" }}
+            selectedTextStyle={{ color: "#fff" }}
+            activeColor={colorize(-0.4, appColor)}
+            data={tafsirsMap}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!isFocus ? "اختر الشيخ" : ""}
+            value={tafsirBook}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            onChange={(item) => {
+              setTafsirBook(item.value);
+              setIsFocus(false);
+            }}
+            fontFamily="UthmanBold"
+            iconColor={"#fff"}
+          />
+        </View>
+        {/* Choose whether to allow displaying sections */}
+        <View style={styles.itemWrapper}>
+          <View
+            style={{
+              ...styles.itemContainer,
+              backgroundColor: colorize(-0.1, appColor),
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 9,
+              marginBottom: 15,
+            }}
+          >
+            <FontAwesome6
+              name="section"
+              color={"#fff"}
+              style={{ fontSize: 22 }}
+            />
+            <Text style={styles.textItem}>عرض مواضيع الآيات مع التفسير</Text>
+            <View style={{ width: 30, height: 30, marginLeft: "55%" }}></View>
+          </View>
+          <Dropdown
+            style={[styles.dropdown]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            containerStyle={{
+              backgroundColor: appColor,
+              borderRadius: 10,
+              borderWidth: 0.5,
+              borderColor: "#ffffff44",
+            }}
+            itemTextStyle={{ color: "#fff" }}
+            selectedTextStyle={{ color: "#fff" }}
+            activeColor={colorize(-0.4, appColor)}
+            data={allowSectionsMap}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!isFocus ? "اختر الشيخ" : ""}
+            value={sectionsDisplay}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            onChange={(item) => {
+              setSectionsDisplay(item.value);
               setIsFocus(false);
             }}
             fontFamily="UthmanBold"

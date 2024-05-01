@@ -15,7 +15,7 @@ import EmptyPage from "./Pages/EmptyPage/EmptyPage";
 
 // Redux
 import { useSelector } from "react-redux";
-import { ScrolledFar, InHomePage, AppColor, TafsirMode } from "./Redux/slices/app";
+import { ScrolledFar, ScrolledFarTafsir, InHomePage, AppColor, TafsirMode } from "./Redux/slices/app";
 
 // for loading audio data initially
 import { prepareAudio, colorize } from "./helpers";
@@ -45,6 +45,7 @@ function Navigation() {
 
   // SurahHeader hides and StatusBar change if scrolled down far and not in home
   const scrolledFar = useSelector(ScrolledFar);
+  const scrolledFarTafsir = useSelector(ScrolledFarTafsir);
   const inHomePage = useSelector(InHomePage);
 
   // Styles for the drawer
@@ -76,7 +77,7 @@ function Navigation() {
 
   return (
     <>
-      <StatusBar style={((scrolledFar || tafsirMode) && !inHomePage) ? "dark" : "light"} />
+      <StatusBar backgroundColor={(tafsirMode && !scrolledFarTafsir) ? appColor: ''} style={((scrolledFar) && !inHomePage) ? "dark" : "light"} />
       <NavigationContainer>
         <Drawer.Navigator
           useLegacyImplementation={false}
