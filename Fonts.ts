@@ -10,6 +10,8 @@ export const fonts = {
     Emara: require("./assets/fonts/Emara.ttf"),
     Camel: require("./assets/fonts/Camel.otf"),
     Amiri: require("./assets/fonts/Amiri.ttf"),
+    Sakkal: require("./assets/fonts/Sakkal.ttf"),
+    Scheher: require("./assets/fonts/Scheher.ttf"),
     // For decorated Surah names and other related words
     Basmala: require("./assets/fonts/Basmala.ttf"),
     KaalaTaala: require("./assets/fonts/KaalaTaala.ttf"),

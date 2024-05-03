@@ -130,6 +130,35 @@ export const colorize=(p,c0,c1=null,l=null)=>{
     else return"#"+(4294967296+r*16777216+g*65536+b*256+(f?m(a*255):0)).toString(16).slice(1,f?undefined:-2)
 }
 
+
+// Custom sort for section indices while handling supertopics (ayah index ends with S)
+export const customSort = (a: string, b: string): number => {
+    // Function to parse each part of the keys
+    const parsePart = (part: string): number | string => {
+      const num = parseInt(part);
+      return isNaN(num) ? part : num;
+    };
+  
+    // Split keys into parts and parse them
+    const partsA: (number | string)[] = a.match(/\d+|\D+/g)!.map(parsePart);
+    const partsB: (number | string)[] = b.match(/\d+|\D+/g)!.map(parsePart);
+  
+    // Compare each part of the keys
+    for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
+      const partA = partsA[i];
+      const partB = partsB[i];
+  
+      // If one part exists and the other doesn't, prioritize the existing one
+      if (partA !== undefined && partB === undefined) return -1;
+      if (partA === undefined && partB !== undefined) return 1;
+  
+      // Compare parts
+      if (partA !== partB) return partA < partB ? -1 : 1;
+    }
+  
+    return 0; // Keys are equal
+  };
+
 /*
 This file has helper functions used throughout the app (e.g., mapping words, juzs, ayahs together).
 */

@@ -1,4 +1,4 @@
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 import { useEffect, useState } from "react";
 
 // Drawer and navigation
@@ -15,7 +15,7 @@ import EmptyPage from "./Pages/EmptyPage/EmptyPage";
 
 // Redux
 import { useSelector } from "react-redux";
-import { ScrolledFar, ScrolledFarTafsir, InHomePage, AppColor, TafsirMode } from "./Redux/slices/app";
+import { ScrolledFar, ScrolledFarTafsir, InHomePage, AppColor, TafsirMode, CardModalVisbile, SectionsModalVisible } from "./Redux/slices/app";
 
 // for loading audio data initially
 import { prepareAudio, colorize } from "./helpers";
@@ -48,6 +48,10 @@ function Navigation() {
   const scrolledFarTafsir = useSelector(ScrolledFarTafsir);
   const inHomePage = useSelector(InHomePage);
 
+  // Change status bar background dimness when modal is shown
+  const cardModalVisbile = useSelector(CardModalVisbile);
+  const sectionsModalVisible = useSelector(SectionsModalVisible);
+
   // Styles for the drawer
   const drawerStyles = {
     drawerStyle: {
@@ -77,7 +81,12 @@ function Navigation() {
 
   return (
     <>
-      <StatusBar backgroundColor={(tafsirMode && !scrolledFarTafsir) ? appColor: ''} style={((scrolledFar) && !inHomePage) ? "dark" : "light"} />
+        <StatusBar  backgroundColor={(tafsirMode && !scrolledFarTafsir) ? colorize(
+          (cardModalVisbile || sectionsModalVisible) ? 0.35 : 0.0
+          , appColor, '#000', true) : 
+          (cardModalVisbile || sectionsModalVisible)? '#00000054' :'transparent'
+        } 
+          style={((scrolledFar) && !inHomePage) ? "dark" : "light"} />
       <NavigationContainer>
         <Drawer.Navigator
           useLegacyImplementation={false}

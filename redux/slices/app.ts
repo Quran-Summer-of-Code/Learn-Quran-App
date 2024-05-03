@@ -22,6 +22,8 @@ interface AppState {
   tafsirBook: string;
   tafsirFontSize: number;
   sectionsDisplay: boolean;
+  sectionsModalVisible: boolean;
+  cardModalVisbile: boolean;
 }
 
 // Remember: can CTRL+Shift+F to find where it's being used
@@ -46,7 +48,9 @@ const initialState: AppState = {
   tafsirBook: "Waseet",              // tafsir book of the app
   tafsirFontSize: 16,                // tafsir font size in the app
   sectionsDisplay: true,             // whether to display sections for each surah
-  scrolledFarTafsir: false          // whether or not scrolled far in tafsit (control status bar bgcolor)
+  scrolledFarTafsir: false,          // whether or not scrolled far in tafsit (control status bar bgcolor)
+  sectionsModalVisible: false,       // for modal showing surah sections in tafsir page
+  cardModalVisbile: false            // for modal showing surah card in tafsir page
 };
 
 const appSlice = createSlice({
@@ -116,6 +120,12 @@ const appSlice = createSlice({
     },
     SetScrolledFarTafsir(state, action: PayloadAction<boolean>) {
       state.scrolledFarTafsir = action.payload;
+    },
+    SetSectionsModalVisible(state, action: PayloadAction<boolean>) {
+      state.sectionsModalVisible = action.payload;
+    },
+    SetCardModalVisbile(state, action: PayloadAction<boolean>) {
+      state.cardModalVisbile = action.payload;
     }
   },
 });
@@ -141,7 +151,9 @@ export const {
   SetTafsirBook,
   SetSectionsDisplay,
   SetTafsirFontSize,
-  SetScrolledFarTafsir
+  SetScrolledFarTafsir,
+  SetSectionsModalVisible,
+  SetCardModalVisbile
 } = appSlice.actions;
 
 export const InHomePage = (state:any) => state.store.inHomePage;
@@ -165,6 +177,8 @@ export const TafsirBook = (state:any) => state.store.tafsirBook;
 export const TafsirFontSize = (state:any) => state.store.tafsirFontSize;
 export const SectionsDisplay = (state:any) => state.store.sectionsDisplay;
 export const ScrolledFarTafsir = (state:any) => state.store.scrolledFarTafsir;
+export const SectionsModalVisible = (state:any) => state.store.sectionsModalVisible;
+export const CardModalVisbile = (state:any) => state.store.cardModalVisbile;
 
 export default appSlice.reducer;
 

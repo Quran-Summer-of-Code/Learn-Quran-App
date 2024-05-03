@@ -32,6 +32,7 @@
     "react-native-animatable": "^1.4.0",
     "react-native-element-dropdown": "^2.10.4",
     "react-native-gesture-handler": "~2.14.0",
+    "react-native-modal": "^13.0.1",
     "react-native-reanimated": "~3.6.2",
     "react-native-render-html": "^6.3.4",
     "react-native-root-siblings": "^5.0.1",
