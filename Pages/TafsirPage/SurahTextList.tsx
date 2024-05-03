@@ -59,7 +59,7 @@ interface Ayah {
 }
 
 interface SurahTextListProps {
-  currentSurah: Ayah[];
+  currentSurah: any[];
   currentSurahInd: number;
   key: number;
 }
@@ -69,7 +69,6 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   currentSurahInd,
   key,
 }) => {
-  const sound = new Audio.Sound();
   const surahFontName = surasList[currentSurahInd].fontName;
   const surahFontFamily = surasList[currentSurahInd].fontFamily;
   const { width } = useWindowDimensions();
@@ -126,7 +125,26 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
     wrapDispatch(SetCardModalVisbile),
   ];
 
-  const renderItem = ({ item, index }: { item: Ayah; index: number }) => (
+  const sound = new Audio.Sound();
+
+  async function playSound(ayahInd: number) {
+    const baseUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${ayahInd}.mp3`;
+
+  const checkLoading = await sound.getStatusAsync();
+  if (checkLoading.isLoaded) {
+    sound.unloadAsync()
+  }
+    await sound.loadAsync({
+      uri: baseUrl,
+    }, {}, false);
+
+    const result = await sound.getStatusAsync();
+    if (result.isPlaying === false) {
+      sound.playAsync();
+    }
+  }
+
+  const renderItem = ({ item, index }: { item: any; index: number }) => (
     <View style={{ marginBottom: 15 }}>
       {sectionsDisplay &&
         currentSurahSections.hasOwnProperty(`${index + 1}`) && (
@@ -236,7 +254,11 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
                 }}
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                playSound(getGlobalAyahInd(currentSurahInd, item.rakam + 1));
+              }}
+            >
               <AntDesign
                 name="playcircleo"
                 style={{
