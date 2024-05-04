@@ -198,7 +198,12 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                 setInHomePage(false);
                 setCurrentSurahInd(surahInd);
                 setCurrentJuzInd(index);
+                if (!juzMode) {
                 navigation.navigate("SurahPage");
+                }
+                else {
+                  navigation.navigate("TafsirPage");
+                }
               }}
             >
               {/* show surah name and Ayah range */}

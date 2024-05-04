@@ -51,6 +51,9 @@ const TafsirPage: React.FC = () => {
 
   const juzMode = useSelector(JuzMode);
   const currentJuzInd = useSelector(CurrentJuzInd);
+  const [startAyahForJuz, setStartAyahForJuz] = React.useState(0);
+  const [endAyahForJuz, setEndAyahForJuz] = React.useState(currentSurah.length-1)
+
   const justEnteredNewSurah = useSelector(JustEnteredNewSurah);
   const justEnteredNewSurahJuz = useSelector(JustEnteredNewSurahJuz);
 
@@ -60,12 +63,25 @@ const TafsirPage: React.FC = () => {
     // to force rerender
     setKey(key + 1);
 
-  }, [navigation, currentSurahInd]);
+  }, [navigation, currentSurahInd, currentJuzInd]);
 
 
+  React.useEffect(() => {
+    if (juzMode && currentJuzInd < 29 && currentJuzInd !== null) {
+      let juz = juzInfo[currentJuzInd];
+      let surahIndRelativeToJuz = juz?.juzSuras.indexOf(currentSurahInd);
+      let startAyahIndForJuz = juz?.splits[surahIndRelativeToJuz][1];
+      let endAyahIndForJuz = juz.splits[surahIndRelativeToJuz][0];
 
-  const surahFontName = surasList[currentSurahInd].fontName;
-  const surahFontFamily = surasList[currentSurahInd].fontFamily;
+      setStartAyahForJuz(startAyahIndForJuz);
+      setEndAyahForJuz(endAyahIndForJuz);
+
+    } else {
+      // render full surah (not juzMode!)
+      setStartAyahForJuz(0);
+      setEndAyahForJuz(currentSurah.length - 1);
+    }
+  }, [justEnteredNewSurah, justEnteredNewSurahJuz]);
 
   return (
     <View style={{backgroundColor: colorize(+0.7, appColor), height:'100%'}}>
@@ -73,6 +89,8 @@ const TafsirPage: React.FC = () => {
         currentSurahInd={currentSurahInd}
         currentSurah={currentSurah}
         key={key}
+        startAyahForJuz={startAyahForJuz}
+        endAyahForJuz={endAyahForJuz}
       />
     </View>
   );

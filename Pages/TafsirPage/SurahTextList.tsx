@@ -62,12 +62,16 @@ interface SurahTextListProps {
   currentSurah: any[];
   currentSurahInd: number;
   key: number;
+  startAyahForJuz: number;
+  endAyahForJuz: number;
 }
 
 const SurahTextList: React.FC<SurahTextListProps> = ({
   currentSurah,
   currentSurahInd,
   key,
+  startAyahForJuz,
+  endAyahForJuz,
 }) => {
   const surahFontName = surasList[currentSurahInd].fontName;
   const surahFontFamily = surasList[currentSurahInd].fontFamily;
@@ -130,13 +134,17 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   async function playSound(ayahInd: number) {
     const baseUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${ayahInd}.mp3`;
 
-  const checkLoading = await sound.getStatusAsync();
-  if (checkLoading.isLoaded) {
-    sound.unloadAsync()
-  }
-    await sound.loadAsync({
-      uri: baseUrl,
-    }, {}, false);
+    const checkLoading = await sound.getStatusAsync();
+    if (checkLoading.isLoaded) {
+      sound.unloadAsync();
+    }
+    await sound.loadAsync(
+      {
+        uri: baseUrl,
+      },
+      {},
+      false
+    );
 
     const result = await sound.getStatusAsync();
     if (result.isPlaying === false) {
@@ -147,9 +155,9 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   const renderItem = ({ item, index }: { item: any; index: number }) => (
     <View style={{ marginBottom: 15 }}>
       {sectionsDisplay &&
-        currentSurahSections.hasOwnProperty(`${index + 1}`) && (
+        currentSurahSections.hasOwnProperty(`${index + startAyahForJuz + 1}`) && (
           <>
-            {currentSurahSections.hasOwnProperty(`${index + 1}S`) && (
+            {currentSurahSections.hasOwnProperty(`${index + startAyahForJuz + 1}S`) && (
               <View
                 style={{
                   backgroundColor: appColor,
@@ -166,7 +174,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
                     padding: 9,
                   }}
                 >
-                  {currentSurahSections[`${index + 1}S`]}
+                  {currentSurahSections[`${index + startAyahForJuz + 1}S`]}
                 </Text>
               </View>
             )}
@@ -199,7 +207,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
                   paddingBottom: 10,
                 }}
               >
-                {currentSurahSections[`${index + 1}`]}
+                {currentSurahSections[`${index + startAyahForJuz + 1}`]}
               </Text>
               <View
                 style={{
@@ -307,7 +315,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
             <Text
               style={{ color: appColor, fontSize: 15, textAlign: "center" }}
             >
-              {englishToArabicNumber(index + 1)}
+              {englishToArabicNumber(index + startAyahForJuz + 1)}
             </Text>
           </View>
         </LinearGradient>
@@ -347,10 +355,11 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
     </View>
   );
 
+  let currentSurahSliced = currentSurah.slice(startAyahForJuz, endAyahForJuz + 1)
   return (
     <View style={{ position: "relative" }}>
       <FlatList
-        data={currentSurah}
+        data={currentSurahSliced}
         renderItem={renderItem}
         ref={flatListRef}
         onScrollToIndexFailed={(error) => {
@@ -431,7 +440,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
         }
       />
       <Modal
-        style={{ marginHorizontal: 3 }}
+        style={{ marginHorizontal: -5 }}
         isVisible={sectionsModalVisible}
         backdropOpacity={0.35}
       >
@@ -462,11 +471,11 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
                   .sort(customSort)
                   .map((key) => (
                     <>
-                      {!key.includes("UNK") && (
+                      {!key.includes("UNK") && parseInt(key) >= startAyahForJuz-1 && parseInt(key) <= endAyahForJuz && (
                         <Pressable
                           onPress={() => {
                             setSectionsModalVisible(false);
-                            scrollToIndex(parseInt(key.replace(/S/g, "")));
+                            scrollToIndex(parseInt(key.replace(/S/g, "")) - startAyahForJuz - 1);
                           }}
                           key={key}
                           style={styles.itemContainer}
@@ -505,7 +514,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
         </View>
       </Modal>
       <Modal
-        style={{ marginHorizontal: 3 }}
+        style={{ marginHorizontal: -10 }}
         isVisible={cardModalVisbile}
         backdropOpacity={0.35}
       >
@@ -753,7 +762,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 40,
     paddingVertical: 7,
     elevation: 2,
   },
