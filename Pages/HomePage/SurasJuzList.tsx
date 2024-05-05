@@ -34,6 +34,7 @@ import {
   JustEnteredNewSurahJuz,
   JuzMode,
   AppColor,
+  TafsirMode
 } from "../../Redux/slices/app";
 
 // Data
@@ -50,6 +51,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
   const isWeb = Platform.OS === "web";
 
   const juzMode = useSelector(JuzMode);
+  const tafsirMode = useSelector(TafsirMode);
   const appColor = useSelector(AppColor);
 
   // Set and Get index of current surah and juz
@@ -198,8 +200,8 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                 setInHomePage(false);
                 setCurrentSurahInd(surahInd);
                 setCurrentJuzInd(index);
-                if (!juzMode) {
-                navigation.navigate("SurahPage");
+                if (!tafsirMode) {
+                  navigation.navigate("SurahPage");
                 }
                 else {
                   navigation.navigate("TafsirPage");

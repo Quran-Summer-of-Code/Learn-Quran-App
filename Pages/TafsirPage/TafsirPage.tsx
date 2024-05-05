@@ -59,15 +59,14 @@ const TafsirPage: React.FC = () => {
 
   // Set Surah Header based on current Surah
   const [key, setKey] = React.useState(0);
+  // React.useEffect(() => {
+  //   // to force rerender
+  //   setKey(key + 1);
+  // }, [navigation, currentSurahInd, currentJuzInd]);
+
+
   React.useEffect(() => {
-    // to force rerender
-    setKey(key + 1);
-
-  }, [navigation, currentSurahInd, currentJuzInd]);
-
-
-  React.useEffect(() => {
-    if (juzMode && currentJuzInd < 29 && currentJuzInd !== null) {
+    if (juzMode && currentJuzInd < 29 && currentJuzInd !== null && currentJuzInd !== undefined) {
       let juz = juzInfo[currentJuzInd];
       let surahIndRelativeToJuz = juz?.juzSuras.indexOf(currentSurahInd);
       let startAyahIndForJuz = juz?.splits[surahIndRelativeToJuz][1];
@@ -75,13 +74,13 @@ const TafsirPage: React.FC = () => {
 
       setStartAyahForJuz(startAyahIndForJuz);
       setEndAyahForJuz(endAyahIndForJuz);
-
     } else {
       // render full surah (not juzMode!)
       setStartAyahForJuz(0);
       setEndAyahForJuz(currentSurah.length - 1);
     }
-  }, [justEnteredNewSurah, justEnteredNewSurahJuz]);
+    setKey(key + 1);
+  }, [justEnteredNewSurah, justEnteredNewSurahJuz,  currentSurahInd, currentJuzInd]);
 
   return (
     <View style={{backgroundColor: colorize(+0.7, appColor), height:'100%'}}>

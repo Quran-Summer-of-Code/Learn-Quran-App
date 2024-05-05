@@ -283,7 +283,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
           <Slider
             style={styles.progressBar}
             value={currentAyahInd}
-            // onValueChange={(value) => console.log(value)}
             minimumValue={startAyahIndForJuz}
             maximumValue={endAyahIndForJuz}
             thumbTintColor={appColor}

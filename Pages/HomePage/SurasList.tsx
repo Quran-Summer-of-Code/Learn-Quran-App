@@ -6,7 +6,11 @@ import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 // Helpers
-import { englishToArabicNumber, colorize } from "../../helpers";
+import {
+  englishToArabicNumber,
+  colorize,
+  findJuzSurahAyahIndex,
+} from "../../helpers";
 
 // State
 import { useDispatch, useSelector } from "react-redux";
@@ -18,8 +22,14 @@ import {
   SetInHomePage,
   JuzMode,
   AppColor,
-  TafsirMode
+  TafsirMode,
+  CurrentJuzInd,
+  SetCurrentJuzInd,
+  JustEnteredNewSurahJuz,
+  SetJustEnteredNewSurahJuz,
 } from "../../Redux/slices/app";
+
+import juzInfo from "../../Quran/juzInfo.json";
 
 interface Props {
   suras: any[];
@@ -45,6 +55,17 @@ const SurasList: React.FC<Props> = ({ suras }) => {
     wrapDispatch(SetJustEnteredNewSurah),
   ];
 
+  const [currentJuzInd, setCurrentJuzInd] = [
+    useSelector(CurrentJuzInd),
+    wrapDispatch(SetCurrentJuzInd),
+  ];
+
+  // Get whether the user just entered a new surah (both used to synchornize audio)
+  const [justEnteredNewSurahJuz, setJustEnteredNewSurahJuz] = [
+    useSelector(JustEnteredNewSurahJuz),
+    wrapDispatch(SetJustEnteredNewSurahJuz),
+  ];
+
   // Set in HomePage as false once the user navigates out
   const setInHomePage = wrapDispatch(SetInHomePage);
 
@@ -52,20 +73,24 @@ const SurasList: React.FC<Props> = ({ suras }) => {
     <TouchableOpacity
       style={{ ...styles.itemWrapper, borderBottomColor: appColor }}
       onPress={() => {
-        if (!tafsirMode) {
         if (index !== currentSurahInd) {
           // to detect in audio player and go back to 1st Ayah
           setJustEnteredSurah(!justEnteredNewSurah);
         }
-        setInHomePage(false);
         setCurrentSurahInd(index);
-        navigation.navigate("SurahPage");
-      }
-      else {
+        const juzInd = findJuzSurahAyahIndex(juzInfo, index, 0);
+        setCurrentJuzInd(juzInd);
+        if (juzInd !== currentJuzInd) {
+          setJustEnteredNewSurahJuz(!justEnteredNewSurahJuz);
+        }
         setInHomePage(false);
-        setCurrentSurahInd(index);
-        navigation.navigate("TafsirPage");
-      }
+        if (!tafsirMode) {
+          setCurrentSurahInd(index);
+          navigation.navigate("SurahPage");
+        } else {
+          setCurrentSurahInd(index);
+          navigation.navigate("TafsirPage");
+        }
       }}
     >
       <View style={styles.item}>
@@ -124,7 +149,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
         style={[
           styles.containerStyle,
           {
-            display: (!juzMode) ? "flex" : "none",
+            display: !juzMode ? "flex" : "none",
             backgroundColor: colorize(-0.3, appColor),
           },
         ]}

@@ -37,6 +37,8 @@ import {
   SetSectionsModalVisible,
   CardModalVisbile,
   SetCardModalVisbile,
+  Bookmarks,
+  SetBookmarks,
 } from "../../Redux/slices/app";
 import { useDispatch, useSelector } from "react-redux";
 import HTML from "react-native-render-html";
@@ -87,6 +89,47 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   const sectionsDisplay = useSelector(SectionsDisplay);
   const scrolledFarTafsir = useSelector(ScrolledFarTafsir);
   const setScrolledFarTafsir = wrapDispatch(SetScrolledFarTafsir);
+  
+  // state which is a list of 114 l
+  const [bookmarks, setBookmarks] = [
+    useSelector(Bookmarks),
+    wrapDispatch(SetBookmarks),
+  ];
+
+  // bookmarks is an array of arrays
+  const addBookmark = (surahInd: number, ayahInd: number) => {
+    // Copy the bookmarks array
+    const newBookmarks = [...bookmarks];
+    const newList = [...newBookmarks[surahInd]];
+    newList.push(ayahInd);
+    // Push the ayahInd into the specified surah's bookmarks array
+    newBookmarks[surahInd] = newList
+    // Update the state with the new bookmarks array
+    setBookmarks(newBookmarks);
+  };
+
+  function removeBookmark(surahInd: number, ayahInd: number) {
+    // Copy the bookmarks array
+    const newBookmarks = [...bookmarks];
+    // Find the index of the ayahInd to remove
+    const indexToRemove = newBookmarks[surahInd].indexOf(ayahInd);
+    // If the ayahInd exists, remove it
+    if (indexToRemove !== -1) {
+      // Create a new array without the removed ayahInd
+      const newSurahBookmarks = [
+        ...newBookmarks[surahInd].slice(0, indexToRemove),
+        ...newBookmarks[surahInd].slice(indexToRemove + 1)
+      ];
+      // Update the state with the new bookmarks array
+      newBookmarks[surahInd] = newSurahBookmarks;
+      setBookmarks(newBookmarks);
+    }
+  }
+
+  function checkBookmark(surahInd: number, ayahInd: number) {
+    // Check if the ayahInd exists in the bookmarks array at the specified surahInd
+    return bookmarks[surahInd].includes(ayahInd);
+  }
 
   const numAyas = parseInt(surasList[currentSurahInd].numAyas);
   const currentSurahSections = surahSections[currentSurahInd];
@@ -155,9 +198,13 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   const renderItem = ({ item, index }: { item: any; index: number }) => (
     <View style={{ marginBottom: 15 }}>
       {sectionsDisplay &&
-        currentSurahSections.hasOwnProperty(`${index + startAyahForJuz + 1}`) && (
+        currentSurahSections.hasOwnProperty(
+          `${index + startAyahForJuz + 1}`
+        ) && (
           <>
-            {currentSurahSections.hasOwnProperty(`${index + startAyahForJuz + 1}S`) && (
+            {currentSurahSections.hasOwnProperty(
+              `${index + startAyahForJuz + 1}S`
+            ) && (
               <View
                 style={{
                   backgroundColor: appColor,
@@ -291,9 +338,19 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
                 }}
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                checkBookmark(currentSurahInd, index + startAyahForJuz)
+                  ? removeBookmark(currentSurahInd, index + startAyahForJuz)
+                  : addBookmark(currentSurahInd, index + startAyahForJuz);
+              }}
+            >
               <FontAwesome
-                name="bookmark-o"
+                name={
+                  checkBookmark(currentSurahInd, index + startAyahForJuz)
+                    ? "bookmark"
+                    : "bookmark-o"
+                }
                 style={{
                   color: "white",
                   fontSize: 20,
@@ -355,7 +412,10 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
     </View>
   );
 
-  let currentSurahSliced = currentSurah.slice(startAyahForJuz, endAyahForJuz + 1)
+  let currentSurahSliced = currentSurah.slice(
+    startAyahForJuz,
+    endAyahForJuz + 1
+  );
   return (
     <View style={{ position: "relative" }}>
       <FlatList
@@ -471,32 +531,38 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
                   .sort(customSort)
                   .map((key) => (
                     <>
-                      {!key.includes("UNK") && parseInt(key) >= startAyahForJuz-1 && parseInt(key) <= endAyahForJuz && (
-                        <Pressable
-                          onPress={() => {
-                            setSectionsModalVisible(false);
-                            scrollToIndex(parseInt(key.replace(/S/g, "")) - startAyahForJuz - 1);
-                          }}
-                          key={key}
-                          style={styles.itemContainer}
-                        >
-                          <Text style={styles.itemKey}>
-                            {"\ufd3e"}
-                            {englishToArabicNumber(key.replace(/S/g, ""))}
-                            {"\ufd3f"}
-                          </Text>
-                          <Text
-                            style={{
-                              ...styles.itemText,
-                              fontFamily: key.includes("S")
-                                ? "UthmanBold"
-                                : "UthmanRegular",
+                      {!key.includes("UNK") &&
+                        parseInt(key) >= startAyahForJuz - 1 &&
+                        parseInt(key) <= endAyahForJuz && (
+                          <Pressable
+                            onPress={() => {
+                              setSectionsModalVisible(false);
+                              scrollToIndex(
+                                parseInt(key.replace(/S/g, "")) -
+                                  startAyahForJuz -
+                                  1
+                              );
                             }}
+                            key={key}
+                            style={styles.itemContainer}
                           >
-                            {currentSurahSections[key]}
-                          </Text>
-                        </Pressable>
-                      )}
+                            <Text style={styles.itemKey}>
+                              {"\ufd3e"}
+                              {englishToArabicNumber(key.replace(/S/g, ""))}
+                              {"\ufd3f"}
+                            </Text>
+                            <Text
+                              style={{
+                                ...styles.itemText,
+                                fontFamily: key.includes("S")
+                                  ? "UthmanBold"
+                                  : "UthmanRegular",
+                              }}
+                            >
+                              {currentSurahSections[key]}
+                            </Text>
+                          </Pressable>
+                        )}
                     </>
                   ))}
               </ScrollView>

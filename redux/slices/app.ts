@@ -24,6 +24,7 @@ interface AppState {
   sectionsDisplay: boolean;
   sectionsModalVisible: boolean;
   cardModalVisbile: boolean;
+  bookmarks: any[];
 }
 
 // Remember: can CTRL+Shift+F to find where it's being used
@@ -50,7 +51,8 @@ const initialState: AppState = {
   sectionsDisplay: true,             // whether to display sections for each surah
   scrolledFarTafsir: false,          // whether or not scrolled far in tafsit (control status bar bgcolor)
   sectionsModalVisible: false,       // for modal showing surah sections in tafsir page
-  cardModalVisbile: false            // for modal showing surah card in tafsir page
+  cardModalVisbile: false,           // for modal showing surah card in tafsir page
+  bookmarks: Array.from({ length: 114 }, () => [])  // array of bookmarked ayahs per sura
 };
 
 const appSlice = createSlice({
@@ -126,6 +128,9 @@ const appSlice = createSlice({
     },
     SetCardModalVisbile(state, action: PayloadAction<boolean>) {
       state.cardModalVisbile = action.payload;
+    },
+    SetBookmarks(state, action: PayloadAction<any[]>) {
+      state.bookmarks = action.payload;
     }
   },
 });
@@ -153,7 +158,8 @@ export const {
   SetTafsirFontSize,
   SetScrolledFarTafsir,
   SetSectionsModalVisible,
-  SetCardModalVisbile
+  SetCardModalVisbile,
+  SetBookmarks
 } = appSlice.actions;
 
 export const InHomePage = (state:any) => state.store.inHomePage;
@@ -179,6 +185,7 @@ export const SectionsDisplay = (state:any) => state.store.sectionsDisplay;
 export const ScrolledFarTafsir = (state:any) => state.store.scrolledFarTafsir;
 export const SectionsModalVisible = (state:any) => state.store.sectionsModalVisible;
 export const CardModalVisbile = (state:any) => state.store.cardModalVisbile;
+export const Bookmarks = (state:any) => state.store.bookmarks;
 
 export default appSlice.reducer;
 
