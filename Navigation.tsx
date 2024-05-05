@@ -29,7 +29,7 @@ function Navigation() {
       title: "جاري التحميل",
       author: "...",
       artwork: require("./assets/quran.jpeg"),
-      url: "https://server8.mp3quran.net/afs/001.mp3",
+      url: "https://cdn.islamic.network/quran/audio/128/ar.alafasy/0.mp3",
     },
   ]);
   useEffect(() => {

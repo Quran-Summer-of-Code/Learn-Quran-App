@@ -52,7 +52,7 @@ const initialState: AppState = {
   scrolledFarTafsir: false,          // whether or not scrolled far in tafsit (control status bar bgcolor)
   sectionsModalVisible: false,       // for modal showing surah sections in tafsir page
   cardModalVisbile: false,           // for modal showing surah card in tafsir page
-  bookmarks: Array.from({ length: 114 }, () => [])  // array of bookmarked ayahs per sura
+  bookmarks: Array.from({ length: 114 }, () => [])  // array of bookmarked ayah inds per sura
 };
 
 const appSlice = createSlice({

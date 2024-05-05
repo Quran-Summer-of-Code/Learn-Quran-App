@@ -4,12 +4,11 @@ import { I18nManager } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 // Main Components
-import SurahHeader from "../SurahPage/SurahHeader";
 import SurahTextList from "./SurahTextList";
 
 // Data
-import surasList from "../../Quran/surasList.json";
 import juzInfo from "../../Quran/juzInfo.json";
+import suras from "../../Quran/suras";
 
 // State
 import { useSelector, useDispatch } from "react-redux";
@@ -22,9 +21,6 @@ import {
   CurrentSurahInd,
   AppColor
 } from "../../Redux/slices/app";
-
-// Data
-import suras from "../../Quran/suras";
 
 // Helpers
 import { colorize } from "../../helpers";
@@ -42,29 +38,25 @@ const TafsirPage: React.FC = () => {
   const navigation = useNavigation();
   const appColor = useSelector(AppColor);
 
-  // States
+  // Surah States
   const [currentSurahInd, setCurrentSurahInd] = [
     useSelector(CurrentSurahInd),
     wrapDispatch(SetCurrentSurahInd),
   ];
   let currentSurah = suras[currentSurahInd];
 
+  // Juz States
   const juzMode = useSelector(JuzMode);
   const currentJuzInd = useSelector(CurrentJuzInd);
   const [startAyahForJuz, setStartAyahForJuz] = React.useState(0);
   const [endAyahForJuz, setEndAyahForJuz] = React.useState(currentSurah.length-1)
 
+  // Refresh states
   const justEnteredNewSurah = useSelector(JustEnteredNewSurah);
   const justEnteredNewSurahJuz = useSelector(JustEnteredNewSurahJuz);
-
-  // Set Surah Header based on current Surah
   const [key, setKey] = React.useState(0);
-  // React.useEffect(() => {
-  //   // to force rerender
-  //   setKey(key + 1);
-  // }, [navigation, currentSurahInd, currentJuzInd]);
 
-
+  // Handle setting the Juz slice when user enters new surah or new part of surah (in another Juz)
   React.useEffect(() => {
     if (juzMode && currentJuzInd < 29 && currentJuzInd !== null && currentJuzInd !== undefined) {
       let juz = juzInfo[currentJuzInd];
@@ -80,7 +72,7 @@ const TafsirPage: React.FC = () => {
       setEndAyahForJuz(currentSurah.length - 1);
     }
     setKey(key + 1);
-  }, [justEnteredNewSurah, justEnteredNewSurahJuz,  currentSurahInd, currentJuzInd]);
+  }, [ justEnteredNewSurah, justEnteredNewSurahJuz,  currentSurahInd, currentJuzInd]);
 
   return (
     <View style={{backgroundColor: colorize(+0.7, appColor), height:'100%'}}>

@@ -1,30 +1,27 @@
 import React, { useState, useRef } from "react";
-import {
-  Text,
-  View,
-  Platform,
-  StyleSheet,
-  FlatList,
-  Pressable,
-  ScrollView,
-} from "react-native";
-import Modal from "react-native-modal";
-
-import {
-  englishToArabicNumber,
-  colorize,
-  getGlobalAyahInd,
-  customSort,
-} from "../../helpers";
+import { View, FlatList } from "react-native";
 import { useWindowDimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
-import { LinearGradient } from "expo-linear-gradient";
+import HTML from "react-native-render-html";
 
+// External Components
+import TafsirHeader from "./TafsirHeader";
+import SectionBanner from "./SectionBanner";
+import AyahWithBar from "./AyahWithBar";
+import SectionsButton from "./SectionsButton";
+import SurahCardModal from "./SurahCardModal";
+import SurahSectionsModal from "./SurahSectionsModal";
+
+// Data
 import surasList from "../../Quran/surasList.json";
 import surahTafsirs from "../../Quran/surahTafsirs.json";
 import surahSections from "../../Quran/surahSectionsUpdated.json";
 import albitaqat from "../../Quran/albitaqat.json";
 
+// Helpers
+import { colorize } from "../../helpers";
+
+// State
 import {
   AppColor,
   AyahFontFamily,
@@ -41,24 +38,11 @@ import {
   SetBookmarks,
 } from "../../Redux/slices/app";
 import { useDispatch, useSelector } from "react-redux";
-import HTML from "react-native-render-html";
 
-import {
-  AntDesign,
-  Feather,
-  FontAwesome,
-  FontAwesome5,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import * as Clipboard from "expo-clipboard";
+// Audio
 import { Audio } from "expo-av";
-import { ToastAndroid } from "react-native";
-import Constants from "expo-constants";
 
-interface Ayah {
-  ayah: string;
-}
+
 
 interface SurahTextListProps {
   currentSurah: any[];
@@ -75,6 +59,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   startAyahForJuz,
   endAyahForJuz,
 }) => {
+
   const surahFontName = surasList[currentSurahInd].fontName;
   const surahFontFamily = surasList[currentSurahInd].fontFamily;
   const { width } = useWindowDimensions();
@@ -89,53 +74,19 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   const sectionsDisplay = useSelector(SectionsDisplay);
   const scrolledFarTafsir = useSelector(ScrolledFarTafsir);
   const setScrolledFarTafsir = wrapDispatch(SetScrolledFarTafsir);
-  
-  // state which is a list of 114 l
+
+  // state which is a list of 114 lists for bookmarkks
   const [bookmarks, setBookmarks] = [
     useSelector(Bookmarks),
     wrapDispatch(SetBookmarks),
   ];
 
-  // bookmarks is an array of arrays
-  const addBookmark = (surahInd: number, ayahInd: number) => {
-    // Copy the bookmarks array
-    const newBookmarks = [...bookmarks];
-    const newList = [...newBookmarks[surahInd]];
-    newList.push(ayahInd);
-    // Push the ayahInd into the specified surah's bookmarks array
-    newBookmarks[surahInd] = newList
-    // Update the state with the new bookmarks array
-    setBookmarks(newBookmarks);
-  };
-
-  function removeBookmark(surahInd: number, ayahInd: number) {
-    // Copy the bookmarks array
-    const newBookmarks = [...bookmarks];
-    // Find the index of the ayahInd to remove
-    const indexToRemove = newBookmarks[surahInd].indexOf(ayahInd);
-    // If the ayahInd exists, remove it
-    if (indexToRemove !== -1) {
-      // Create a new array without the removed ayahInd
-      const newSurahBookmarks = [
-        ...newBookmarks[surahInd].slice(0, indexToRemove),
-        ...newBookmarks[surahInd].slice(indexToRemove + 1)
-      ];
-      // Update the state with the new bookmarks array
-      newBookmarks[surahInd] = newSurahBookmarks;
-      setBookmarks(newBookmarks);
-    }
-  }
-
-  function checkBookmark(surahInd: number, ayahInd: number) {
-    // Check if the ayahInd exists in the bookmarks array at the specified surahInd
-    return bookmarks[surahInd].includes(ayahInd);
-  }
-
-  const numAyas = parseInt(surasList[currentSurahInd].numAyas);
+  // Get the sections and card of current Surah
   const currentSurahSections = surahSections[currentSurahInd];
   const currentSurahCard = albitaqat[currentSurahInd];
 
-  // for each Ayah make a boolean state and set it initially to false
+  // for each Ayah make a boolean state and set it initially to false (Tafsir shown or not)
+  const numAyas = parseInt(surasList[currentSurahInd].numAyas);
   const [tafsirOpenStates, setTafsirOpenStates] = useState(
     Array(numAyas).fill(false)
   );
@@ -147,7 +98,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
     });
   };
 
-  // To control scroll
+  // Allow scrolling when pressing section
   const flatListRef = useRef(null);
   const scrollToIndex = (index: number) => {
     //@ts-ignore
@@ -158,11 +109,12 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
     });
   };
 
-  // whenever the currentSurah changes, reset  scrolledFarTafsir
+  // Whenever the currentSurah changes, reset  scrolledFarTafsir
   React.useEffect(() => {
     setScrolledFarTafsir(false);
   }, [currentSurah]);
 
+  // Modal states
   const [sectionsModalVisible, setSectionsModalVisible] = [
     useSelector(SectionsModalVisible),
     wrapDispatch(SetSectionsModalVisible),
@@ -172,212 +124,30 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
     wrapDispatch(SetCardModalVisbile),
   ];
 
+  // Sound
   const sound = new Audio.Sound();
-
-  async function playSound(ayahInd: number) {
-    const baseUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${ayahInd}.mp3`;
-
-    const checkLoading = await sound.getStatusAsync();
-    if (checkLoading.isLoaded) {
-      sound.unloadAsync();
-    }
-    await sound.loadAsync(
-      {
-        uri: baseUrl,
-      },
-      {},
-      false
-    );
-
-    const result = await sound.getStatusAsync();
-    if (result.isPlaying === false) {
-      sound.playAsync();
-    }
-  }
 
   const renderItem = ({ item, index }: { item: any; index: number }) => (
     <View style={{ marginBottom: 15 }}>
-      {sectionsDisplay &&
-        currentSurahSections.hasOwnProperty(
-          `${index + startAyahForJuz + 1}`
-        ) && (
-          <>
-            {currentSurahSections.hasOwnProperty(
-              `${index + startAyahForJuz + 1}S`
-            ) && (
-              <View
-                style={{
-                  backgroundColor: appColor,
-                  marginHorizontal: 20,
-                  borderRadius: 30,
-                  marginBottom: -20,
-                }}
-              >
-                <Text
-                  style={{
-                    ...styles.ayahStyle,
-                    textAlign: "center",
-                    color: "#fff",
-                    padding: 9,
-                  }}
-                >
-                  {currentSurahSections[`${index + startAyahForJuz + 1}S`]}
-                </Text>
-              </View>
-            )}
-            <LinearGradient
-              colors={[
-                colorize(-0.1, appColor),
-                appColor,
-                colorize(0.1, appColor),
-              ]}
-              style={{ marginTop: 20 }}
-            >
-              {index > 0 && (
-                <View
-                  style={{
-                    height: 30,
-                    width: "100%",
-                    borderRadius: 30,
-                    backgroundColor: colorize(+0.7, appColor),
-                    borderTopLeftRadius: 0,
-                    borderTopRightRadius: 0,
-                  }}
-                ></View>
-              )}
-              <Text
-                style={{
-                  ...styles.ayahStyle,
-                  textAlign: "center",
-                  color: "#fff",
-                  fontFamily: "Amiri",
-                  paddingBottom: 10,
-                }}
-              >
-                {currentSurahSections[`${index + startAyahForJuz + 1}`]}
-              </Text>
-              <View
-                style={{
-                  height: 30,
-                  width: "100%",
-                  borderRadius: 30,
-                  backgroundColor: colorize(+0.7, appColor),
-                  borderBottomLeftRadius: 0,
-                  borderBottomRightRadius: 0,
-                }}
-              ></View>
-            </LinearGradient>
-          </>
-        )}
-      <View
-        style={{
-          backgroundColor: "#00000000",
-          marginHorizontal: 10,
-          borderRadius: 10,
-          padding: 5,
-          marginTop: 0,
-        }}
-      >
-        <Text style={[styles.ayahStyle, { textAlign: "justify" }]}>
-          {item.ayah}
-        </Text>
-        <LinearGradient
-          colors={[colorize(-0.1, appColor), appColor, colorize(0.1, appColor)]}
-          style={{
-            marginBottom: 0,
-            backgroundColor: colorize(+0.1, appColor),
-            marginTop: 8,
-            padding: 10,
-            paddingHorizontal: 20,
-            borderRadius: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ flexDirection: "row", gap: 15 }}>
-            <TouchableOpacity
-              onPress={() => {
-                toggleTafsirOpenState(index);
-              }}
-            >
-              <Feather
-                name={tafsirOpenStates[index] ? "minimize-2" : "maximize-2"}
-                style={{
-                  color: "white",
-                  fontSize: 20,
-                  transform: [{ scaleX: -1 }],
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                playSound(getGlobalAyahInd(currentSurahInd, item.rakam + 1));
-              }}
-            >
-              <AntDesign
-                name="playcircleo"
-                style={{
-                  color: "white",
-                  fontSize: 20,
-                  transform: [{ scaleX: -1 }],
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                Clipboard.setStringAsync(item.ayah);
-                ToastAndroid.show("تم نسخ الآية بنجاح", ToastAndroid.SHORT);
-              }}
-            >
-              <Feather
-                name="copy"
-                style={{
-                  color: "white",
-                  fontSize: 20,
-                  transform: [{ scaleX: -1 }],
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                checkBookmark(currentSurahInd, index + startAyahForJuz)
-                  ? removeBookmark(currentSurahInd, index + startAyahForJuz)
-                  : addBookmark(currentSurahInd, index + startAyahForJuz);
-              }}
-            >
-              <FontAwesome
-                name={
-                  checkBookmark(currentSurahInd, index + startAyahForJuz)
-                    ? "bookmark"
-                    : "bookmark-o"
-                }
-                style={{
-                  color: "white",
-                  fontSize: 20,
-                  transform: [{ scaleX: -1 }],
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              backgroundColor: "white",
-              borderRadius: 50,
-              width: 24,
-              height: 24,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text
-              style={{ color: appColor, fontSize: 15, textAlign: "center" }}
-            >
-              {englishToArabicNumber(index + startAyahForJuz + 1)}
-            </Text>
-          </View>
-        </LinearGradient>
-      </View>
-      {tafsirOpenStates[index] && (
+      <SectionBanner
+        index={index + startAyahForJuz + 1}
+        currentSurahSections={currentSurahSections}
+        sectionsDisplay={sectionsDisplay}
+        appColor={appColor}
+      />
+      <AyahWithBar
+        index={index}
+        ayahItem={item}
+        tafsirOpenStates={tafsirOpenStates}
+        toggleTafsirOpenState={toggleTafsirOpenState}
+        bookmarks={bookmarks}
+        setBookmarks={setBookmarks}
+        appColor={appColor}
+        sound={sound}
+        currentSurahInd={currentSurahInd}
+        startAyahForJuz={startAyahForJuz}
+      />
+      {tafsirOpenStates[index + startAyahForJuz] && (
         <View
           style={{
             marginTop: 10,
@@ -388,12 +158,19 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
           }}
         >
           <Animatable.View
-            animation={tafsirOpenStates[index] ? "fadeInRight" : "zoomOutDown"}
+            animation={
+              tafsirOpenStates[index + startAyahForJuz]
+                ? "fadeInRight"
+                : "zoomOutDown"
+            }
             duration={400}
           >
             <HTML
               contentWidth={width}
-              source={{ html: surahTafsirs[currentSurahInd][index].text }}
+              source={{
+                html: surahTafsirs[currentSurahInd][index + startAyahForJuz]
+                  .text,
+              }}
               tagsStyles={{
                 i: {
                   color: colorize(-0.2, appColor),
@@ -445,336 +222,37 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
           }
         }}
         ListHeaderComponent={
-          <>
-            <View
-              style={{
-                display: "flex",
-                justifyContent: "space-around",
-                flexDirection: "row-reverse",
-                marginTop: Constants.statusBarHeight,
-                alignItems: "center",
-                backgroundColor: appColor,
-                padding: 10,
-              }}
-            >
-              <TouchableOpacity onPress={() => setSectionsModalVisible(true)}>
-                <FontAwesome5
-                  name="list-ul"
-                  style={{
-                    color: "white",
-                    fontSize: 23,
-                  }}
-                />
-              </TouchableOpacity>
-              <Text style={{ color: "white", fontSize: 40 }}>
-                <Text style={{ fontFamily: surahFontFamily, fontSize: 40 }}>
-                  {surahFontName}
-                  <Text style={{ fontFamily: "KaalaTaala", fontSize: 45 }}>
-                    S
-                  </Text>
-                </Text>
-              </Text>
-              <TouchableOpacity onPress={() => setCardModalVisible(true)}>
-                <MaterialCommunityIcons
-                  name="lightbulb-outline"
-                  style={{
-                    color: "white",
-                    fontSize: 30,
-                    padding: 0,
-                    marginTop: 5,
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text
-              style={{
-                ...styles.basmalaStyle,
-                color: appColor,
-                fontSize: ayahFontSize + 12,
-                fontFamily: ayahFontFamily,
-              }}
-            >
-              بِسْمِ اللَّــهِ الرَّحْمَـٰنِ الرَّحِيمِ
-            </Text>
-          </>
+          <TafsirHeader
+            appColor={appColor}
+            setSectionsModalVisible={setSectionsModalVisible}
+            setCardModalVisible={setCardModalVisible}
+            surahFontFamily={surahFontFamily}
+            surahFontName={surahFontName}
+            ayahFontSize={ayahFontSize}
+            ayahFontFamily={ayahFontFamily}
+          />
         }
       />
-      <Modal
-        style={{ marginHorizontal: -5 }}
-        isVisible={sectionsModalVisible}
-        backdropOpacity={0.35}
-      >
-        <View>
-          <View>
-            <View style={{ ...styles.modalView, backgroundColor: appColor }}>
-              <View
-                style={{
-                  backgroundColor: colorize(-0.1, appColor),
-                  paddingHorizontal: 14,
-                  paddingVertical: 8,
-                  borderRadius: 30,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "absolute",
-                  top: -20,
-                }}
-              >
-                <Text style={{ ...styles.modalText }}>
-                  مواضيع سورةِ {surasList[currentSurahInd].name}
-                </Text>
-              </View>
-              <ScrollView
-                contentContainerStyle={styles.scrollViewContent}
-                style={{ maxHeight: "90%", marginVertical: 20, width: "100%" }}
-              >
-                {Object.keys(currentSurahSections)
-                  .sort(customSort)
-                  .map((key) => (
-                    <>
-                      {!key.includes("UNK") &&
-                        parseInt(key) >= startAyahForJuz - 1 &&
-                        parseInt(key) <= endAyahForJuz && (
-                          <Pressable
-                            onPress={() => {
-                              setSectionsModalVisible(false);
-                              scrollToIndex(
-                                parseInt(key.replace(/S/g, "")) -
-                                  startAyahForJuz -
-                                  1
-                              );
-                            }}
-                            key={key}
-                            style={styles.itemContainer}
-                          >
-                            <Text style={styles.itemKey}>
-                              {"\ufd3e"}
-                              {englishToArabicNumber(key.replace(/S/g, ""))}
-                              {"\ufd3f"}
-                            </Text>
-                            <Text
-                              style={{
-                                ...styles.itemText,
-                                fontFamily: key.includes("S")
-                                  ? "UthmanBold"
-                                  : "UthmanRegular",
-                              }}
-                            >
-                              {currentSurahSections[key]}
-                            </Text>
-                          </Pressable>
-                        )}
-                    </>
-                  ))}
-              </ScrollView>
-              <Pressable
-                style={[
-                  styles.button,
-                  { backgroundColor: colorize(0.1, appColor) },
-                ]}
-                onPress={() => setSectionsModalVisible(!sectionsModalVisible)}
-              >
-                <Text style={styles.textStyle}>الرجوع</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
-      <Modal
-        style={{ marginHorizontal: -10 }}
-        isVisible={cardModalVisbile}
-        backdropOpacity={0.35}
-      >
-        <View>
-          <View>
-            <View style={{ ...styles.modalView, backgroundColor: appColor }}>
-              <View
-                style={{
-                  backgroundColor: colorize(-0.1, appColor),
-                  paddingHorizontal: 14,
-                  paddingVertical: 8,
-                  borderRadius: 30,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "absolute",
-                  top: -20,
-                }}
-              >
-                <Text style={{ ...styles.modalText }}>
-                  بطاقة سورةِ {surasList[currentSurahInd].name}
-                </Text>
-              </View>
-              <ScrollView
-                contentContainerStyle={{
-                  ...styles.scrollViewContent,
-                  gap: 10,
-                }}
-                style={{ maxHeight: "90%", marginVertical: 20, width: "100%" }}
-              >
-                <View style={styles.cardItem}>
-                  <Text
-                    style={{
-                      ...styles.ayahStyle,
-                      color: "white",
-                      fontSize: ayahFontSize - 3,
-                    }}
-                  >
-                    آيَـــــــــــاتُــــهَا:
-                    <Text
-                      style={{
-                        ...styles.cardLeftTextStyle,
-                        fontSize: ayahFontSize - 5,
-                      }}
-                    >
-                      {" "}
-                      {englishToArabicNumber(currentSurahCard["ayaatiha"])}
-                    </Text>
-                  </Text>
-                </View>
-                <View style={styles.cardItem}>
-                  <Text
-                    style={{
-                      ...styles.ayahStyle,
-                      color: "white",
-                      fontSize: ayahFontSize - 3,
-                    }}
-                  >
-                    مَعنَى اسْـــمِها:
-                    <Text
-                      style={{
-                        ...styles.cardLeftTextStyle,
-                        fontSize: ayahFontSize - 5,
-                      }}
-                    >
-                      {" "}
-                      {currentSurahCard["maeni_asamuha"]}
-                    </Text>
-                  </Text>
-                </View>
-                <View style={styles.cardItem}>
-                  <Text
-                    style={{
-                      ...styles.ayahStyle,
-                      color: "white",
-                      fontSize: ayahFontSize - 3,
-                    }}
-                  >
-                    أَسْــــــمَاؤُهــا:
-                    <Text
-                      style={{
-                        ...styles.cardLeftTextStyle,
-                        fontSize: ayahFontSize - 5,
-                      }}
-                    >
-                      {" "}
-                      {englishToArabicNumber(currentSurahCard["asmawuha"])}
-                    </Text>
-                  </Text>
-                </View>
-                <View style={styles.cardItem}>
-                  <Text
-                    style={{
-                      ...styles.ayahStyle,
-                      color: "white",
-                      fontSize: ayahFontSize - 3,
-                    }}
-                  >
-                    مَقْصِدُها العَامُّ:
-                    <Text
-                      style={{
-                        ...styles.cardLeftTextStyle,
-                        fontSize: ayahFontSize - 5,
-                      }}
-                    >
-                      {" "}
-                      {englishToArabicNumber(
-                        currentSurahCard["maqsiduha_aleamu"]
-                      )}
-                    </Text>
-                  </Text>
-                </View>
-                <View style={styles.cardItem}>
-                  <Text
-                    style={{
-                      ...styles.ayahStyle,
-                      color: "white",
-                      fontSize: ayahFontSize - 3,
-                    }}
-                  >
-                    سَبَبُ نُــزُولِهَـا:
-                    <Text
-                      style={{
-                        ...styles.cardLeftTextStyle,
-                        fontSize: ayahFontSize - 5,
-                      }}
-                    >
-                      {" "}
-                      {englishToArabicNumber(
-                        currentSurahCard["sabab_nuzuliha"]
-                      )}
-                    </Text>
-                  </Text>
-                </View>
-                <View style={styles.cardItem}>
-                  <Text
-                    style={{
-                      ...styles.ayahStyle,
-                      color: "white",
-                      fontSize: ayahFontSize - 3,
-                    }}
-                  >
-                    فَضْـــــــــــلُـهـا:
-                    <Text
-                      style={{
-                        ...styles.cardLeftTextStyle,
-                        fontSize: ayahFontSize - 5,
-                      }}
-                    >
-                      {currentSurahCard["fadluha"].map((value, index) => (
-                        <Text>
-                          {"\n("}
-                          {englishToArabicNumber(index + 1) + ") "}
-                          {currentSurahCard["fadluha"][index]} {"\n"}
-                        </Text>
-                      ))}
-                    </Text>
-                  </Text>
-                </View>
-              </ScrollView>
-              <Pressable
-                style={[
-                  styles.button,
-                  { backgroundColor: colorize(0.1, appColor) },
-                ]}
-                onPress={() => setCardModalVisible(!cardModalVisbile)}
-              >
-                <Text style={styles.textStyle}>الرجوع</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <SurahSectionsModal
+        sectionsModalVisible={sectionsModalVisible}
+        setSectionsModalVisible={setSectionsModalVisible}
+        scrollToIndex={scrollToIndex}
+        appColor={appColor}
+        currentSurahInd={currentSurahInd}
+        currentSurahSections={currentSurahSections}
+        startAyahForJuz={startAyahForJuz}
+        endAyahForJuz={endAyahForJuz}
+      />
+      <SurahCardModal
+        cardModalVisible={cardModalVisbile}
+        setCardModalVisible={setCardModalVisible}
+        appColor={appColor}
+        currentSurahInd={currentSurahInd}
+        currentSurahCard={currentSurahCard}
+        ayahFontSize={ayahFontSize}
+      />
       {scrolledFarTafsir && (
-        <View
-          style={{
-            position: "absolute",
-            backgroundColor: appColor,
-            right: 20,
-            bottom: 30,
-            zIndex: 9999,
-            padding: 15,
-            borderRadius: 50,
-          }}
-        >
-          <TouchableOpacity onPress={() => setSectionsModalVisible(true)}>
-            <FontAwesome5
-              name="list-ul"
-              style={{
-                color: "white",
-                fontSize: 23,
-              }}
-            />
-          </TouchableOpacity>
-        </View>
+        <SectionsButton setSectionsModalVisible={setSectionsModalVisible} />
       )}
     </View>
   );
@@ -782,99 +260,16 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
 
 export default SurahTextList;
 
-const styles = StyleSheet.create({
-  suraStyle: {
-    textAlign: "justify",
-    fontSize: 25,
-    color: "#1d1d1d",
-  },
-  basmalaStyle: {
-    fontSize: 35,
-    padding: 5,
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  ayahStyle: {
-    marginHorizontal: 9,
-    textAlign: "justify",
-    color: "black",
-    fontSize: 25,
-    fontFamily: "NewmetRegular",
-    letterSpacing: Platform.OS === "web" ? 0 : 10,
-  },
-  cardLeftTextStyle: {
-    marginHorizontal: 9,
-    textAlign: "justify",
-    fontSize: 25,
-    letterSpacing: Platform.OS === "web" ? 0 : 10,
-    color: "white",
-    fontFamily: "Scheher",
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    paddingHorizontal: 35,
-    paddingVertical: 10,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    paddingHorizontal: 40,
-    paddingVertical: 7,
-    elevation: 2,
-  },
-  textStyle: {
-    color: "white",
-    textAlign: "center",
-    fontFamily: "UthmanBold",
-    fontSize: 16,
-  },
-  modalText: {
-    textAlign: "center",
-    color: "white",
-    fontFamily: "UthmanBold",
-    fontSize: 23,
-    letterSpacing: 6,
-  },
-  scrollViewContent: {
-    alignItems: "center",
-  },
-  itemContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    gap: 10,
-    marginVertical: 5,
-    paddingVertical: 7,
-    width: "100%",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ffffff33",
-  },
-  itemKey: {
-    fontSize: 18,
-    color: "white",
-    fontFamily: "UthmanRegular",
-  },
-  itemText: {
-    fontSize: 21,
-    color: "white",
-    fontFamily: "UthmanRegular",
-    maxWidth: "80%",
-    textAlign: "justify",
-  },
-  cardItem: {
-    borderBottomWidth: 1,
-    width: "100%",
-    borderBottomColor: "#ffffff33",
-    paddingVertical: 9,
-  },
-});
+/*
+SurahTextList = 
+ScrollView[
+TafsirHeader    # One Time
+SectionBanner   # In loop
+AyahWithBar     # In loop
+]
+
+SectionsButton  # Bottom left to show sections when scrolled far
+
+SurahCardModal      # Conditionally rendered
+SurahSectionsModal  # Conditionally rendered
+*/
