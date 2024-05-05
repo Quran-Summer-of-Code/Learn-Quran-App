@@ -146,7 +146,7 @@ const BookmarksPage: React.FC<Props> = () => {
           renderBookmarkItem({ index: item.item, realIndex: item.index })
         }
         ListHeaderComponent={
-          surahBookmarks.length > 0 && <View style={{backgroundColor: '#ffffffdd', borderRadius: 20, marginHorizontal: 100, marginVertical: 20}}><Text style={{fontSize: 20, color: appColor, fontFamily:'UthmanBold', textAlign: 'center', paddingVertical: 5}}> {"سورة "}{surasList[currentSurahInd].name}</Text></View>
+          surahBookmarks.length > 0 && <View style={{backgroundColor: '#ffffffdd', borderBottomRightRadius: 20, borderTopRightRadius: 20,  marginVertical: 20, display:'flex', marginRight: '65%'}}><Text style={{fontSize: 20, color: appColor, fontFamily:'UthmanBold',  paddingVertical: 5, paddingRight:10}}> {"سورة "}{surasList[currentSurahInd].name}</Text></View>
         }
         keyExtractor={(item, index) => index.toString()}
       />
