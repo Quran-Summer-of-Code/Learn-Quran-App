@@ -7,6 +7,7 @@ import {
   englishToArabicNumber,
   colorize,
   getGlobalAyahInd,
+  getFlattenedIndex
 } from "../../helpers";
 
 // Audio, bookmarks and copy functionality
@@ -26,6 +27,11 @@ interface AyahWithBarInterface {
   sound: any;
   currentSurahInd: number;
   startAyahForJuz: number;
+  ayahFontSize: number;
+  ayahFontFamily: string;
+  whiteAyah?: boolean;
+  flatToggleList?: boolean;
+  realIndex?: number;
 }
 
 const AyahWithBar: React.FC<AyahWithBarInterface> = ({
@@ -39,6 +45,11 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
   sound,
   currentSurahInd,
   startAyahForJuz,
+  ayahFontSize,
+  ayahFontFamily,
+  whiteAyah=false,
+  flatToggleList=false,
+  realIndex=0
 }) => {
   return (
     <View
@@ -51,7 +62,7 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
       }}
     >
       {/* Ayah Text */}
-      <Text style={[styles.ayahStyle, { textAlign: "justify" }]}>
+      <Text style={[styles.ayahStyle, { textAlign: "justify", fontSize: ayahFontSize, fontFamily: ayahFontFamily, color: whiteAyah ? "#DFDFDF" :"black" }]}>
         {ayahItem.ayah}
       </Text>
       {/* Bar */}
@@ -73,11 +84,15 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
           {/* Button to show or hide tafsir */}
           <TouchableOpacity
             onPress={() => {
-              toggleTafsirOpenState(index + startAyahForJuz);
+              (!flatToggleList)?
+              toggleTafsirOpenState(index + startAyahForJuz):
+              toggleTafsirOpenState(getFlattenedIndex(bookmarks, currentSurahInd, realIndex));
             }}
           >
             <Feather
-              name={tafsirOpenStates[index + startAyahForJuz] ? "minimize-2" : "maximize-2"}
+              name={
+                ((!flatToggleList) ? tafsirOpenStates[index + startAyahForJuz] : tafsirOpenStates[getFlattenedIndex(bookmarks, currentSurahInd, realIndex)])
+                ? "minimize-2" : "maximize-2"}
               style={{
                 color: "white",
                 fontSize: 20,

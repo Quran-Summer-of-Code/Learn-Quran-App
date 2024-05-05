@@ -159,6 +159,30 @@ export const customSort = (a: string, b: string): number => {
     return 0; // Keys are equal
   };
 
+  // To get length of bookmarks array (list of litsts)
+  export function getTotalLength(arr: number[][]) {
+    let totalElements = 0;
+    for (let i = 0; i < arr.length; i++) {
+      totalElements += arr[i].length;
+    }
+    return totalElements;
+  }
+  
+  // To be able to index its corresponding flattened list
+  export function getFlattenedIndex(
+    arr: number[][],
+    outerIndex: number,
+    innerIndex: number
+  ) {
+    let flattenedIndex = 0;
+    for (let i = 0; i < outerIndex; i++) {
+      flattenedIndex += arr[i].length;
+    }
+    flattenedIndex += innerIndex;
+    return flattenedIndex;
+  }
+
 /*
 This file has helper functions used throughout the app (e.g., mapping words, juzs, ayahs together).
 */
+

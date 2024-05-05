@@ -79,7 +79,7 @@ const TafsirPage: React.FC = () => {
       <SurahTextList
         currentSurahInd={currentSurahInd}
         currentSurah={currentSurah}
-        key={key}
+        keyVal={key}
         startAyahForJuz={startAyahForJuz}
         endAyahForJuz={endAyahForJuz}
       />
