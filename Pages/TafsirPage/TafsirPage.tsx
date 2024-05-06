@@ -56,6 +56,12 @@ const TafsirPage: React.FC = () => {
   const justEnteredNewSurahJuz = useSelector(JustEnteredNewSurahJuz);
   const [key, setKey] = React.useState(0);
 
+  // increment key whenever navigation changes
+
+  useEffect(() => {
+      setKey(key + 1);
+    }, [navigation, currentSurahInd, currentJuzInd]);
+
   // Handle setting the Juz slice when user enters new surah or new part of surah (in another Juz)
   React.useEffect(() => {
     if (juzMode && currentJuzInd < 29 && currentJuzInd !== null && currentJuzInd !== undefined) {
@@ -79,7 +85,7 @@ const TafsirPage: React.FC = () => {
       <SurahTextList
         currentSurahInd={currentSurahInd}
         currentSurah={currentSurah}
-        keyVal={key}
+        key={key}
         startAyahForJuz={startAyahForJuz}
         endAyahForJuz={endAyahForJuz}
       />

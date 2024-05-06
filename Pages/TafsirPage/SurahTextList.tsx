@@ -47,7 +47,7 @@ import { Audio } from "expo-av";
 interface SurahTextListProps {
   currentSurah: any[];
   currentSurahInd: number;
-  keyVal: number;
+  key: number;
   startAyahForJuz: number;
   endAyahForJuz: number;
 }
@@ -55,7 +55,7 @@ interface SurahTextListProps {
 const SurahTextList: React.FC<SurahTextListProps> = ({
   currentSurah,
   currentSurahInd,
-  keyVal,
+  key,
   startAyahForJuz,
   endAyahForJuz,
 }) => {

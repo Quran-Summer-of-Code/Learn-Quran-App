@@ -53,6 +53,18 @@ const SectionBanner: React.FC<SectionBannerProps> = ({
             ]}
             style={{ marginTop: 20 }}
           >
+            {index > 0 && (
+                <View
+                  style={{
+                    height: 30,
+                    width: "100%",
+                    borderRadius: 30,
+                    backgroundColor: colorize(+0.7, appColor),
+                    borderTopLeftRadius: 0,
+                    borderTopRightRadius: 0,
+                  }}
+                ></View>
+              )}
             <Text
               style={{
                 ...styles.ayahStyle,
