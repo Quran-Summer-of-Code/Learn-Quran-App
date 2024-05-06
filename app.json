@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "quran-app",
+    "name": "تعلم القرآن الكريم",
     "slug": "quran-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.essamwisam.quranapp"
     },
     "android": {
       "adaptiveIcon": {
