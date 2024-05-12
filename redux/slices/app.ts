@@ -45,7 +45,7 @@ const initialState: AppState = {
   appColor: "#009193",               // app theme picked in the settings
   ayahFontSize: 25,                  // app ayah font size picked in the settings
   ayahFontFamily: 'NewmetRegular',   // app ayah font family picked in the settings
-  sheikh: "Afasi",                   // reciter of ayahs in the app
+  sheikh: "ar.alafasy",             // reciter of ayahs in the app
   tafsirBook: "Waseet",              // tafsir book of the app
   tafsirFontSize: 16,                // tafsir font size in the app
   sectionsDisplay: true,             // whether to display sections for each surah

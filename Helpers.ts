@@ -2,6 +2,17 @@
 import surasList from "./Quran/surasList.json";
 import suras from "./Quran/suras.json";
 
+// sheikh URL handles and their names
+export const sheiksDict: { [key: string]: string } = {
+    "ar.alafasy": "مشاري العفاسي",
+    "ar.husarymujawwad": "محمود خليل الحصري",
+    "ar.abdulsamad": "عبدالباسط عبدالصمد",   // will require bitrate 64
+    "ar.shaatree": "أبو بكر الشاطري",
+    "ar.hudhaify": "علي بن عبدالرحمن الحذيفي",
+    "ar.mahermuaiqly": "ماهر المعيقلي",
+    "ar.muhammadjibreel": "محمد جبريل",
+  };
+
 // After calling this audioList state will have an audio object for each ayah in Quran (interface below)
 export const prepareAudio = async (baseUrl: string, author: string, img: NodeRequire, setAudioList: CallableFunction) => {
     interface AudioObject {

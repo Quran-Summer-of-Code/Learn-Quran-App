@@ -56,11 +56,13 @@ import {
 
 interface AudioPlayerProps {
   audioList: any;
+  key: boolean;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key }) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+
 
   // Basic states (see definitions in Redux/slices/app.ts)
   const [currentSurahInd, setCurrentSurahInd] = [
@@ -97,7 +99,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
   useEffect(() => {
     const initializePlayer = async () => {
       try {
-        await setupPlayer(audioList);
+        await setupPlayer();
+        // add audio list (json)
+        await TrackPlayer.setQueue(audioList);
         // last juz has disjoint suras so it's treated as if we are not in juzMode
         if (juzMode && currentJuzInd < 29) {
           // Go to first Ayah of the current surah in the current juz
@@ -121,7 +125,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList }) => {
     };
 
     initializePlayer();
-  }, [justEnteredNewSurah, justEnteredNewSurahJuz]);
+  }, [justEnteredNewSurah, justEnteredNewSurahJuz, key]);
 
   const [playBackChanged, setPlayBackChanged] = [
     useSelector(PlayBackChanged),

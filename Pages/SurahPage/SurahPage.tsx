@@ -30,9 +30,10 @@ import surasByWords from "../../Quran/surasByWords";
 
 interface Props {
   audioList: any[];
+  key: boolean;
 }
 
-const SurahPage: React.FC<Props> = ({ audioList }) => {
+const SurahPage: React.FC<Props> = ({ audioList, key }) => {
   // RTL
   I18nManager.allowRTL(true);
   I18nManager.forceRTL(true);
@@ -120,7 +121,7 @@ const SurahPage: React.FC<Props> = ({ audioList }) => {
         startWordIndForJuz={startWordIndForJuz}
         endWordIndForJuz={endWordIndForJuz}
       />
-      {!isWeb && <AudioPlayer audioList={audioList} />}
+      {!isWeb && <AudioPlayer key={key} audioList={audioList} />}
     </>
   );
 };
