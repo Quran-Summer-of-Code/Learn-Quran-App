@@ -15,10 +15,13 @@ import EmptyPage from "./Pages/EmptyPage/EmptyPage";
 
 // Redux
 import { useSelector } from "react-redux";
-import { ScrolledFar, ScrolledFarTafsir, InHomePage, AppColor, TafsirMode, CardModalVisbile, SectionsModalVisible } from "./Redux/slices/app";
+import { ScrolledFar, ScrolledFarTafsir, InHomePage, AppColor, TafsirMode, CardModalVisbile, SectionsModalVisible, Sheikh, CurrentSurahInd } from "./Redux/slices/app";
 
 // for loading audio data initially
 import { prepareAudio, colorize } from "./helpers";
+
+// sheikhs name
+import { sheiksDict } from "./helpers";
 
 const Drawer = createDrawerNavigator();
 
@@ -32,12 +35,17 @@ function Navigation() {
       url: "https://cdn.islamic.network/quran/audio/128/ar.alafasy/0.mp3",
     },
   ]);
+
+  const sheikh = useSelector(Sheikh);
+  const [key, setKey] = useState(false);
   useEffect(() => {
-    const author = "مشاري العفاسي"; // easily generalize later
-    const baseUrl = "https://cdn.islamic.network/quran/audio/128/ar.alafasy";
+    const author = sheiksDict[sheikh];
+    let baseUrl = `https://cdn.islamic.network/quran/audio/128/${sheikh}`;
+    if (sheikh === "ar.abdulsamad") baseUrl = `https://cdn.islamic.network/quran/audio/64/${sheikh}`;
     const img_path = require("./assets/quran.jpeg");
     prepareAudio(baseUrl, author, img_path, setAudioList);
-  }, []);
+    setKey(!key);
+  }, [sheikh,]);
 
   // External State
   const appColor = useSelector(AppColor);               // chosen in settings
@@ -113,7 +121,7 @@ function Navigation() {
               headerTitleAlign: "center",
             }}
           >
-            {(props) => <SurahPage audioList={audioList} />}
+            {(props) => <SurahPage audioList={audioList} key={key} />}
           </Drawer.Screen>
           <Drawer.Screen
             name="TafsirPage"

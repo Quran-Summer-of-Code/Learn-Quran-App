@@ -2,7 +2,7 @@ import TrackPlayer, {
     Capability,
 } from 'react-native-track-player';
 
-export const setupPlayer = async (audioList: any[]) => {
+export const setupPlayer = async () => {
     try {
         await TrackPlayer.setupPlayer();
         // setup player options
@@ -14,8 +14,6 @@ export const setupPlayer = async (audioList: any[]) => {
                 Capability.SkipToPrevious
             ],
         });
-        // add audio list (json)
-        await TrackPlayer.add(audioList);
     }
     catch (error) {
         // harmless error

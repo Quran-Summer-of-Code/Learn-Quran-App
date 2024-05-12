@@ -8,7 +8,7 @@ import Slider from "@react-native-community/slider";
 import { Dropdown } from "react-native-element-dropdown";
 
 // Helper functions
-import { colorize, englishToArabicNumber } from "../../helpers";
+import { colorize, englishToArabicNumber, sheiksDict } from "../../helpers";
 
 // States
 import { useDispatch, useSelector } from "react-redux";
@@ -49,16 +49,17 @@ const SettingsPage: React.FC<Props> = () => {
     { label: "اميري", value: "Amiri" },
   ];
 
-  const sheiksMap = [{ label: "مشاري العفاسي", value: "Afasi" }];
+  const sheiksMap = Object.keys(sheiksDict).map(value => ({ label: sheiksDict[value], value }));
+
 
   const tafsirsMap = [
     { label: "كتاب التفسير الوسيط لطنطاوي", value: "Waseet" },
   ];
 
   const allowSectionsMap = [
-    {label: "نعم", value: true},
-    {label: "لا", value: false}
-  ]
+    { label: "نعم", value: true },
+    { label: "لا", value: false },
+  ];
 
   const colors = [
     "#009193",
@@ -195,7 +196,9 @@ const SettingsPage: React.FC<Props> = () => {
               style={{ fontSize: 24 }}
             />
             <Text style={styles.textItem}>حجم خط الآيات</Text>
-            <View style={{ width: 30, height: 30, position: 'absolute', right: 15}}>
+            <View
+              style={{ width: 30, height: 30, position: "absolute", right: 15 }}
+            >
               <Text
                 style={{ color: "white", fontSize: 20, textAlign: "center" }}
               >
@@ -242,7 +245,9 @@ const SettingsPage: React.FC<Props> = () => {
               style={{ fontSize: 24 }}
             />
             <Text style={styles.textItem}>حجم خط التفسير</Text>
-            <View style={{ width: 30, height: 30, position: 'absolute', right: 15 }}>
+            <View
+              style={{ width: 30, height: 30, position: "absolute", right: 15 }}
+            >
               <Text
                 style={{ color: "white", fontSize: 20, textAlign: "center" }}
               >
@@ -314,7 +319,7 @@ const SettingsPage: React.FC<Props> = () => {
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
             onChange={(item) => {
-              setSheik(item.value);
+              setSheikh(item.value);
               setIsFocus(false);
             }}
             fontFamily="UthmanBold"
@@ -333,11 +338,7 @@ const SettingsPage: React.FC<Props> = () => {
               marginBottom: 15,
             }}
           >
-            <FontAwesome
-              name="book"
-              color={"#fff"}
-              style={{ fontSize: 22 }}
-            />
+            <FontAwesome name="book" color={"#fff"} style={{ fontSize: 22 }} />
             <Text style={styles.textItem}>كتاب التفسير</Text>
             <View style={{ width: 30, height: 30, marginLeft: "55%" }}></View>
           </View>
