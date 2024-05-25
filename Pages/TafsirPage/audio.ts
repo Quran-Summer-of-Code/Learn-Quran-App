@@ -1,11 +1,11 @@
 
-export async function playSound(sound: any, ayahInd: number) {
-    const baseUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${ayahInd}.mp3`;
+export async function playSound(sound: any, ayahInd: number, sheikh: string, playing: boolean) {
+    const baseUrl = `https://cdn.islamic.network/quran/audio/${(sheikh !== "ar.abdulsamad") ? `128` : `64`}/${sheikh}/${ayahInd}.mp3`;
 
     // if an ayah is already loaded then unload it to play the requested ayah.
     const checkLoading = await sound.getStatusAsync();
     if (checkLoading.isLoaded) {
-      sound.unloadAsync();
+      await sound.unloadAsync();
     }
 
     // load the ayah form the link
@@ -13,7 +13,9 @@ export async function playSound(sound: any, ayahInd: number) {
       {
         uri: baseUrl,
       },
-      {},
+      {
+        volume: (playing) ? 0.0 : 1.0,
+      },
       false
     );
 
@@ -21,6 +23,9 @@ export async function playSound(sound: any, ayahInd: number) {
     const result = await sound.getStatusAsync();
     if (result.isPlaying === false) {
       sound.playAsync();
+    }
+    else {
+      sound.pauseAsync();
     }
   }
 

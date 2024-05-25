@@ -19,6 +19,7 @@ import { ToastAndroid } from "react-native";
 interface AyahWithBarInterface {
   index: number;
   ayahItem: any;
+  sheikh: string;
   tafsirOpenStates: any;
   toggleTafsirOpenState: Function;
   bookmarks: any;
@@ -37,6 +38,7 @@ interface AyahWithBarInterface {
 const AyahWithBar: React.FC<AyahWithBarInterface> = ({
   index,
   ayahItem,
+  sheikh,
   tafsirOpenStates,
   toggleTafsirOpenState,
   bookmarks,
@@ -105,7 +107,8 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
             onPress={() => {
               playSound(
                 sound,
-                getGlobalAyahInd(currentSurahInd, ayahItem.rakam + 1)
+                getGlobalAyahInd(currentSurahInd, ayahItem.rakam + 1),
+                sheikh
               );
             }}
           >

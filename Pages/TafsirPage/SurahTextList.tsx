@@ -36,6 +36,7 @@ import {
   SetCardModalVisbile,
   Bookmarks,
   SetBookmarks,
+  Sheikh
 } from "../../Redux/slices/app";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -74,6 +75,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   const sectionsDisplay = useSelector(SectionsDisplay);
   const scrolledFarTafsir = useSelector(ScrolledFarTafsir);
   const setScrolledFarTafsir = wrapDispatch(SetScrolledFarTafsir);
+  const sheikh = useSelector(Sheikh);
 
   // state which is a list of 114 lists for bookmarkks
   const [bookmarks, setBookmarks] = [
@@ -97,6 +99,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
       return newStates;
     });
   };
+
 
   // Allow scrolling when pressing section
   const flatListRef = useRef(null);
@@ -138,6 +141,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
       <AyahWithBar
         index={index}
         ayahItem={item}
+        sheikh={sheikh}
         tafsirOpenStates={tafsirOpenStates}
         toggleTafsirOpenState={toggleTafsirOpenState}
         bookmarks={bookmarks}
