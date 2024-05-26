@@ -47,7 +47,7 @@ const HomePage = () => {
       {/* Container just before Surah list */}
       <View
         style={{
-          marginTop: Constants.statusBarHeight,
+          marginTop: Constants.statusBarHeight + 4,
           paddingVertical: 20,
           width: "100%",
           backgroundColor: appColor,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     gap: 10,
-    marginBottom: -48,
+    marginBottom: -52,
     marginTop: 10,
   },
   singleTabContainer: {
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 35,
     paddingVertical: 3,
-    height: 50,
+    height: 60,
   },
   tabText: {
     color: "#f1f1f1",

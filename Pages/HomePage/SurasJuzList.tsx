@@ -198,12 +198,15 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                   setJustEnteredNewSurahJuz(!justEnteredNewSurahJuz);
                 }
                 setInHomePage(false);
-                setCurrentSurahInd(surahInd);
                 setCurrentJuzInd(index);
+                setCurrentSurahInd(surahInd);
                 if (!tafsirMode) {
+                  setCurrentSurahInd(surahInd);
+                  console.log("surahInd", surahInd);
                   navigation.navigate("SurahPage");
                 }
                 else {
+                  setCurrentSurahInd(surahInd);
                   navigation.navigate("TafsirPage");
                 }
               }}

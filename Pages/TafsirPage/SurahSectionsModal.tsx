@@ -16,7 +16,6 @@ interface SurahSectionsModalProps {
   startAyahForJuz: number;
   endAyahForJuz: number;
   surahMode?: boolean;
-  key?: boolean;
 }
 
 const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
@@ -29,7 +28,6 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
   startAyahForJuz,
   endAyahForJuz,
   surahMode = false,
-  key=false
 }) => {
   return (
     <Modal

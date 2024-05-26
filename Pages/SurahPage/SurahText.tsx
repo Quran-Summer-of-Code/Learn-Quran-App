@@ -233,7 +233,6 @@ const SurahText: React.FC<SurahTextProps> = ({
         startAyahForJuz={startAyahForJuz}
         endAyahForJuz={endAyahForJuz}
         surahMode={true}
-        key={JuzMode}
       />}
       <SurahCardModal
         cardModalVisible={cardModalVisbile}

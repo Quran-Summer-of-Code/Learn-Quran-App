@@ -74,6 +74,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
     useSelector(CurrentAyahInd),
     wrapDispatch(SetCurrentAyahInd),
   ];
+
   const [pause, setPause] = [useSelector(Pause), wrapDispatch(SetPause)];
   const [justChoseNewAyah, setJustChoseNewAyah] = [
     useSelector(JustChoseNewAyah),
@@ -108,8 +109,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
           // Go to first Ayah of the current surah in the current juz
           let suras = juzInfo[currentJuzInd].juzSuras;
           let ayahSplits = juzInfo[currentJuzInd].splits;
-          let firstAyah = ayahSplits[suras.indexOf(currentSurahInd)][1];
-          let lastAyah = ayahSplits[suras.indexOf(currentSurahInd)][0];
+          let currentSurahIndex = suras.indexOf(currentSurahInd);
+          let firstAyah = ayahSplits[currentSurahIndex][1];
+          let lastAyah = ayahSplits[currentSurahIndex][0];
           setStartAyahIndForJuz(firstAyah);
           setEndAyahIndForJuz(lastAyah);
           TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, firstAyah));
@@ -141,8 +143,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
     } else {
       let suras = juzInfo[currentJuzInd].juzSuras;
       let ayahSplits = juzInfo[currentJuzInd].splits;
-      let firstAyah = ayahSplits[suras.indexOf(currentSurahInd)][1];
-      let lastAyah = ayahSplits[suras.indexOf(currentSurahInd)][0];
+      let currentSurahIndex = suras.indexOf(currentSurahInd);
+
+      let firstAyah = ayahSplits[currentSurahIndex][1];
+      let lastAyah = ayahSplits[currentSurahIndex][0];
       setStartAyahIndForJuz(firstAyah);
       setEndAyahIndForJuz(lastAyah);
     }
@@ -161,8 +165,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
     if (event.type === "playback-track-changed" && event.nextTrack !== null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
       const newSurahInd = getSurahIndGivenAyah(event.nextTrack);
+      if (newSurahInd !== 0){     // otherwise, it gets randomly set as that before the real value (init track?)
       setCurrentSurahInd(newSurahInd);
       setCurrentAyahInd(getLocalAyahInd(event.nextTrack));
+      
       setTrackMD(track);
       if (juzMode) {
         const newJuzInd = findJuzSurahAyahIndex(
@@ -173,7 +179,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
         setCurrentJuzInd(newJuzInd);
       }
       setPlayBackChanged(!playBackChanged);
+
     }
+  }
   });
 
   // To allow control from the navigation bar

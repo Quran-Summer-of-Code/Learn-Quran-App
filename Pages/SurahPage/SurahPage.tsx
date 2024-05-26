@@ -91,13 +91,15 @@ const SurahPage: React.FC<Props> = ({ audioList, key }) => {
       // render full surah (not juzMode!)
       setStartWordIndForJuz(0);
       setEndWordIndForJuz(currentSurahByWords.words.length - 1);
+      setStartAyahForJuz(0);
+      setEndAyahForJuz(parseInt(numAyahsIncurrentSurah));
     }
   }, [justEnteredNewSurahJuz, justEnteredNewSurah, playBackChanged, juzMode, currentJuzInd, currentSurahInd]);
 
 
 
   return (
-    <View key={juzMode}>
+    <View>
       <SurahText
         currentSurahInd={currentSurahInd}
         startWordIndForJuz={startWordIndForJuz}
