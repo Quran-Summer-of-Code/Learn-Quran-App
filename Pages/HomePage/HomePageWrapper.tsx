@@ -1,5 +1,6 @@
 import { Text, Platform, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import  Constants  from "expo-constants";
 
 //Main Components
 import HomePage from "./HomePage";
@@ -104,19 +105,20 @@ const HomePageWrapper = () => {
       <Tab.Screen
         name="الحافظة"
         options={{
-          headerShown: false,
-          headerTitle: () => (
+          headerShown: true,
+          header: () => (
             <View
               style={{
                 display: "flex",
                 justifyContent: "center",
                 flexDirection: "row-reverse",
-                marginVertical: 3,
                 alignItems: "center",
                 width: "100%",
+                backgroundColor: appColor,
+                paddingTop: Constants.statusBarHeight,
               }}
             >
-              <Text style={{ color: "white", fontSize: 30,  fontFamily: "UthmanRegular", marginHorizontal: 4, }}>
+              <Text style={{ color: "white", fontSize: 30,  fontFamily: "UthmanRegular", marginHorizontal: 4, paddingVertical:7 }}>
                 <Text>{"الحافظة"}</Text>
               </Text>
             </View>
@@ -142,28 +144,9 @@ const HomePageWrapper = () => {
       <Tab.Screen
         name="الإعدادات"
         options={{
-          headerShown: false,
+          headerShown: true,
           headerTitleContainerStyle: { flex: 1 },
-          headerTitle: () => (
-            <View
-              style={{
-                flex: 1,
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "row-reverse",
-                marginVertical: 0,
-                alignItems: "center",
-                width: "100%",
-                minHeight: 500
-              }}
-            >
-              <Text style={{ color: "white", fontSize: 30,  fontFamily: "UthmanRegular", marginHorizontal: 4, paddingBottom: 3}}>
-                <Text>{"الإعدادات"}</Text>
-              </Text>
-            </View>
-          ),
           headerTitleAlign: "center",
-
           tabBarIcon: ({ color, size }) => (
             <Text
               style={{
@@ -177,6 +160,31 @@ const HomePageWrapper = () => {
               {"\ue900"}
             </Text>
           ),
+          header: () => (
+              <View
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "row-reverse",
+                alignItems: "center",
+                width: "100%",
+                backgroundColor: appColor,
+                paddingTop: Constants.statusBarHeight,
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 30,
+                  fontFamily: "UthmanRegular",
+                  marginHorizontal: 4,
+                  paddingVertical: 7
+                }}
+              >
+                <Text>{"الإعدادات"}</Text>
+              </Text>
+            </View>
+            )
         }}
         component={SettingsPage}
       />

@@ -49,8 +49,10 @@ const SettingsPage: React.FC<Props> = () => {
     { label: "اميري", value: "Amiri" },
   ];
 
-  const sheiksMap = Object.keys(sheiksDict).map(value => ({ label: sheiksDict[value], value }));
-
+  const sheiksMap = Object.keys(sheiksDict).map((value) => ({
+    label: sheiksDict[value],
+    value,
+  }));
 
   const tafsirsMap = [
     { label: "كتاب التفسير الوسيط لطنطاوي", value: "Waseet" },

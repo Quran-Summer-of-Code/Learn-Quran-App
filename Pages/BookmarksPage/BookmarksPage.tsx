@@ -31,8 +31,6 @@ import { Audio } from "expo-av";
 
 interface Props {}
 
-
-
 const BookmarksPage: React.FC<Props> = () => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
@@ -54,7 +52,6 @@ const BookmarksPage: React.FC<Props> = () => {
   const [tafsirOpenStates, setTafsirOpenStates] = useState(
     Array(getTotalLength(bookmarks)).fill(false)
   );
-
 
   const toggleTafsirOpenState = (index: number) => {
     setTafsirOpenStates((prevStates) => {
@@ -140,16 +137,43 @@ const BookmarksPage: React.FC<Props> = () => {
 
     let sortedSurahBookmarks = [...surahBookmarks].sort();
     return (
-      <FlatList
-        data={sortedSurahBookmarks}
-        renderItem={(item) =>
-          renderBookmarkItem({ index: item.item, realIndex: item.index })
-        }
-        ListHeaderComponent={
-          surahBookmarks.length > 0 && <View style={{backgroundColor: '#ffffffdd', borderBottomRightRadius: 20, borderTopRightRadius: 20,  marginVertical: 20, display:'flex', marginRight: '65%'}}><Text style={{fontSize: 20, color: appColor, fontFamily:'UthmanBold',  paddingVertical: 5, paddingRight:10}}> {"سورة "}{surasList[currentSurahInd].name}</Text></View>
-        }
-        keyExtractor={(item, index) => index.toString()}
-      />
+      <>
+        <FlatList
+          data={sortedSurahBookmarks}
+          renderItem={(item) =>
+            renderBookmarkItem({ index: item.item, realIndex: item.index })
+          }
+          ListHeaderComponent={
+            surahBookmarks.length > 0 && (
+              <View
+                style={{
+                  backgroundColor: "#ffffffdd",
+                  borderBottomRightRadius: 20,
+                  borderTopRightRadius: 20,
+                  marginVertical: 20,
+                  display: "flex",
+                  marginRight: "65%",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: appColor,
+                    fontFamily: "UthmanBold",
+                    paddingVertical: 5,
+                    paddingRight: 10,
+                  }}
+                >
+                  {" "}
+                  {"سورة "}
+                  {surasList[currentSurahInd].name}
+                </Text>
+              </View>
+            )
+          }
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </>
     );
   };
   return (
@@ -159,13 +183,14 @@ const BookmarksPage: React.FC<Props> = () => {
         backgroundColor: colorize(-0.3, appColor),
       }}
     >
+
       <FlatList
         data={bookmarks}
         // @ts-ignore
         renderItem={(item) =>
           renderItem({ surahBookmarks: item.item, currentSurahInd: item.index })
         }
-        style={{width: '100%'}}
+        style={{ width: "100%" }}
         keyExtractor={(item, index) => index.toString()}
       />
     </View>
