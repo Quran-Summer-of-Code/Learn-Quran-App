@@ -9,12 +9,14 @@ import surasList from "../../Quran/surasList.json";
 interface SurahSectionsModalProps {
   sectionsModalVisible: boolean;
   setSectionsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  scrollToIndex: (index: number) => void;
+  scrollToIndex: any;
   appColor: string;
   currentSurahInd: number;
   currentSurahSections: any;
   startAyahForJuz: number;
   endAyahForJuz: number;
+  surahMode?: boolean;
+  key?: boolean;
 }
 
 const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
@@ -26,6 +28,8 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
   currentSurahSections,
   startAyahForJuz,
   endAyahForJuz,
+  surahMode = false,
+  key=false
 }) => {
   return (
     <Modal
@@ -66,11 +70,15 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
                     <Pressable
                       onPress={() => {
                         setSectionsModalVisible(false);
+                        if (!surahMode) {
                         scrollToIndex(
                           parseInt(key.replace(/S/g, "")) -
                             startAyahForJuz -
                             1
                         );
+                      } else {
+                        scrollToIndex(parseInt(key.replace(/S/g, "")));
+                      }
                       }}
                       key={key}
                       style={styles.itemContainer}
@@ -96,6 +104,10 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
               </React.Fragment>
             ))}
         </ScrollView>
+        {Object.keys(currentSurahSections).length <= 1 && 
+        <Text style={{color: 'white', fontFamily:'UthmanBold', paddingVertical: 20, fontSize: 18}}>
+          هذه السورة غير مقسمة إلى مواضيع
+          </Text>}
         {/* Back Button */}
         <Pressable
           style={[

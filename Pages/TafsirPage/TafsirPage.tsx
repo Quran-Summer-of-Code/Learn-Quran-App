@@ -64,7 +64,7 @@ const TafsirPage: React.FC = () => {
 
   // Handle setting the Juz slice when user enters new surah or new part of surah (in another Juz)
   React.useEffect(() => {
-    if (juzMode && currentJuzInd < 29 && currentJuzInd !== null && currentJuzInd !== undefined) {
+    if (juzMode && currentJuzInd < 29 && currentJuzInd) {
       let juz = juzInfo[currentJuzInd];
       let surahIndRelativeToJuz = juz?.juzSuras.indexOf(currentSurahInd);
       let startAyahIndForJuz = juz?.splits[surahIndRelativeToJuz][1];

@@ -8,6 +8,8 @@ import Constants from "expo-constants";
 // Main Components
 import { AyahWord } from "./SurahTextElement";
 import SurahHeader from "../Components/SurahHeader";
+import SurahCardModal from "../TafsirPage/SurahCardModal";
+import SurahSectionsModal from "../TafsirPage/SurahSectionsModal";
 
 // Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -15,6 +17,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 // Data
 import surasByWords from "../../Quran/surasByWords";
 import surasList from "../../Quran/surasList.json";
+import surahSections from "../../Quran/surahSectionsUpdated.json";
+import albitaqat from "../../Quran/albitaqat.json";
 
 // State
 import { useSelector, useDispatch } from "react-redux";
@@ -29,6 +33,7 @@ import {
   SetCardModalVisbile,
   SectionsModalVisible,
   SetSectionsModalVisible,
+  JuzMode,
 } from "../../Redux/slices/app";
 
 import { useNavigation } from "@react-navigation/native";
@@ -37,12 +42,16 @@ interface SurahTextProps {
   currentSurahInd: number;
   startWordIndForJuz: number;
   endWordIndForJuz: number;
+  startAyahForJuz: number;
+  endAyahForJuz: number;
 }
 
 const SurahText: React.FC<SurahTextProps> = ({
   currentSurahInd,
   startWordIndForJuz,
   endWordIndForJuz,
+  startAyahForJuz,
+  endAyahForJuz,
 }) => {
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
@@ -84,7 +93,10 @@ const SurahText: React.FC<SurahTextProps> = ({
   // To control scroll
   const flatListRef = useRef(null);
 
-  const scrollToIndex = (index: number) => {
+  const scrollToIndex = (currentAyahInd: number) => {
+    //@ts-ignore
+    let index =
+    currentSurahByWords.lastWordsinAyah[currentAyahInd] - startWordIndForJuz;
     //@ts-ignore
     flatListRef?.current?.scrollToIndex({
       animated: true,
@@ -95,11 +107,9 @@ const SurahText: React.FC<SurahTextProps> = ({
 
   // Scroll to Ayah whenever it changes
   React.useEffect(() => {
-    let index =
-      currentSurahByWords.lastWordsinAyah[currentAyahInd] - startWordIndForJuz;
     setTimeout(() => {
       try {
-        scrollToIndex(index);
+        scrollToIndex(currentAyahInd);
       } catch {
         return "error";
         // in other words, just ignore it
@@ -119,6 +129,10 @@ const SurahText: React.FC<SurahTextProps> = ({
   const surahFontName = surasList[currentSurahInd].fontName;
   const surahFontFamily = surasList[currentSurahInd].fontFamily;
 
+  // Get the sections and card of current Surah
+  const currentSurahSections = surahSections[currentSurahInd];
+  const currentSurahCard = albitaqat[currentSurahInd];
+
   // Modal states
   const [sectionsModalVisible, setSectionsModalVisible] = [
     useSelector(SectionsModalVisible),
@@ -128,6 +142,7 @@ const SurahText: React.FC<SurahTextProps> = ({
     useSelector(CardModalVisbile),
     wrapDispatch(SetCardModalVisbile),
   ];
+
   const { width, height } = Dimensions.get("screen");
 
   return (
@@ -208,6 +223,26 @@ const SurahText: React.FC<SurahTextProps> = ({
           }
         </TouchableOpacity>
       </View>
+      {<SurahSectionsModal
+        sectionsModalVisible={sectionsModalVisible}
+        setSectionsModalVisible={setSectionsModalVisible}
+        scrollToIndex={scrollToIndex}
+        appColor={appColor}
+        currentSurahInd={currentSurahInd}
+        currentSurahSections={currentSurahSections}
+        startAyahForJuz={startAyahForJuz}
+        endAyahForJuz={endAyahForJuz}
+        surahMode={true}
+        key={JuzMode}
+      />}
+      <SurahCardModal
+        cardModalVisible={cardModalVisbile}
+        setCardModalVisible={setCardModalVisible}
+        appColor={appColor}
+        currentSurahInd={currentSurahInd}
+        currentSurahCard={currentSurahCard}
+        ayahFontSize={ayahFontSize}
+      />
     </View>
   );
 };

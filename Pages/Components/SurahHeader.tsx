@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5,  Feather } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 
 interface SurahHeaderProps {
@@ -56,13 +56,11 @@ const SurahHeader: React.FC<SurahHeaderProps> = ({
         </Text>
         {/* Show Surah Card Button */}
         <TouchableOpacity onPress={() => setCardModalVisible(true)}>
-          <MaterialCommunityIcons
-            name="lightbulb-outline"
+        <Feather
+            name="book-open"
             style={{
               color: "white",
-              fontSize: 30,
-              padding: 0,
-              marginTop: 5,
+              fontSize: 28,
             }}
           />
         </TouchableOpacity>

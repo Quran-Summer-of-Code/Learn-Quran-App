@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Platform, View} from "react-native";
+import { Platform, View } from "react-native";
 import { I18nManager } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -10,6 +10,7 @@ import AudioPlayer from "./Audio/AudioPlayer";
 // Data
 import surasList from "../../Quran/surasList.json";
 import juzInfo from "../../Quran/juzInfo.json";
+
 
 // State
 import { useSelector, useDispatch } from "react-redux";
@@ -22,7 +23,7 @@ import {
   SetPlayBackChanged,
   SetCurrentSurahInd,
   CurrentSurahInd,
-  Fullscreen
+  Fullscreen,
 } from "../../Redux/slices/app";
 
 // Data
@@ -57,8 +58,6 @@ const SurahPage: React.FC<Props> = ({ audioList, key }) => {
   const justEnteredNewSurah = useSelector(JustEnteredNewSurah);
   const justEnteredNewSurahJuz = useSelector(JustEnteredNewSurahJuz);
 
-
-
   // To be passed to SurahText to render the right part of Surah in a Juz
   const [startWordIndForJuz, setStartWordIndForJuz] = React.useState(0);
   const [endWordIndForJuz, setEndWordIndForJuz] = React.useState(
@@ -69,16 +68,22 @@ const SurahPage: React.FC<Props> = ({ audioList, key }) => {
     wrapDispatch(SetPlayBackChanged),
   ];
 
+  let numAyahsIncurrentSurah = surasList[currentSurahInd].numAyas;
+  const [startAyahForJuz, setStartAyahForJuz] = React.useState(0);
+  const [endAyahForJuz, setEndAyahForJuz] = React.useState(parseInt(numAyahsIncurrentSurah))
+
   // It was necessary to move startWordInd, endWordInd logic here to avoid a bug while transitions between surah with juzMode
   React.useEffect(() => {
     if (juzMode && currentJuzInd < 29 && currentJuzInd !== null) {
       let juz = juzInfo[currentJuzInd];
       let surahIndRelativeToJuz = juz?.juzSuras.indexOf(currentSurahInd);
       let startAyahIndForJuz = juz?.splits[surahIndRelativeToJuz][1];
+      setStartAyahForJuz(startAyahIndForJuz);
       setStartWordIndForJuz(
         currentSurahByWords.firstWordsinAyah[startAyahIndForJuz] - 1
       );
       let endAyahIndForJuz = juz.splits[surahIndRelativeToJuz][0];
+      setEndAyahForJuz(endAyahIndForJuz);
       setEndWordIndForJuz(
         currentSurahByWords.lastWordsinAyah[endAyahIndForJuz]
       );
@@ -87,19 +92,26 @@ const SurahPage: React.FC<Props> = ({ audioList, key }) => {
       setStartWordIndForJuz(0);
       setEndWordIndForJuz(currentSurahByWords.words.length - 1);
     }
-  }, [justEnteredNewSurahJuz, justEnteredNewSurah, playBackChanged]);
+  }, [justEnteredNewSurahJuz, justEnteredNewSurah, playBackChanged, juzMode, currentJuzInd, currentSurahInd]);
+
+
 
   return (
-    <>
+    <View key={juzMode}>
       <SurahText
         currentSurahInd={currentSurahInd}
         startWordIndForJuz={startWordIndForJuz}
         endWordIndForJuz={endWordIndForJuz}
+        startAyahForJuz={startAyahForJuz}
+        endAyahForJuz={endAyahForJuz}
       />
-      {!isWeb  && 
-        <AudioPlayer key={key} audioList={audioList} display={!fullscreen}/>
-      }
-    </>
+      
+      {!isWeb && (
+        <AudioPlayer key={key} 
+        audioList={audioList} display={!fullscreen}
+        />
+      )}
+    </View>
   );
 };
 
