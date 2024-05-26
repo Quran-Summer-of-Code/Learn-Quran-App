@@ -115,13 +115,14 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
         <View style={styles.item}>
           {/* contains khatim containing number then Surah Name */}
           <View style={styles.surahAndNumberContainer}>
+            <View style={{position:'absolute', width:48, left: 0}}>
             <Text style={{ ...styles.khatim, color: colorize(0.2, appColor) }}>
               {"\ue901"}
             </Text>
+            </View>
             <View
               style={{
-                position: "absolute",
-                left: index < 10 ? 19 : 15,
+                width: 54
               }}
             >
               <Text
