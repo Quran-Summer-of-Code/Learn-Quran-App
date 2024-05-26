@@ -57,9 +57,10 @@ import {
 interface AudioPlayerProps {
   audioList: any;
   key: boolean;
+  display: boolean;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
 
@@ -280,7 +281,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key }) => {
   }, [pause]);
 
   return (
-    <View style={{ ...styles.container, borderColor: appColor }}>
+    <View style={{ ...styles.container, borderColor: appColor, display: (display)? "flex" : "none" }}>
       <View style={styles.mainContainer}>
         <View>
           {/* Slider and Ayah numbers */}
@@ -362,6 +363,7 @@ const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
+    display: 'none',
     flex: 1,
     backgroundColor: "#f1f1f1",
     borderTopWidth: 2,

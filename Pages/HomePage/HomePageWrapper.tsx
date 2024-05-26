@@ -104,7 +104,7 @@ const HomePageWrapper = () => {
       <Tab.Screen
         name="الحافظة"
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitle: () => (
             <View
               style={{
@@ -142,19 +142,22 @@ const HomePageWrapper = () => {
       <Tab.Screen
         name="الإعدادات"
         options={{
-          headerShown: true,
+          headerShown: false,
+          headerTitleContainerStyle: { flex: 1 },
           headerTitle: () => (
             <View
               style={{
+                flex: 1,
                 display: "flex",
                 justifyContent: "center",
                 flexDirection: "row-reverse",
-                marginVertical: 3,
+                marginVertical: 0,
                 alignItems: "center",
                 width: "100%",
+                minHeight: 500
               }}
             >
-              <Text style={{ color: "white", fontSize: 30,  fontFamily: "UthmanRegular", marginHorizontal: 4, }}>
+              <Text style={{ color: "white", fontSize: 30,  fontFamily: "UthmanRegular", marginHorizontal: 4, paddingBottom: 3}}>
                 <Text>{"الإعدادات"}</Text>
               </Text>
             </View>

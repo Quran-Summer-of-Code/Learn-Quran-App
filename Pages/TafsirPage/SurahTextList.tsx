@@ -5,7 +5,7 @@ import * as Animatable from "react-native-animatable";
 import HTML from "react-native-render-html";
 
 // External Components
-import TafsirHeader from "./TafsirHeader";
+import SurahHeader from "../Components/SurahHeader";
 import SectionBanner from "./SectionBanner";
 import AyahWithBar from "./AyahWithBar";
 import SectionsButton from "./SectionsButton";
@@ -228,7 +228,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
           }
         }}
         ListHeaderComponent={
-          <TafsirHeader
+          <SurahHeader
             appColor={appColor}
             setSectionsModalVisible={setSectionsModalVisible}
             setCardModalVisible={setCardModalVisible}
@@ -236,6 +236,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
             surahFontName={surahFontName}
             ayahFontSize={ayahFontSize}
             ayahFontFamily={ayahFontFamily}
+            showBismillah={currentSurahInd !== 8}
           />
         }
       />
@@ -269,7 +270,7 @@ export default SurahTextList;
 /*
 SurahTextList = 
 ScrollView[
-TafsirHeader    # One Time
+SurahHeader    # One Time
 SectionBanner   # In loop
 AyahWithBar     # In loop
 ]

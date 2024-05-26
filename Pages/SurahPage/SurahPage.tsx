@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import { Platform } from "react-native";
+import { Platform, View} from "react-native";
 import { I18nManager } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 // Main Components
-import SurahHeader from "./SurahHeader";
 import SurahText from "./SurahText";
 import AudioPlayer from "./Audio/AudioPlayer";
 
@@ -23,6 +22,7 @@ import {
   SetPlayBackChanged,
   SetCurrentSurahInd,
   CurrentSurahInd,
+  ScrolledFar
 } from "../../Redux/slices/app";
 
 // Data
@@ -43,6 +43,7 @@ const SurahPage: React.FC<Props> = ({ audioList, key }) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
   const navigation = useNavigation();
+  const scrolledFar = useSelector(ScrolledFar);
 
   // States
   const [currentSurahInd, setCurrentSurahInd] = [
@@ -56,32 +57,6 @@ const SurahPage: React.FC<Props> = ({ audioList, key }) => {
   const justEnteredNewSurah = useSelector(JustEnteredNewSurah);
   const justEnteredNewSurahJuz = useSelector(JustEnteredNewSurahJuz);
 
-  // Set Surah Header based on current Surah
-  React.useEffect(() => {
-    const surahFontName = surasList[currentSurahInd].fontName;
-    const surahFontFamily = surasList[currentSurahInd].fontFamily;
-    navigation.setOptions(
-      isWeb
-        ? {
-            headerTitle: () => (
-              <SurahHeader
-                title={surahFontName}
-                fontFamily={surahFontFamily}
-                navigation={navigation}
-              />
-            ),
-          }
-        : {
-            headerTitle: () => (
-              <SurahHeader
-                title={surahFontName}
-                fontFamily={surahFontFamily}
-                navigation={navigation}
-              />
-            ),
-          }
-    );
-  }, [navigation, currentSurahInd]);
 
 
   // To be passed to SurahText to render the right part of Surah in a Juz
@@ -121,7 +96,9 @@ const SurahPage: React.FC<Props> = ({ audioList, key }) => {
         startWordIndForJuz={startWordIndForJuz}
         endWordIndForJuz={endWordIndForJuz}
       />
-      {!isWeb && <AudioPlayer key={key} audioList={audioList} />}
+      {!isWeb  && 
+        <AudioPlayer key={key} audioList={audioList} display={!scrolledFar}/>
+      }
     </>
   );
 };

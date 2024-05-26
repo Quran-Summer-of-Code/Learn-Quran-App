@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 
-interface TafsirHeaderProps {
+interface SurahHeaderProps {
   appColor: string;
   setSectionsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setCardModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -11,9 +11,10 @@ interface TafsirHeaderProps {
   surahFontName: string;
   ayahFontSize: number;
   ayahFontFamily: string;
+  showBismillah?: boolean;
 }
 
-const TafsirHeader: React.FC<TafsirHeaderProps> = ({
+const SurahHeader: React.FC<SurahHeaderProps> = ({
   appColor,
   setSectionsModalVisible,
   setCardModalVisible,
@@ -21,6 +22,7 @@ const TafsirHeader: React.FC<TafsirHeaderProps> = ({
   surahFontName,
   ayahFontSize,
   ayahFontFamily,
+  showBismillah = true,
 }) => {
   return (
     <>
@@ -66,7 +68,7 @@ const TafsirHeader: React.FC<TafsirHeaderProps> = ({
         </TouchableOpacity>
       </View>
       {/* Basmallah */}
-      <Text
+      {showBismillah && <Text
         style={{
         ...styles.basmalaStyle,
           color: appColor,
@@ -75,7 +77,7 @@ const TafsirHeader: React.FC<TafsirHeaderProps> = ({
         }}
       >
         بِسْمِ اللَّــهِ الرَّحْمَـٰنِ الرَّحِيمِ
-      </Text>
+      </Text>}
     </>
   );
 };
@@ -90,8 +92,10 @@ const styles = StyleSheet.create({
     },
   });
 
-export default TafsirHeader;
+export default SurahHeader;
 
 /*
-TafsirHeader = Show Sections Button + Surah Name + Show Surah Card Button then Basmallah
+SurahHeader = Show Sections Button + Surah Name + Show Surah Card Button then Basmallah
+
+Used in SurahPage and TafsirPage
 */

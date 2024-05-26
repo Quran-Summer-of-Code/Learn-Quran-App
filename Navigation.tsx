@@ -89,7 +89,7 @@ function Navigation() {
 
   return (
     <>
-        <StatusBar  backgroundColor={(tafsirMode && !scrolledFarTafsir) ? colorize(
+        <StatusBar  backgroundColor={(!scrolledFarTafsir && !scrolledFar) ? colorize(
           (cardModalVisbile || sectionsModalVisible) ? 0.35 : 0.0
           , appColor, '#000', true) : 
           (cardModalVisbile || sectionsModalVisible)? '#00000054' :'transparent'
@@ -116,7 +116,7 @@ function Navigation() {
           <Drawer.Screen
             name="SurahPage"
             options={{
-              headerShown: scrolledFar ? false : true,
+              headerShown: false,
               headerTitle: () => <></>,
               headerTitleAlign: "center",
             }}

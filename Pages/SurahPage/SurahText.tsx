@@ -1,21 +1,17 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  FlatList,
-  Dimensions,
-} from "react-native";
+import { Text, StyleSheet, View, FlatList, Dimensions } from "react-native";
 
 // Helpers
 import { getGlobalAyahInd, colorize } from "../../helpers";
+import Constants from "expo-constants";
 
 // Main Components
-import { AyahWord} from "./SurahTextElement";
+import { AyahWord } from "./SurahTextElement";
+import SurahHeader from "../Components/SurahHeader";
 
 // Data
-import juzInfo from "../../Quran/juzInfo";
 import surasByWords from "../../Quran/surasByWords";
+import surasList from "../../Quran/surasList.json";
 
 // State
 import { useSelector, useDispatch } from "react-redux";
@@ -25,12 +21,14 @@ import {
   SetScrolledFar,
   AppColor,
   AyahFontFamily,
-  AyahFontSize
+  AyahFontSize,
+  CardModalVisbile,
+  SetCardModalVisbile,
+  SectionsModalVisible,
+  SetSectionsModalVisible,
 } from "../../Redux/slices/app";
 
-
 import { useNavigation } from "@react-navigation/native";
-
 
 interface SurahTextProps {
   currentSurahInd: number;
@@ -38,7 +36,11 @@ interface SurahTextProps {
   endWordIndForJuz: number;
 }
 
-const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJuz, endWordIndForJuz}) => {
+const SurahText: React.FC<SurahTextProps> = ({
+  currentSurahInd,
+  startWordIndForJuz,
+  endWordIndForJuz,
+}) => {
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
@@ -49,17 +51,15 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
     wrapDispatch(SetScrolledFar),
   ];
 
-
   // Load current surah and slice it based on current juz (if juzMode is false, slicing is no-op)
   let currentSurahByWords = surasByWords[currentSurahInd];
   let currentSurahByWordsWords = surasByWords[currentSurahInd].words.slice(
     startWordIndForJuz,
     endWordIndForJuz + 1
   );
-  currentSurahByWordsWords = [...currentSurahByWordsWords, ...'⠀'.repeat(10)]
+  currentSurahByWordsWords = [...currentSurahByWordsWords, ..."⠀".repeat(10)];
   // index of current Ayah
   const currentAyahInd = useSelector(CurrentAyahInd);
-
 
   const renderItem = useCallback(
     ({ item: wordObj, index }: any) => {
@@ -80,7 +80,7 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
 
   // To control scroll
   const flatListRef = useRef(null);
-  
+
   const scrollToIndex = (index: number) => {
     //@ts-ignore
     flatListRef?.current?.scrollToIndex({
@@ -94,14 +94,14 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
   React.useEffect(() => {
     let index =
       currentSurahByWords.lastWordsinAyah[currentAyahInd] - startWordIndForJuz;
-      setTimeout(() => {
-        try {
-          scrollToIndex(index);
-        } catch {
-          return "error";
-          // in other words, just ignore it
-        }
-      }, 300);
+    setTimeout(() => {
+      try {
+        scrollToIndex(index);
+      } catch {
+        return "error";
+        // in other words, just ignore it
+      }
+    }, 300);
   }, [currentAyahInd, startWordIndForJuz]);
 
   // Reset scrolledFar when currentSurahInd changes (controls showing or hiding surah header)
@@ -112,13 +112,31 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
   // Settings states
   const appColor = useSelector(AppColor);
   const ayahFontSize = useSelector(AyahFontSize);
-  const ayahFontFamily = useSelector(AyahFontFamily)
+  const ayahFontFamily = useSelector(AyahFontFamily);
+  const surahFontName = surasList[currentSurahInd].fontName;
+  const surahFontFamily = surasList[currentSurahInd].fontFamily;
 
+  // Modal states
+  const [sectionsModalVisible, setSectionsModalVisible] = [
+    useSelector(SectionsModalVisible),
+    wrapDispatch(SetSectionsModalVisible),
+  ];
+  const [cardModalVisbile, setCardModalVisible] = [
+    useSelector(CardModalVisbile),
+    wrapDispatch(SetCardModalVisbile),
+  ];
   return (
-    <View
-      style={{ display: "flex", height: "100%" }}
-      key={currentSurahInd}
-    >
+    <View style={{ display: "flex", height: "100%" }} key={currentSurahInd}>
+      {!scrolledFar && <SurahHeader
+        appColor={appColor}
+        setSectionsModalVisible={setSectionsModalVisible}
+        setCardModalVisible={setCardModalVisible}
+        surahFontFamily={surahFontFamily}
+        surahFontName={surahFontName}
+        ayahFontSize={ayahFontSize}
+        ayahFontFamily={ayahFontFamily}
+        showBismillah={false}
+      />}
       <FlatList
         data={currentSurahByWordsWords}
         ref={flatListRef}
@@ -126,8 +144,8 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
           styles.containerStyle,
           {
             borderColor: colorize(0.5, appColor),
-            marginTop: scrolledFar ? 30 : 10,
-            height: scrolledFar ? "74%" : "76%",
+            marginTop: scrolledFar ? Constants.statusBarHeight + 4 : 10,
+            height: scrolledFar ? "92%" : "64%",
           },
         ]}
         initialNumToRender={100}
@@ -148,7 +166,14 @@ const SurahText: React.FC<SurahTextProps> = ({ currentSurahInd, startWordIndForJ
         keyExtractor={(item, index) => index.toString()}
         ListHeaderComponent={() =>
           currentSurahInd !== 8 && (
-            <Text style={{...styles.basmalaStyle, color: appColor, fontSize: ayahFontSize + 8, fontFamily: ayahFontFamily}}>
+            <Text
+              style={{
+                ...styles.basmalaStyle,
+                color: appColor,
+                fontSize: ayahFontSize + 8,
+                fontFamily: ayahFontFamily,
+              }}
+            >
               بِسْمِ اللَّــهِ الرَّحْمَـٰنِ الرَّحِيمِ
             </Text>
           )
@@ -179,7 +204,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     paddingLeft: 5,
-    paddingBottom: 30
+    paddingBottom: 30,
   },
   basmalaStyle: {
     fontSize: 35,
@@ -188,7 +213,6 @@ const styles = StyleSheet.create({
     width: width,
   },
 });
-
 
 /*
 This helps render a single surah or a subset thereof that is part of a Juz depending on juzMode and is controlled by SurahPage.
