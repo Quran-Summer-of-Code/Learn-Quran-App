@@ -8,7 +8,7 @@ interface AppState {
   justEnteredNewSurahJuz: boolean;
   justChoseNewAyah: boolean;
   pause: boolean;
-  scrolledFar: boolean;
+  fullscreen: boolean;
   scrolledFarTafsir: boolean;
   juzMode: boolean;
   tafsirMode: boolean;
@@ -37,7 +37,7 @@ const initialState: AppState = {
   justChoseNewAyah: false,           // has the user just pressed a new ayah? (e.g., make audio in sync)
   playBackChanged: false,            // has the Ayah just changed while in juzMode: it's edge triggered
   pause: true,                       // is the audio paused?
-  scrolledFar: false,                // has the user scrolled far enough to hide the Surah Header
+  fullscreen: false,                // has the user scrolled far enough to hide the Surah Header
   juzMode: false,                    // should homepage be viewed by Juz or by Surah
   tafsirMode: false,                 // should Surah view full Surah or per-Ayah tafsir
   currentJuzInd: 0,                  // the current juz (i.e., 0-29)
@@ -81,8 +81,8 @@ const appSlice = createSlice({
     SetPause(state, action: PayloadAction<boolean>) {
       state.pause = action.payload;
     },
-    SetScrolledFar(state, action: PayloadAction<boolean>) {
-      state.scrolledFar = action.payload;
+    SetFullscreen(state, action: PayloadAction<boolean>) {
+      state.fullscreen = action.payload;
     },
     SetJuzMode(state, action: PayloadAction<boolean>) {
       state.juzMode = action.payload;
@@ -143,7 +143,7 @@ export const {
   SetJustEnteredNewSurahJuz,
   SetJustChoseNewAyah,
   SetPause,
-  SetScrolledFar,
+  SetFullscreen,
   SetJuzMode,
   SetTafsirMode,
   SetCurrentJuzInd,
@@ -169,7 +169,7 @@ export const JustEnteredNewSurah = (state:any) => state.store.justEnteredNewSura
 export const JustEnteredNewSurahJuz = (state:any) => state.store.justEnteredNewSurahJuz;
 export const JustChoseNewAyah = (state:any) => state.store.justChoseNewAyah;
 export const Pause = (state:any) => state.store.pause;
-export const ScrolledFar = (state:any) => state.store.scrolledFar;
+export const Fullscreen = (state:any) => state.store.fullscreen;
 export const JuzMode = (state:any) => state.store.juzMode;
 export const TafsirMode = (state:any) => state.store.tafsirMode;
 export const CurrentJuzInd = (state:any) => state.store.currentJuzInd;

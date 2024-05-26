@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
-import { Text, StyleSheet, View, FlatList, Dimensions } from "react-native";
+import { Text, StyleSheet, View, TouchableOpacity, FlatList, Dimensions } from "react-native";
 
 // Helpers
 import { getGlobalAyahInd, colorize } from "../../helpers";
@@ -9,6 +9,9 @@ import Constants from "expo-constants";
 import { AyahWord } from "./SurahTextElement";
 import SurahHeader from "../Components/SurahHeader";
 
+// Icons
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 // Data
 import surasByWords from "../../Quran/surasByWords";
 import surasList from "../../Quran/surasList.json";
@@ -17,8 +20,8 @@ import surasList from "../../Quran/surasList.json";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CurrentAyahInd,
-  ScrolledFar,
-  SetScrolledFar,
+  Fullscreen,
+  SetFullscreen,
   AppColor,
   AyahFontFamily,
   AyahFontSize,
@@ -46,9 +49,9 @@ const SurahText: React.FC<SurahTextProps> = ({
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
 
   // To control scrolling status which will control showing/hiding Surah ehader
-  const [scrolledFar, setScrolledFar] = [
-    useSelector(ScrolledFar),
-    wrapDispatch(SetScrolledFar),
+  const [fullscreen, setFullscreen] = [
+    useSelector(Fullscreen),
+    wrapDispatch(SetFullscreen),
   ];
 
   // Load current surah and slice it based on current juz (if juzMode is false, slicing is no-op)
@@ -104,9 +107,9 @@ const SurahText: React.FC<SurahTextProps> = ({
     }, 300);
   }, [currentAyahInd, startWordIndForJuz]);
 
-  // Reset scrolledFar when currentSurahInd changes (controls showing or hiding surah header)
+  // Reset fullscreen when currentSurahInd changes (controls showing or hiding surah header)
   React.useEffect(() => {
-    setScrolledFar(false);
+    setFullscreen(false);
   }, [currentSurahInd]);
 
   // Settings states
@@ -125,67 +128,93 @@ const SurahText: React.FC<SurahTextProps> = ({
     useSelector(CardModalVisbile),
     wrapDispatch(SetCardModalVisbile),
   ];
+  const { width, height } = Dimensions.get("screen");
+
   return (
     <View style={{ display: "flex", height: "100%" }} key={currentSurahInd}>
-      {!scrolledFar && <SurahHeader
-        appColor={appColor}
-        setSectionsModalVisible={setSectionsModalVisible}
-        setCardModalVisible={setCardModalVisible}
-        surahFontFamily={surahFontFamily}
-        surahFontName={surahFontName}
-        ayahFontSize={ayahFontSize}
-        ayahFontFamily={ayahFontFamily}
-        showBismillah={false}
-      />}
-      <FlatList
-        data={currentSurahByWordsWords}
-        ref={flatListRef}
-        style={[
-          styles.containerStyle,
-          {
-            borderColor: colorize(0.5, appColor),
-            marginTop: scrolledFar ? Constants.statusBarHeight + 4 : 10,
-            height: scrolledFar ? "92%" : "64%",
-          },
-        ]}
-        initialNumToRender={100}
-        onEndReachedThreshold={0.5}
-        maxToRenderPerBatch={300}
-        contentContainerStyle={styles.contentContainerStyle}
-        onScroll={(event) => {
-          const isFar = event.nativeEvent.contentOffset.y > 300;
-          if (scrolledFar !== isFar) {
-            setScrolledFar(isFar);
+      {!fullscreen && (
+        <SurahHeader
+          appColor={appColor}
+          setSectionsModalVisible={setSectionsModalVisible}
+          setCardModalVisible={setCardModalVisible}
+          surahFontFamily={surahFontFamily}
+          surahFontName={surahFontName}
+          ayahFontSize={ayahFontSize}
+          ayahFontFamily={ayahFontFamily}
+          showBismillah={false}
+        />
+      )}
+      <View style={{ height: "100%", position: "relative" }}>
+        <FlatList
+          data={currentSurahByWordsWords}
+          ref={flatListRef}
+          style={[
+            styles.containerStyle,
+            {
+              borderColor: colorize(0.5, appColor),
+              marginTop: fullscreen ? Constants.statusBarHeight + 4 : 10,
+              height: fullscreen ? "92%" : "64%",
+            },
+          ]}
+          initialNumToRender={100}
+          onEndReachedThreshold={0.5}
+          maxToRenderPerBatch={300}
+          contentContainerStyle={styles.contentContainerStyle}
+          scrollEventThrottle={16}
+          onScrollToIndexFailed={(error) => {
+            // ignore it. it's a long scroll!
+          }}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          ListHeaderComponent={() =>
+            currentSurahInd !== 8 && (
+              <Text
+                style={{
+                  ...styles.basmalaStyle,
+                  color: appColor,
+                  fontSize: ayahFontSize + 8,
+                  fontFamily: ayahFontFamily,
+                }}
+              >
+                بِسْمِ اللَّــهِ الرَّحْمَـٰنِ الرَّحِيمِ
+              </Text>
+            )
           }
-        }}
-        scrollEventThrottle={16}
-        onScrollToIndexFailed={(error) => {
-          // ignore it. it's a long scroll!
-        }}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        ListHeaderComponent={() =>
-          currentSurahInd !== 8 && (
-            <Text
-              style={{
-                ...styles.basmalaStyle,
-                color: appColor,
-                fontSize: ayahFontSize + 8,
-                fontFamily: ayahFontFamily,
-              }}
-            >
-              بِسْمِ اللَّــهِ الرَّحْمَـٰنِ الرَّحِيمِ
-            </Text>
-          )
-        }
-      />
+        />
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            top: (!fullscreen) ? '62%' : '96%',
+            left: 5,
+            zIndex: 999,
+            backgroundColor: "#f1f1f1",
+            borderRadius: 50,
+            borderColor: appColor,
+            borderWidth: 1,
+            marginBottom: height*0.2
+          }}
+          onPress={()=> setFullscreen(!fullscreen)}
+        >
+          {(!fullscreen) ? <MaterialCommunityIcons
+            name="fullscreen"
+            size={30}
+            color={appColor}
+          />:
+          <MaterialCommunityIcons
+            name="fullscreen-exit"
+            size={30}
+            color={appColor}
+          />
+          }
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 export default SurahText;
+const { width, height } = Dimensions.get("screen");
 
-const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   fullWidth: {
     width: 0.85 * width,

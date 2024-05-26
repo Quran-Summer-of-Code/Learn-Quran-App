@@ -22,7 +22,7 @@ import {
   SetPlayBackChanged,
   SetCurrentSurahInd,
   CurrentSurahInd,
-  ScrolledFar
+  Fullscreen
 } from "../../Redux/slices/app";
 
 // Data
@@ -43,7 +43,7 @@ const SurahPage: React.FC<Props> = ({ audioList, key }) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
   const navigation = useNavigation();
-  const scrolledFar = useSelector(ScrolledFar);
+  const fullscreen = useSelector(Fullscreen);
 
   // States
   const [currentSurahInd, setCurrentSurahInd] = [
@@ -97,7 +97,7 @@ const SurahPage: React.FC<Props> = ({ audioList, key }) => {
         endWordIndForJuz={endWordIndForJuz}
       />
       {!isWeb  && 
-        <AudioPlayer key={key} audioList={audioList} display={!scrolledFar}/>
+        <AudioPlayer key={key} audioList={audioList} display={!fullscreen}/>
       }
     </>
   );

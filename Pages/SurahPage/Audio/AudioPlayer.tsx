@@ -359,11 +359,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
 
 export default AudioPlayer;
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
   container: {
-    display: 'none',
     flex: 1,
     backgroundColor: "#f1f1f1",
     borderTopWidth: 2,
@@ -375,7 +374,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: width,
-    height: "20%",
+    height: height*0.2
   },
   mainContainer: {
     flex: 1,
