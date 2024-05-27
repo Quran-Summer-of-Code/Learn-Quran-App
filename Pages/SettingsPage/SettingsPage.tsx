@@ -56,6 +56,8 @@ const SettingsPage: React.FC<Props> = () => {
 
   const tafsirsMap = [
     { label: "كتاب التفسير الوسيط لطنطاوي", value: "Waseet" },
+    { label: "كتاب تفسير القرآن العظيم لابن كثير", value: "Ibn-Kathir"},
+    { label: "كتاب المختصر في تفسير القرآن الكريم", value: "Mukhtassar"}
   ];
 
   const allowSectionsMap = [
@@ -341,7 +343,7 @@ const SettingsPage: React.FC<Props> = () => {
             }}
           >
             <FontAwesome name="book" color={"#fff"} style={{ fontSize: 22 }} />
-            <Text style={styles.textItem}>كتاب التفسير</Text>
+            <Text style={styles.textItem}>كتاب التفسير الأساسى</Text>
             <View style={{ width: 30, height: 30, marginLeft: "55%" }}></View>
           </View>
           <Dropdown
@@ -361,7 +363,7 @@ const SettingsPage: React.FC<Props> = () => {
             maxHeight={300}
             labelField="label"
             valueField="value"
-            placeholder={!isFocus ? "اختر الشيخ" : ""}
+            placeholder={!isFocus ? "اختر التفسير" : ""}
             value={tafsirBook}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}

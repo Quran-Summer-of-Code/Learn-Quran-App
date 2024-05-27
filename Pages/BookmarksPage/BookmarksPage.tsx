@@ -9,7 +9,9 @@ import AyahWithBar from "../TafsirPage/AyahWithBar";
 
 // Data
 import surasList from "../../Quran/surasList.json";
-import surahTafsirs from "../../Quran/surahTafsirs.json";
+import surahTafsirsWaseet from "../../Quran/surahTafsirs.json";
+import surahTafsirsMukhtassar from "../../Quran/Mukhtassar/surahTafsirs.json";
+import surahTafsirsIbnKathir from "../../Quran/Ibn-kathir/surahTafsirs.json";
 import suras from "../../Quran/suras.json";
 
 // Helpers
@@ -23,6 +25,7 @@ import {
   TafsirFontSize,
   Bookmarks,
   SetBookmarks,
+  TafsirBook
 } from "../../Redux/slices/app";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -42,6 +45,12 @@ const BookmarksPage: React.FC<Props> = () => {
   const ayahFontSize = useSelector(AyahFontSize);
   const ayahFontFamily = useSelector(AyahFontFamily);
   const tafsirFontSize = useSelector(TafsirFontSize);
+  const tafsirBook = useSelector(TafsirBook);
+  const surahTafsirs = {
+    "Waseet": surahTafsirsWaseet,
+    "Mukhtassar": surahTafsirsMukhtassar,
+    "Ibn-Kathir": surahTafsirsIbnKathir
+  }
 
   // state which is a list of 114 lists for bookmarkks
   const [bookmarks, setBookmarks] = [
@@ -115,7 +124,7 @@ const BookmarksPage: React.FC<Props> = () => {
               <HTML
                 contentWidth={width}
                 source={{
-                  html: surahTafsirs[currentSurahInd][index].text,
+                  html: surahTafsirs[tafsirBook][currentSurahInd][index].text,
                 }}
                 tagsStyles={{
                   i: {

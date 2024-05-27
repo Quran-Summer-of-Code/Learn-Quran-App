@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { View, FlatList } from "react-native";
+import { View, FlatList, Text, TouchableOpacity } from "react-native";
 import { useWindowDimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
 import HTML from "react-native-render-html";
@@ -14,7 +14,9 @@ import SurahSectionsModal from "./SurahSectionsModal";
 
 // Data
 import surasList from "../../Quran/surasList.json";
-import surahTafsirs from "../../Quran/surahTafsirs.json";
+import surahTafsirsWaseet from "../../Quran/surahTafsirs.json";
+import surahTafsirsMukhtassar from "../../Quran/Mukhtassar/surahTafsirs.json";
+import surahTafsirsIbnKathir from "../../Quran/Ibn-kathir/surahTafsirs.json";
 import surahSections from "../../Quran/surahSectionsUpdated.json";
 import albitaqat from "../../Quran/albitaqat.json";
 
@@ -36,14 +38,13 @@ import {
   SetCardModalVisbile,
   Bookmarks,
   SetBookmarks,
-  Sheikh
+  Sheikh,
+  TafsirBook,
 } from "../../Redux/slices/app";
 import { useDispatch, useSelector } from "react-redux";
 
 // Audio
 import { Audio } from "expo-av";
-
-
 
 interface SurahTextListProps {
   currentSurah: any[];
@@ -60,7 +61,6 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   startAyahForJuz,
   endAyahForJuz,
 }) => {
-
   const surahFontName = surasList[currentSurahInd].fontName;
   const surahFontFamily = surasList[currentSurahInd].fontFamily;
   const { width } = useWindowDimensions();
@@ -76,6 +76,12 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   const scrolledFarTafsir = useSelector(ScrolledFarTafsir);
   const setScrolledFarTafsir = wrapDispatch(SetScrolledFarTafsir);
   const sheikh = useSelector(Sheikh);
+  const tafsirBook = useSelector(TafsirBook);
+  const surahTafsirs = {
+    "Waseet": surahTafsirsWaseet,
+    "Mukhtassar": surahTafsirsMukhtassar,
+    "Ibn-Kathir": surahTafsirsIbnKathir
+  }
 
   // state which is a list of 114 lists for bookmarkks
   const [bookmarks, setBookmarks] = [
@@ -99,6 +105,16 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
       return newStates;
     });
   };
+
+  // for each Ayah make a selectedTafsir state and set it initially to tafsirBook
+  const [selectedTafsirs, setSelectedTafsirs] = useState(Array(numAyas).fill(tafsirBook));
+  const chooseSelectedTafsir = (index: number, tafsirName: string) => {
+    setSelectedTafsirs((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = tafsirName;
+      return newStates;
+    })
+  }
 
 
   // Allow scrolling when pressing section
@@ -130,7 +146,9 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   // Sound
   const sound = new Audio.Sound();
 
-  const renderItem = ({ item, index }: { item: any; index: number }) => (
+  const renderItem = ({ item, index }: { item: any; index: number }) => {
+
+    return (
     <View style={{ marginBottom: 15 }}>
       <SectionBanner
         index={index + startAyahForJuz + 1}
@@ -154,46 +172,95 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
         ayahFontFamily={ayahFontFamily}
       />
       {tafsirOpenStates[index + startAyahForJuz] && (
-        <View
-          style={{
-            marginTop: 10,
-            marginHorizontal: 20,
-            backgroundColor: colorize(0.6, appColor),
-            padding: 20,
-            borderRadius: 20,
-          }}
-        >
-          <Animatable.View
-            animation={
-              tafsirOpenStates[index + startAyahForJuz]
-                ? "fadeInRight"
-                : "zoomOutDown"
-            }
-            duration={400}
+        <>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 14,
+              marginLeft: 40,
+              marginTop: 10,
+            }}
           >
-            <HTML
-              contentWidth={width}
-              source={{
-                html: surahTafsirs[currentSurahInd][index + startAyahForJuz]
-                  .text,
+            <TouchableOpacity
+              onPress={() => chooseSelectedTafsir(index, "Mukhtassar")}
+              style={{
+                backgroundColor: (selectedTafsirs[index] == "Mukhtassar") ?  colorize(0.6, appColor) : colorize(0.50, appColor),
+                paddingHorizontal: 14,
+                paddingVertical: 3,
+                borderRadius: 15,
+                marginBottom: -28,
+                height: 44,
               }}
-              tagsStyles={{
-                i: {
-                  color: colorize(-0.2, appColor),
-                  fontStyle: "normal",
-                },
-                body: {
-                  textAlign: "justify",
-                  lineHeight: 20,
-                  fontSize: tafsirFontSize,
-                },
+            >
+              <Text style={{fontFamily: 'UthmanBold'}}>المختصر</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => chooseSelectedTafsir(index, "Waseet")}
+              style={{
+                backgroundColor: (selectedTafsirs[index] == "Waseet") ?  colorize(0.6, appColor) : colorize(0.50, appColor),
+                paddingHorizontal: 14,
+                paddingVertical: 3,
+                borderRadius: 15,
+                marginBottom: -28,
+                height: 44,
               }}
-            />
-          </Animatable.View>
-        </View>
+            >
+              <Text style={{fontFamily: 'UthmanBold'}}>الوسيط</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => chooseSelectedTafsir(index, "Ibn-Kathir")}
+              style={{
+                backgroundColor: (selectedTafsirs[index]  == "Ibn-Kathir") ?  colorize(0.6, appColor) : colorize(0.50, appColor),
+                paddingHorizontal: 14,
+                paddingVertical: 3,
+                borderRadius: 15,
+                marginBottom: -28,
+                height: 44,
+              }}
+            >
+              <Text style={{fontFamily: 'UthmanBold'}}>ابن كثير</Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              marginTop: 10,
+              marginHorizontal: 20,
+              backgroundColor: colorize(0.6, appColor),
+              padding: 20,
+              borderRadius: 20,
+            }}
+          >
+            <Animatable.View
+              animation={
+                tafsirOpenStates[index + startAyahForJuz]
+                  ? "fadeInRight"
+                  : "zoomOutDown"
+              }
+              duration={400}
+            >
+              <HTML
+                contentWidth={width}
+                source={{
+                  html: surahTafsirs[selectedTafsirs[index]][currentSurahInd][index + startAyahForJuz].text,
+                }}
+                tagsStyles={{
+                  i: {
+                    color: colorize(-0.2, appColor),
+                    fontStyle: "normal",
+                  },
+                  body: {
+                    textAlign: "justify",
+                    lineHeight: 20,
+                    fontSize: tafsirFontSize,
+                  },
+                }}
+              />
+            </Animatable.View>
+          </View>
+        </>
       )}
     </View>
-  );
+  )};
 
   let currentSurahSliced = currentSurah.slice(
     startAyahForJuz,
