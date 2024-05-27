@@ -165,7 +165,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
     if (event.type === "playback-track-changed" && event.nextTrack !== null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
       const newSurahInd = getSurahIndGivenAyah(event.nextTrack);
-      if (newSurahInd !== 0){     // otherwise, it gets randomly set as that before the real value (init track?)
+      if (newSurahInd !== 0 || newSurahInd == currentSurahInd){     // otherwise, it gets randomly set as that before the real value (init track?)
       setCurrentSurahInd(newSurahInd);
       setCurrentAyahInd(getLocalAyahInd(event.nextTrack));
       
@@ -178,9 +178,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
         );
         setCurrentJuzInd(newJuzInd);
       }
-      setPlayBackChanged(!playBackChanged);
-
     }
+    setPlayBackChanged(!playBackChanged);
   }
   });
 

@@ -87,8 +87,10 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
       isVisible={showMeaningsModal}
       style={{
         marginHorizontal: -10,
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
+      
       }}
       onBackdropPress={() => setShowMeaningsModal(false)}
       onBackButtonPress={() => setShowMeaningsModal(false)}
@@ -98,25 +100,27 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
         style={{
           width: "90%",
           backgroundColor: "#e1e1e1",
-          zIndex: 99,
+          zIndex: 999,
           borderRadius: 30,
           padding: 20,
-          borderWidth: 3,
-          borderColor: appColor,
+          // minHeight: "30%",
           maxHeight: "80%",
           flexGrow: 0,
+          borderWidth: 3,
+          borderColor: appColor,
         }}
         contentContainerStyle={{
           justifyContent: "center",
           alignItems: "center",
+          paddingBottom: 30
         }}
       >
-        <View>
+        <View >
           <Text
             style={{
               fontFamily: ayahFontFamily,
               textAlign: "center",
-              fontSize: ayahFontSize + 4,
+              fontSize: ayahFontSize + 2,
             }}
           >
             {suras[surah][ayah]?.ayah}
@@ -133,6 +137,7 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
               marginVertical: 10,
               padding: 7,
               paddingBottom: 24,
+              zIndex: 0
             }}
           >
             {ayahContent ? (

@@ -203,7 +203,6 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                 setCurrentSurahInd(surahInd);
                 if (!tafsirMode) {
                   setCurrentSurahInd(surahInd);
-                  console.log("surahInd", surahInd);
                   navigation.navigate("SurahPage");
                 }
                 else {
