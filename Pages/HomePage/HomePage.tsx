@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 35,
     paddingVertical: 3,
-    height: 60,
+    height: 57,
   },
   tabText: {
     color: "#f1f1f1",

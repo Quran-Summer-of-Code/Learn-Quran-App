@@ -349,13 +349,13 @@ const SurahText: React.FC<SurahTextProps> = ({
           {!fullscreen ? (
             <MaterialCommunityIcons
               name="fullscreen"
-              size={20}
+              size={25}
               color={appColor}
             />
           ) : (
             <MaterialCommunityIcons
               name="fullscreen-exit"
-              size={20}
+              size={25}
               color={appColor}
             />
           )}
@@ -374,7 +374,7 @@ const SurahText: React.FC<SurahTextProps> = ({
           }}
           onPress={() => setMeaningModalVisible(true)}
         >
-          <MaterialIcons name="question-mark" size={20} color={appColor} />
+          <MaterialIcons name="question-mark" size={25} color={appColor} />
         </TouchableOpacity>
       </View>
       {

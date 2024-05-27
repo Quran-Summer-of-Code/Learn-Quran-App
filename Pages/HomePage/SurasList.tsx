@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Platform, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useWindowDimensions } from "react-native";
 
 // Components
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -43,6 +44,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
   const juzMode = useSelector(JuzMode);
   const tafsirMode = useSelector(TafsirMode);
   const appColor = useSelector(AppColor);
+  const  {height, width}= useWindowDimensions();
 
   // Get index of current surah
   const [currentSurahInd, setCurrentSurahInd] = [
@@ -96,14 +98,14 @@ const SurasList: React.FC<Props> = ({ suras }) => {
       <View style={styles.item}>
         {/* contains khatim containing number then Surah Name */}
         <View style={{ ...styles.surahAndNumberContainer }}>
-          <View style={{position:'absolute', width:48, left: 0}}>
+          <View style={{position:'absolute', width:0.12*width, left: 0}}>
             <Text style={{ ...styles.khatim, color: colorize(0.2, appColor) }}>
               {"\ue901"}
             </Text>
           </View>
           <View
             style={{
-              width: 54
+              width: 56
             }}
           >
             <Text
