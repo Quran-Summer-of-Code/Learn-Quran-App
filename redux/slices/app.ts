@@ -24,6 +24,7 @@ interface AppState {
   sectionsDisplay: boolean;
   sectionsModalVisible: boolean;
   cardModalVisbile: boolean;
+  meaningModalVisible: boolean;
   bookmarks: any[];
 }
 
@@ -52,6 +53,7 @@ const initialState: AppState = {
   scrolledFarTafsir: false,          // whether or not scrolled far in tafsit (control status bar bgcolor)
   sectionsModalVisible: false,       // for modal showing surah sections in tafsir page
   cardModalVisbile: false,           // for modal showing surah card in tafsir page
+  meaningModalVisible: false,        // for modal showing ayah meaning in Surah page
   bookmarks: Array.from({ length: 114 }, () => [])  // array of bookmarked ayah inds per sura
 };
 
@@ -131,6 +133,9 @@ const appSlice = createSlice({
     },
     SetBookmarks(state, action: PayloadAction<any[]>) {
       state.bookmarks = action.payload;
+    },
+    SetMeaningModalVisible(state, action: PayloadAction<boolean>) {
+      state.meaningModalVisible = action.payload;
     }
   },
 });
@@ -159,6 +164,7 @@ export const {
   SetScrolledFarTafsir,
   SetSectionsModalVisible,
   SetCardModalVisbile,
+  SetMeaningModalVisible,
   SetBookmarks
 } = appSlice.actions;
 
@@ -186,6 +192,7 @@ export const ScrolledFarTafsir = (state:any) => state.store.scrolledFarTafsir;
 export const SectionsModalVisible = (state:any) => state.store.sectionsModalVisible;
 export const CardModalVisbile = (state:any) => state.store.cardModalVisbile;
 export const Bookmarks = (state:any) => state.store.bookmarks;
+export const MeaningModalVisible = (state:any) => state.store.meaningModalVisible;
 
 export default appSlice.reducer;
 

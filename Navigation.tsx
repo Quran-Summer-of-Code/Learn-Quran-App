@@ -15,7 +15,7 @@ import EmptyPage from "./Pages/EmptyPage/EmptyPage";
 
 // Redux
 import { useSelector } from "react-redux";
-import { Fullscreen, ScrolledFarTafsir, InHomePage, AppColor, TafsirMode, CardModalVisbile, SectionsModalVisible, Sheikh, CurrentSurahInd } from "./Redux/slices/app";
+import { Fullscreen, ScrolledFarTafsir, InHomePage, AppColor, TafsirMode, CardModalVisbile, SectionsModalVisible, Sheikh, MeaningModalVisible, CurrentSurahInd } from "./Redux/slices/app";
 
 // for loading audio data initially
 import { prepareAudio, colorize } from "./helpers";
@@ -59,6 +59,7 @@ function Navigation() {
   // Change status bar background dimness when modal is shown
   const cardModalVisbile = useSelector(CardModalVisbile);
   const sectionsModalVisible = useSelector(SectionsModalVisible);
+  const meaningModalVisible = useSelector(MeaningModalVisible);
 
   // Styles for the drawer
   const drawerStyles = {
@@ -90,9 +91,9 @@ function Navigation() {
   return (
     <>
         <StatusBar  backgroundColor={(!scrolledFarTafsir && !fullscreen) ? colorize(
-          (cardModalVisbile || sectionsModalVisible) ? 0.35 : 0.0
+          (cardModalVisbile || sectionsModalVisible || meaningModalVisible) ? 0.35 : 0.0
           , appColor, '#000', true) : 
-          (cardModalVisbile || sectionsModalVisible)? '#00000054' :'transparent'
+          (cardModalVisbile || sectionsModalVisible || meaningModalVisible) ? '#00000054' :'transparent'
         } 
           style={((fullscreen) && !inHomePage) ? "dark" : "light"} />
       <NavigationContainer>

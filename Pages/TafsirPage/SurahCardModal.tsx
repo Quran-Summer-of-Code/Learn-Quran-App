@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
 import { englishToArabicNumber, colorize } from "../../helpers";
 import surasList from "../../Quran/surasList.json";
@@ -26,6 +26,8 @@ const SurahCardModal: React.FC<SurahCardModalProps> = ({
       style={{ marginHorizontal: -10 }}
       isVisible={cardModalVisible}
       backdropOpacity={0.35}
+      onBackButtonPress={() => setCardModalVisible(false)}
+      onBackdropPress={() => setCardModalVisible(false)}
     >
       <View>
         <View>
@@ -191,7 +193,7 @@ const SurahCardModal: React.FC<SurahCardModalProps> = ({
               </View>
             </ScrollView>
             {/* Back button */}
-            <Pressable
+            <TouchableOpacity
               style={[
                 styles.button,
                 { backgroundColor: colorize(0.1, appColor) },
@@ -199,7 +201,7 @@ const SurahCardModal: React.FC<SurahCardModalProps> = ({
               onPress={() => setCardModalVisible(!cardModalVisible)}
             >
               <Text style={styles.textStyle}>الرجوع</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

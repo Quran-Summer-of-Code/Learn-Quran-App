@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import Modal from "react-native-modal";
 
 // Helper functions and data
@@ -34,6 +34,8 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
       style={{ marginHorizontal: -5 }}
       isVisible={sectionsModalVisible}
       backdropOpacity={0.35}
+      onBackButtonPress={() => setSectionsModalVisible(false)}
+      onBackdropPress={() => setSectionsModalVisible(false)}
     >
       <View style={{ ...styles.modalView, backgroundColor: appColor }}>
         <View
@@ -65,7 +67,7 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
                 {!key.includes("UNK") &&
                   parseInt(key) >= startAyahForJuz - 1 &&
                   parseInt(key) <= endAyahForJuz && (
-                    <Pressable
+                    <TouchableOpacity
                       onPress={() => {
                         setSectionsModalVisible(false);
                         if (!surahMode) {
@@ -97,7 +99,7 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
                       >
                         {currentSurahSections[key]}
                       </Text>
-                    </Pressable>
+                    </TouchableOpacity>
                   )}
               </React.Fragment>
             ))}
@@ -107,7 +109,7 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
           هذه السورة غير مقسمة إلى مواضيع
           </Text>}
         {/* Back Button */}
-        <Pressable
+        <TouchableOpacity
           style={[
             styles.button,
             { backgroundColor: colorize(0.1, appColor) },
@@ -115,7 +117,7 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
           onPress={() => setSectionsModalVisible(!sectionsModalVisible)}
         >
           <Text style={styles.textStyle}>الرجوع</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
