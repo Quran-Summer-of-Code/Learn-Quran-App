@@ -11,6 +11,7 @@ export const sheiksDict: { [key: string]: string } = {
     "ar.hudhaify": "علي بن عبدالرحمن الحذيفي",
     "ar.mahermuaiqly": "ماهر المعيقلي",
     "ar.muhammadjibreel": "محمد جبريل",
+    "ar.minshawi": "محمد صديق المنشاوي",
   };
 
 // After calling this audioList state will have an audio object for each ayah in Quran (interface below)
