@@ -340,7 +340,19 @@ const SurahText: React.FC<SurahTextProps> = ({
           contentContainerStyle={styles.contentContainerStyle}
           scrollEventThrottle={16}
           onScrollToIndexFailed={(error) => {
-            // ignore it. it's a long scroll!
+          // @ts-ignore
+          flatListRef?.current?.scrollToOffset({
+            offset: error.averageItemLength * error.index,
+            animated: true,
+          });
+          setTimeout(() => {
+            // @ts-ignore
+            flatListRef?.current?.scrollToIndex({
+              index: error.index,
+              animated: true,
+              viewPosition: 0.5,
+            });
+          }, 300);
           }}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
