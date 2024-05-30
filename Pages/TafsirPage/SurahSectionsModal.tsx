@@ -33,7 +33,7 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
     <Modal
       style={{ marginHorizontal: -5 }}
       isVisible={sectionsModalVisible}
-      backdropOpacity={0.35}
+      backdropOpacity={0.45}
       onBackButtonPress={() => setSectionsModalVisible(false)}
       onBackdropPress={() => setSectionsModalVisible(false)}
     >

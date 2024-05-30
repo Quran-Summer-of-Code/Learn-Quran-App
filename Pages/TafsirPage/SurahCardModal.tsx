@@ -25,7 +25,7 @@ const SurahCardModal: React.FC<SurahCardModalProps> = ({
     <Modal
       style={{ marginHorizontal: -10 }}
       isVisible={cardModalVisible}
-      backdropOpacity={0.35}
+      backdropOpacity={0.45}
       onBackButtonPress={() => setCardModalVisible(false)}
       onBackdropPress={() => setCardModalVisible(false)}
     >

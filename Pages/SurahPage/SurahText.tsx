@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Helpers
 import {
@@ -90,41 +91,60 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-      
       }}
       onBackdropPress={() => setShowMeaningsModal(false)}
       onBackButtonPress={() => setShowMeaningsModal(false)}
-      backdropOpacity={0.35}
+      backdropOpacity={0.45}
     >
-      <ScrollView
+      <LinearGradient
+        // Background Linear Gradient
+        colors={[colorize(-0.2, appColor), colorize(+0.1, appColor)]}
         style={{
+          margin: 0,
           width: "90%",
-          backgroundColor: "#e1e1e1",
+          // backgroundColor: "#e1e1e1",
           zIndex: 999,
           borderRadius: 30,
-          padding: 20,
           // minHeight: "30%",
-          maxHeight: "80%",
-          flexGrow: 0,
-          borderWidth: 3,
-          borderColor: appColor,
-        }}
-        contentContainerStyle={{
+          maxHeight: "70%",
+          // flexGrow: 0,
           justifyContent: "center",
           alignItems: "center",
-          paddingBottom: 30
+          paddingBottom: 30,
         }}
       >
-        <View >
+        <ScrollView
+          style={{
+            // backgroundColor: "white",
+            borderRadius: 20,
+            marginVertical: 10,
+            padding: 0,
+            zIndex: 0,
+            maxHeight: "100%",
+          }}
+          contentContainerStyle={{
+            paddingBottom: 40,
+            marginHorizontal: 8
+          }}
+        >
           <Text
             style={{
               fontFamily: ayahFontFamily,
               textAlign: "center",
               fontSize: ayahFontSize + 2,
+              color: "white",
+              marginTop: 10,
+              marginHorizontal: 10
             }}
           >
             {suras[surah][ayah]?.ayah}
-            <Text style={{ ...styles.ayahNumStyle, fontSize: ayahFontSize }}>
+            <Text
+              style={{
+                ...styles.ayahNumStyle,
+                fontSize: ayahFontSize,
+                color: "white",
+              }}
+            >
               {"\ufd3f"}
               {englishToArabicNumber(ayah + 1)}
               {"\ufd3e"}
@@ -132,12 +152,13 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
           </Text>
           <View
             style={{
-              backgroundColor: "#d2d2d2",
-              borderRadius: 20,
-              marginVertical: 10,
-              padding: 7,
-              paddingBottom: 24,
-              zIndex: 0
+              backgroundColor: "#00000022",
+              borderRadius: 30,
+              paddingVertical: 10,
+              paddingBottom: 20,
+              marginTop: 20,
+              marginHorizontal: 8
+
             }}
           >
             {ayahContent ? (
@@ -149,12 +170,17 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
                     fontFamily: "Scheher",
                     marginHorizontal: 30,
                     lineHeight: 30,
-                    textAlign: "justify",
+                    color: "white",
                   }}
                 >
                   {"\n"}
-                  <Text style={{ color: appColor }}>{key + " "}</Text>:{" "}
-                  {"  " + value}
+                  <Text
+                  style={{
+                   fontWeight: 900,
+                   lineHeight:50,
+                   includeFontPadding: true
+                  }}
+                  >{"(" + key +")" + " "}</Text> { value}
                 </Text>
               ))
             ) : (
@@ -164,6 +190,7 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
                   textAlign: "center",
                   fontSize: ayahFontSize - 6,
                   padding: 8,
+                  color: "#f1f1f1cc",
                 }}
               >
                 لا معاني لهذه الآية بكتاب غريب القرآن الميسر، يمكنك النظر في
@@ -171,8 +198,8 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
               </Text>
             )}
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
     </Modal>
   );
 };

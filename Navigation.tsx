@@ -91,7 +91,7 @@ function Navigation() {
   return (
     <>
         <StatusBar  backgroundColor={(!scrolledFarTafsir && !fullscreen) ? colorize(
-          (cardModalVisbile || sectionsModalVisible || meaningModalVisible) ? 0.35 : 0.0
+          (cardModalVisbile || sectionsModalVisible || meaningModalVisible) ? 0.45 : 0.0
           , appColor, '#000', true) : 
           (cardModalVisbile || sectionsModalVisible || meaningModalVisible) ? '#00000054' :'transparent'
         } 
