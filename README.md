@@ -8,13 +8,13 @@
 ومن خواص التطبيق والتي قد يتميز ببعضها عن التطبيقات الأخري:
 </div>
 
-<img  alt="Screen Shot 2024-05-06 at 1 51 52 AM" src="https://github.com/EssamWisam/Learn-Quran-App/assets/49572294/546df1ca-f466-412d-beb3-c8d5d2a2c6ad">
+<img alt="image" src="https://github.com/EssamWisam/Learn-Quran-App/assets/49572294/8088f4de-3e81-433d-8746-aa70334fac5f">
 
 خاصية السماع فقط تحتاج إلي الانترنت.
 
-![De_pages-to-jpg-0003](https://github.com/EssamWisam/Learn-Quran-App/assets/49572294/baf018d0-336a-4361-8edd-30c9c389ab39)
+<img alt="image" src="https://github.com/EssamWisam/Learn-Quran-App/assets/49572294/723b67b8-a015-4b7c-9568-ff45a9373382">
 
-<img alt="image" src="https://github.com/EssamWisam/Learn-Quran-App/assets/49572294/8f608af9-37a9-44f3-b448-20d15e975f4e">
+<img  alt="image" src="https://github.com/EssamWisam/Learn-Quran-App/assets/49572294/d2d4f40f-dc97-4b42-89c4-b75f2a1e402a">
 
 <div align="justify">
   
