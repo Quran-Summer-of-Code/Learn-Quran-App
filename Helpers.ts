@@ -39,6 +39,25 @@ export const prepareAudio = async (baseUrl: string, author: string, img: NodeReq
             };
             audioObjs.push(obj);
         }
+        // for each surah in surasList add bismillah (`${baseUrl}/${0}.mp3`) with skips of numAyas
+        // num_ayas_so_far = 0
+        // for (let i = 0; i < surasList.length; i++) {
+        //     let url = `${baseUrl}/${1}.mp3`;
+        //     let title = surasList[i].name;
+        //     let obj: AudioObject = {
+        //         title: title,
+        //         url: url,
+        //         artist: author,
+        //         artwork: img,
+        //     };
+        //     // insert in at num_ayas_so_far
+        //     audioObjs.splice(num_ayas_so_far, 0, obj);
+        //     num_ayas_so_far += parseInt(surasList[i].numAyas);
+        //     console.log(num_ayas_so_far);
+        //     console.log("\n");
+        // }
+       console.log(audioObjs.slice(0, 11));
+
         setAudioList(audioObjs);
     } catch (error) {
         console.error("Error fetching data:", error);
