@@ -1,4 +1,5 @@
 import React from "react";
+import { Platform } from "react-native";
 
 //  Redux and friends
 import { Provider } from "react-redux";
@@ -25,9 +26,9 @@ const AppWrapper = () => {
   I18nManager.allowRTL(true);
   I18nManager.forceRTL(true);
 
-  if(!I18nManager.isRTL){
+  if(!I18nManager.isRTL ){
     I18nManager.forceRTL(true);
-    RNRestart.restart();
+    if (Platform.OS !== "web") RNRestart.restart();
  }
 
   //Ignore app screen warnings (still show in terminal)
@@ -44,7 +45,7 @@ const AppWrapper = () => {
         <RootSiblingParent>
           <Navigation />
           {/* Allows showing toast messages anywhere with Toast.show({...}) */}
-          <Toast />
+          {Platform.OS !== "web" && <Toast />}
         </RootSiblingParent>
       </PersistGate>
     </Provider>
