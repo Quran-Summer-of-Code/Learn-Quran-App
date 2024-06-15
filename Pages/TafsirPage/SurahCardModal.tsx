@@ -27,7 +27,7 @@ const SurahCardModal: React.FC<SurahCardModalProps> = ({
         marginHorizontal: -10,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: (Platform.OS == "web") ? "20%": undefined,
+        marginTop: (Platform.OS == "web") ? 100: undefined,
        }}
       isVisible={cardModalVisible}
       backdropOpacity={0.45}
@@ -37,7 +37,7 @@ const SurahCardModal: React.FC<SurahCardModalProps> = ({
       <View>
         <View>
           <View style={{ ...styles.modalView, backgroundColor: appColor,
-            maxHeight: (Platform.OS == "web") ? "80%": undefined,
+            maxHeight: (Platform.OS == "web") ? 700: undefined,
 
            }}>
             <View

@@ -66,6 +66,7 @@ function Navigation() {
     drawerStyle: {
       backgroundColor: colorize(-0.1, appColor),
       width: 270,
+      display: 'none'
     },
     drawerLabelStyle: {
       color: "white",

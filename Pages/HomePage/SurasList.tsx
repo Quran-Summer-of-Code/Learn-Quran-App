@@ -98,7 +98,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
       <View
         style={[
           styles.item,
-          Platform.OS == "web" ? { width: 0.8 * width } : {},
+          Platform.OS == "web" ? { width: 0.9 * width } : {},
           { transform: [{ scaleX: Platform.OS == "web" ? -1 : 1 }] },
         ]}
       >
@@ -141,7 +141,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
         <View
           style={{
             position: "absolute",
-            right: Platform.OS == "web" ? 120 : 90,
+            right: Platform.OS == "web" ? 70 : 90,
           }}
         >
           <Text
