@@ -56,7 +56,6 @@ export const prepareAudio = async (baseUrl: string, author: string, img: NodeReq
         //     console.log(num_ayas_so_far);
         //     console.log("\n");
         // }
-       console.log(audioObjs.slice(0, 11));
 
         setAudioList(audioObjs);
     } catch (error) {
