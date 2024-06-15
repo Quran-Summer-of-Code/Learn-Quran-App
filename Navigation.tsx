@@ -70,7 +70,7 @@ function Navigation() {
     drawerLabelStyle: {
       color: "white",
       fontFamily: "UthmanRegular",
-      letterSpacing: 2,
+      letterSpacing: Platform.OS === "web" ? 0 : 2,
     },
     headerStyle: {
       backgroundColor: colorize(-0.1, appColor),

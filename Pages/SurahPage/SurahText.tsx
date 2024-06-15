@@ -7,6 +7,7 @@ import {
   FlatList,
   Dimensions,
   ScrollView,
+  Platform,
 } from "react-native";
 import Modal from "react-native-modal";
 import { LinearGradient } from "expo-linear-gradient";
@@ -122,6 +123,7 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
             zIndex: 0,
             maxHeight: "100%",
           }}
+          showsVerticalScrollIndicator={(Platform.OS !== "web") ? true : false}
           contentContainerStyle={{
             paddingBottom: 40,
             marginHorizontal: 8
@@ -324,6 +326,7 @@ const SurahText: React.FC<SurahTextProps> = ({
 
       <View style={{ height: "100%", position: "relative" }}>
         <FlatList
+          showsVerticalScrollIndicator={(Platform.OS !== "web") ? true : false}
           data={currentSurahByWordsWords}
           ref={flatListRef}
           style={[
@@ -402,7 +405,7 @@ const SurahText: React.FC<SurahTextProps> = ({
         <TouchableOpacity
           style={{
             position: "absolute",
-            top: !fullscreen ? "62.5%" : "95.5%",
+            top: Platform.OS != "web" ?  (!fullscreen ? "62.5%" : "95.5%") : 10,
             right: 5,
             zIndex: 999,
             backgroundColor: "#f1f1f1",
@@ -415,6 +418,22 @@ const SurahText: React.FC<SurahTextProps> = ({
         >
           <MaterialIcons name="question-mark" size={25} color={appColor} />
         </TouchableOpacity>
+        {Platform.OS == "web" && <TouchableOpacity
+          style={{
+            position: "absolute",
+            top: Platform.OS != "web" ?  (!fullscreen ? "62.5%" : "95.5%") : 10,
+            left: 5,
+            zIndex: 999,
+            backgroundColor: "#f1f1f1",
+            borderRadius: 50,
+            borderColor: appColor,
+            borderWidth: 1,
+            marginBottom: height * 0.2,
+          }}
+          onPress={() => navigation.goBack()}
+        >
+          <MaterialIcons name="arrow-back" size={25} color={appColor} />
+        </TouchableOpacity>}
       </View>
       {
         <SurahSectionsModal
@@ -451,7 +470,7 @@ const SurahText: React.FC<SurahTextProps> = ({
 };
 
 export default SurahText;
-const { width, height } = Dimensions.get("screen");
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   fullWidth: {
@@ -465,11 +484,10 @@ const styles = StyleSheet.create({
     flexGrow: 0,
   },
   contentContainerStyle: {
-    flexDirection: "row",
+    flexDirection: Platform.OS === "web" ? "row-reverse": "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    marginLeft: 10,
-    marginRight: 10,
+    marginHorizontal: 10,
     paddingLeft: 5,
     paddingBottom: 30,
   },
@@ -477,11 +495,11 @@ const styles = StyleSheet.create({
     fontSize: 35,
     padding: 5,
     textAlign: "center",
-    width: width,
+    width:  width,
   },
   ayahNumStyle: {
     fontFamily: "UthmanRegular",
-    letterSpacing: 5,
+    letterSpacing: Platform.OS === "web" ? 0 : 5,
     color: "black",
   },
   button: {

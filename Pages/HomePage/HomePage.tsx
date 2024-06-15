@@ -22,9 +22,10 @@ import { colorize } from "../../helpers";
 // CSS related
 import Constants from "expo-constants";
 
+
 const HomePage = () => {
   const dispatch = useDispatch();
-  const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+  const wrapDispatch = (setter) => (arg) => dispatch(setter(arg));
 
   // Set in HomePage as true once the user navigates in
   const focus = useIsFocused();
@@ -42,6 +43,26 @@ const HomePage = () => {
   const tafsirMode = useSelector(TafsirMode);
   const appColor = useSelector(AppColor);
 
+  const tabs = [
+    {
+      title: "السورة",
+      activeBackgroundColor: colorize(-0.3, appColor),
+      inactiveBackgroundColor: colorize(+0.1, appColor),
+      onPress: () => setJuzMode(false),
+      active: !juzMode,
+    },
+    {
+      title: "الجزء",
+      activeBackgroundColor: colorize(-0.3, appColor),
+      inactiveBackgroundColor: colorize(+0.1, appColor),
+      onPress: () => setJuzMode(true),
+      active: juzMode,
+    },
+  ];
+
+  // Reverse the order of the tabs if the platform is web
+  const orderedTabs = Platform.OS === "web" ? [...tabs].reverse() : tabs;
+
   return (
     <View style={{ ...styles.container, backgroundColor: appColor }}>
       {/* Container just before Surah list */}
@@ -57,32 +78,22 @@ const HomePage = () => {
         <Text style={styles.logo}>{tafsirMode ? "I" : "A"}</Text>
         {/* tabs container */}
         <View style={styles.tabContainer}>
-          <Pressable
-            onPress={() => setJuzMode(false)}
-            style={[
-              styles.singleTabContainer,
-              {
-                backgroundColor: juzMode
-                  ? colorize(+0.1, appColor)
-                  : colorize(-0.3, appColor),
-              },
-            ]}
-          >
-            <Text style={styles.tabText}>{"السورة"}</Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setJuzMode(true)}
-            style={[
-              styles.singleTabContainer,
-              {
-                backgroundColor: juzMode
-                  ? colorize(-0.3, appColor)
-                  : colorize(+0.1, appColor),
-              },
-            ]}
-          >
-            <Text style={styles.tabText}>{"الجزء"}</Text>
-          </Pressable>
+          {orderedTabs.map((tab, index) => (
+            <Pressable
+              key={index}
+              onPress={tab.onPress}
+              style={[
+                styles.singleTabContainer,
+                {
+                  backgroundColor: tab.active
+                    ? tab.activeBackgroundColor
+                    : tab.inactiveBackgroundColor,
+                },
+              ]}
+            >
+              <Text style={styles.tabText}>{tab.title}</Text>
+            </Pressable>
+          ))}
         </View>
       </View>
       {/* Suras list: style controls which to display based on juzMode */}

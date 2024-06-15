@@ -35,7 +35,7 @@ import {
   JustEnteredNewSurahJuz,
   JuzMode,
   AppColor,
-  TafsirMode
+  TafsirMode,
 } from "../../Redux/slices/app";
 
 // Data
@@ -54,7 +54,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
   const juzMode = useSelector(JuzMode);
   const tafsirMode = useSelector(TafsirMode);
   const appColor = useSelector(AppColor);
-  const  {height, width}= useWindowDimensions();
+  const { height, width } = useWindowDimensions();
 
   // Set and Get index of current surah and juz
   const [currentSurahInd, setCurrentSurahInd] = [
@@ -108,38 +108,61 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
     <View key={index.toString()}>
       {/* View = Item showing Juz + item showing suras under it */}
       <Pressable
-        style={{ ...styles.itemWrapper, borderBottomColor: appColor }}
+        style={{
+          ...styles.itemWrapper,
+          borderBottomColor: appColor,
+          transform: [{ scaleX: Platform.OS == "web" ? -1 : 1 }]
+        }}
         key={index.toString()}
         onPress={() => {
           updateCollapse(index, !juzCollapse[index]);
         }}
       >
-        <View style={styles.item}>
+        <View
+          style={[
+            styles.item,
+            Platform.OS == "web" ? { width: 0.9 * width } : {},
+          ]}
+        >
           {/* contains khatim containing number then Surah Name */}
           <View style={styles.surahAndNumberContainer}>
-          <View style={{position:'absolute', width:0.12*width, left: 0}}>
-            <Text style={{ ...styles.khatim, color: colorize(0.2, appColor) }}>
-              {"\ue901"}
-            </Text>
-            </View>
-            <View
-              style={{
-                width: 56
-              }}
-            >
-              <Text
+            {
+              <View
+                style={{ position: "absolute", width: 0.12 * width, left: 0 }}
+              >
+                <Text
+                  style={{ ...styles.khatim, color: colorize(0.2, appColor) }}
+                >
+                  {"\ue901"}
+                </Text>
+              </View>
+            }
+            {
+              <View
                 style={{
-                  textAlign: "center",
-                  fontFamily: "UthmanBold",
-                  fontSize: 17,
-                  color: "white",
+                  width: 56,
                 }}
               >
-                {englishToArabicNumber(index + 1)}
-              </Text>
-            </View>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontFamily: "UthmanBold",
+                    fontSize: 17,
+                    color: "white",
+                    transform: [{ scaleX: Platform.OS == "web" ? -1 : 1 }],
+                  }}
+                >
+                  {englishToArabicNumber(index + 1)}
+                </Text>
+              </View>
+            }
             <View>
-              <Text style={styles.title}>
+              <Text
+                style={{
+                  ...styles.title,
+                  transform: [{ scaleX: Platform.OS == "web" ? -1 : 1 }],
+                }}
+              >
                 {item.name}{" "}
                 <Text style={{ fontSize: 18 }}>{`(${item.juzAltName})`}</Text>
               </Text>
@@ -167,6 +190,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                 position: "absolute",
                 right: 8,
                 top: 15,
+                transform: [{ scaleX: Platform.OS == "web" ? -1 : 1 }],
               }}
             />
           )}
@@ -178,7 +202,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
           animation={!juzCollapse[index] ? "zoomInUp" : "zoomOutDown"}
           duration={400}
           style={{
-            flexDirection: "row",
+            flexDirection: Platform.OS == "web" ? "row-reverse" : "row",
             flexWrap: "wrap",
             justifyContent: "flex-start",
             marginVertical: 8,
@@ -206,8 +230,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                 if (!tafsirMode) {
                   setCurrentSurahInd(surahInd);
                   navigation.navigate("SurahPage");
-                }
-                else {
+                } else {
                   setCurrentSurahInd(surahInd);
                   navigation.navigate("TafsirPage");
                 }
@@ -253,6 +276,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
         data={juzInfo}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
+        showsVerticalScrollIndicator={Platform.OS !== "web" ? true : false}
       />
     </View>
   );
@@ -286,7 +310,6 @@ const styles = StyleSheet.create({
   itemWrapper: {
     padding: 10,
     marginVertical: 4,
-    borderRadius: 30,
     width: "100%",
     borderBottomWidth: 2,
     flexDirection: "row",
@@ -307,7 +330,7 @@ const styles = StyleSheet.create({
     fontSize: 21,
     fontFamily: "UthmanBold",
     color: "white",
-    letterSpacing: 4,
+    letterSpacing: Platform.OS === "web" ? 0 : 4,
   },
 });
 

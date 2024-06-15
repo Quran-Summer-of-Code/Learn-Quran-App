@@ -1,8 +1,10 @@
 import React, { useState, useRef } from "react";
-import { View, FlatList, Text, TouchableOpacity } from "react-native";
+import { View, FlatList, Text, TouchableOpacity, Platform } from "react-native";
 import { useWindowDimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
 import HTML from "react-native-render-html";
+import { MaterialIcons} from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 // External Components
 import SurahHeader from "../Components/SurahHeader";
@@ -66,6 +68,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   const { width } = useWindowDimensions();
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
+  const navigation = useNavigation();
 
   // Settings states
   const appColor = useSelector(AppColor);
@@ -175,9 +178,10 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
         <>
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: (Platform.OS == "web") ? "row-reverse": "row",
               gap: 14,
               marginLeft: 40,
+              marginRight: (Platform.OS == "web") ? 40: undefined,
               marginTop: 10,
             }}
           >
@@ -267,7 +271,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
     endAyahForJuz + 1
   );
   return (
-    <View style={{ position: "relative" }}>
+    <>
       <FlatList
         data={currentSurahSliced}
         renderItem={renderItem}
@@ -328,7 +332,32 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
       {scrolledFarTafsir && (
         <SectionsButton setSectionsModalVisible={setSectionsModalVisible} />
       )}
+      {Platform.OS == "web" && 
+      <View
+      style={{
+        position: "absolute",
+        backgroundColor: appColor,
+        left: 20,
+        top: 90,
+        zIndex: 9999,
+        padding: 15,
+        borderRadius: 50,
+      }}
+    >
+      <TouchableOpacity onPress={()=>
+      navigation.goBack()  
+    }>
+        <MaterialIcons
+          name="arrow-back"
+          style={{
+            color: "white",
+            fontSize: 18,
+          }}
+        />
+      </TouchableOpacity>
     </View>
+      }
+    </>
   );
 };
 

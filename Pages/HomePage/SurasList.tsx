@@ -44,7 +44,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
   const juzMode = useSelector(JuzMode);
   const tafsirMode = useSelector(TafsirMode);
   const appColor = useSelector(AppColor);
-  const  {height, width}= useWindowDimensions();
+  const { height, width } = useWindowDimensions();
 
   // Get index of current surah
   const [currentSurahInd, setCurrentSurahInd] = [
@@ -95,17 +95,23 @@ const SurasList: React.FC<Props> = ({ suras }) => {
         }
       }}
     >
-      <View style={styles.item}>
+      <View
+        style={[
+          styles.item,
+          Platform.OS == "web" ? { width: 0.8 * width } : {},
+          { transform: [{ scaleX: Platform.OS == "web" ? -1 : 1 }] },
+        ]}
+      >
         {/* contains khatim containing number then Surah Name */}
         <View style={{ ...styles.surahAndNumberContainer }}>
-          <View style={{position:'absolute', width:0.12*width, left: 0}}>
+          <View style={{ position: "absolute", width: 0.12 * width, left: 0 }}>
             <Text style={{ ...styles.khatim, color: colorize(0.2, appColor) }}>
               {"\ue901"}
             </Text>
           </View>
           <View
             style={{
-              width: 56
+              width: 56,
             }}
           >
             <Text
@@ -114,21 +120,35 @@ const SurasList: React.FC<Props> = ({ suras }) => {
                 fontFamily: "UthmanBold",
                 fontSize: 17,
                 color: "white",
+                transform: [{ scaleX: Platform.OS == "web" ? -1 : 1 }],
               }}
             >
               {englishToArabicNumber(index + 1)}
             </Text>
           </View>
           <View>
-            <Text style={styles.title}>{"سُورَةُ " + item.name}</Text>
+            <Text
+              style={{
+                ...styles.title,
+                transform: [{ scaleX: Platform.OS == "web" ? -1 : 1 }],
+              }}
+            >
+              {"سُورَةُ " + item.name}
+            </Text>
           </View>
         </View>
         {/* contains the string with number of Ayas */}
-        <View style={{ position: "absolute", right: 90 }}>
+        <View
+          style={{
+            position: "absolute",
+            right: Platform.OS == "web" ? 120 : 90,
+          }}
+        >
           <Text
             style={[
               styles.title,
               { fontFamily: "UthmanRegular", fontSize: 20 },
+              { transform: [{ scaleX: Platform.OS == "web" ? -1 : 1 }] },
             ]}
           >
             {englishToArabicNumber(item.numAyas)}
@@ -161,6 +181,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
           data={suras}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={Platform.OS !== "web" ? true : false}
         />
       </View>
     </>
@@ -198,7 +219,6 @@ const styles = StyleSheet.create({
   itemWrapper: {
     padding: 10,
     marginVertical: 4,
-    borderRadius: 30,
     width: "100%",
     borderBottomWidth: 2,
     flexDirection: "row",
@@ -219,7 +239,7 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontFamily: "UthmanBold",
     color: "white",
-    letterSpacing: 4,
+    letterSpacing: Platform.OS === "web" ? 0 : 4,
   },
   locIcon: {
     fontFamily: "Khatim",

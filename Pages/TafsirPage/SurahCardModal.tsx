@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity, Platform } from "react-native";
 import Modal from "react-native-modal";
 import { englishToArabicNumber, colorize } from "../../helpers";
 import surasList from "../../Quran/surasList.json";
@@ -23,7 +23,12 @@ const SurahCardModal: React.FC<SurahCardModalProps> = ({
 }) => {
   return (
     <Modal
-      style={{ marginHorizontal: -10 }}
+      style={{ 
+        marginHorizontal: -10,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: (Platform.OS == "web") ? "20%": undefined,
+       }}
       isVisible={cardModalVisible}
       backdropOpacity={0.45}
       onBackButtonPress={() => setCardModalVisible(false)}
@@ -31,7 +36,10 @@ const SurahCardModal: React.FC<SurahCardModalProps> = ({
     >
       <View>
         <View>
-          <View style={{ ...styles.modalView, backgroundColor: appColor }}>
+          <View style={{ ...styles.modalView, backgroundColor: appColor,
+            maxHeight: (Platform.OS == "web") ? "80%": undefined,
+
+           }}>
             <View
               style={{
                 backgroundColor: colorize(-0.1, appColor),
@@ -50,6 +58,7 @@ const SurahCardModal: React.FC<SurahCardModalProps> = ({
               </Text>
             </View>
             <ScrollView
+              showsVerticalScrollIndicator={(Platform.OS !== "web") ? true : false}
               contentContainerStyle={{
                 ...styles.scrollViewContent,
                 gap: 10,
@@ -213,11 +222,12 @@ export default SurahCardModal;
 
 const styles = StyleSheet.create({
   modalView: {
-    margin: 20,
+    margin: (Platform.OS == "web") ? 20 : 10,
     backgroundColor: "white",
     borderRadius: 20,
     paddingHorizontal: 35,
     paddingVertical: 10,
+    justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -234,7 +244,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 25,
     fontFamily: "NewmetRegular",
-    letterSpacing: 10,
+    letterSpacing: Platform.OS === "web" ? 0 : 10,
   },
   button: {
     borderRadius: 20,
@@ -253,7 +263,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "UthmanBold",
     fontSize: 23,
-    letterSpacing: 6,
+    letterSpacing: Platform.OS === "web" ? 0 : 6,
   },
   scrollViewContent: {
     alignItems: "center",
@@ -268,7 +278,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 9,
     textAlign: "justify",
     fontSize: 25,
-    letterSpacing: 10,
+    letterSpacing: Platform.OS === "web" ? 0 : 10,
     color: "white",
     fontFamily: "Scheher",
   },

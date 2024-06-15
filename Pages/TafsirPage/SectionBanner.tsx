@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Platform } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 // Helper functions
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
       color: "black",
       fontSize: 25,
       fontFamily: "NewmetRegular",
-      letterSpacing:  10,
+      letterSpacing: Platform.OS === "web" ? 0 : 10,
     },
   });
   

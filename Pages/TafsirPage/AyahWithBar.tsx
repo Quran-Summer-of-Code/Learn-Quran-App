@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet, Platform } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";                   // fancy background for the bar
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";   // icons for the bar
 
@@ -77,12 +77,12 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
           padding: 10,
           paddingHorizontal: 20,
           borderRadius: 10,
-          flexDirection: "row",
+          flexDirection: (Platform.OS !== "web") ? "row" : "row-reverse",
           justifyContent: "space-between",
         }}
       >
         {/* Right Group with four icons */}
-        <View style={{ flexDirection: "row", gap: 15 }}>
+        <View style={{ flexDirection: (Platform.OS !== "web") ? "row" : "row-reverse", gap: 15 }}>
           {/* Button to show or hide tafsir */}
           <TouchableOpacity
             onPress={() => {
@@ -125,7 +125,9 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
           <TouchableOpacity
             onPress={() => {
               Clipboard.setStringAsync(ayahItem.ayah);
-              ToastAndroid.show("تم نسخ الآية بنجاح", ToastAndroid.SHORT);
+              if (Platform.OS !== "web") {
+                // ToastAndroid.show("تم نسخ الآية بنجاح", ToastAndroid.SHORT);
+              }
             }}
           >
             <Feather
@@ -202,7 +204,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 25,
     fontFamily: "NewmetRegular",
-    letterSpacing: 10,
+    letterSpacing: Platform.OS === "web" ? 0 : 10,
   },
 });
 

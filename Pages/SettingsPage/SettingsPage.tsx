@@ -1,6 +1,6 @@
 // @ts-nocheck (due to icon packages)
 import React, { useState } from "react";
-import { View, StyleSheet, Text, ScrollView, Dimensions } from "react-native";
+import { View, StyleSheet, Text, ScrollView, Dimensions, Platform } from "react-native";
 
 // External components
 import ColorPicker, { Swatches } from "reanimated-color-picker";
@@ -110,7 +110,9 @@ const SettingsPage: React.FC<Props> = () => {
         backgroundColor: colorize(-0.3, appColor),
       }}
     >
-      <ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={(Platform.OS !== "web") ? true : false}
+      >
         {/* Example Ayah for Testing Settings */}
         <View
           style={{
@@ -165,7 +167,6 @@ const SettingsPage: React.FC<Props> = () => {
               borderColor: "#ffffff44",
             }}
             itemTextStyle={{ color: "#fff" }}
-            selectedTextStyle={{ color: "#fff" }}
             activeColor={colorize(-0.4, appColor)}
             data={fontsMap}
             maxHeight={300}
@@ -204,7 +205,7 @@ const SettingsPage: React.FC<Props> = () => {
               style={{ width: 30, height: 30, position: "absolute", right: 15 }}
             >
               <Text
-                style={{ color: "white", fontSize: 20, textAlign: "center" }}
+                style={{ color: "white", fontSize: 20, textAlign: "center",  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}
               >
                 {englishToArabicNumber(ayahFontSize)}
               </Text>
@@ -224,10 +225,10 @@ const SettingsPage: React.FC<Props> = () => {
             }}
           />
           <View style={{ ...styles.progressLevelDuraiton }}>
-            <Text style={{ color: "#fff", fontWeight: 700 }}>
+            <Text style={{ color: "#fff", fontWeight: 700,  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}>
               {englishToArabicNumber(20)}
             </Text>
-            <Text style={{ color: "#fff", fontWeight: 700 }}>
+            <Text style={{ color: "#fff", fontWeight: 700,  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}>
               {englishToArabicNumber(35)}
             </Text>
           </View>
@@ -253,7 +254,7 @@ const SettingsPage: React.FC<Props> = () => {
               style={{ width: 30, height: 30, position: "absolute", right: 15 }}
             >
               <Text
-                style={{ color: "white", fontSize: 20, textAlign: "center" }}
+                style={{ color: "white", fontSize: 20, textAlign: "center",  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}
               >
                 {englishToArabicNumber(tafsirFontSize)}
               </Text>
@@ -273,10 +274,10 @@ const SettingsPage: React.FC<Props> = () => {
             }}
           />
           <View style={{ ...styles.progressLevelDuraiton }}>
-            <Text style={{ color: "#fff", fontWeight: 700 }}>
+            <Text style={{ color: "#fff", fontWeight: 700,  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}>
               {englishToArabicNumber(10)}
             </Text>
-            <Text style={{ color: "#fff", fontWeight: 700 }}>
+            <Text style={{ color: "#fff", fontWeight: 700,  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}>
               {englishToArabicNumber(26)}
             </Text>
           </View>
@@ -311,8 +312,10 @@ const SettingsPage: React.FC<Props> = () => {
               borderWidth: 0.5,
               borderColor: "#ffffff44",
             }}
-            itemTextStyle={{ color: "#fff" }}
-            selectedTextStyle={{ color: "#fff" }}
+            itemTextStyle={{ color: "#fff",
+              transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}]
+
+             }}
             activeColor={colorize(-0.4, appColor)}
             data={sheiksMap}
             maxHeight={300}
@@ -357,7 +360,6 @@ const SettingsPage: React.FC<Props> = () => {
               borderColor: "#ffffff44",
             }}
             itemTextStyle={{ color: "#fff" }}
-            selectedTextStyle={{ color: "#fff" }}
             activeColor={colorize(-0.4, appColor)}
             data={tafsirsMap}
             maxHeight={300}
@@ -406,7 +408,6 @@ const SettingsPage: React.FC<Props> = () => {
               borderColor: "#ffffff44",
             }}
             itemTextStyle={{ color: "#fff" }}
-            selectedTextStyle={{ color: "#fff" }}
             activeColor={colorize(-0.4, appColor)}
             data={allowSectionsMap}
             maxHeight={300}
@@ -482,9 +483,10 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}]
   },
   itemWrapper: {
-    padding: 10,
+    padding: (Platform.OS == "web") ? 20 :10,
     margin: 5,
     borderBottomWidth: 1,
     borderBottomColor: "#ffffff44",
@@ -497,6 +499,7 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontFamily: "UthmanBold",
     color: "#fff",
+    transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}]
   },
   progressLevelDuraiton: {
     width: width * 0.9,
@@ -511,6 +514,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
+    flexDirection: (Platform.OS == "web") ? "row" : "",
+    justifyContent: (Platform.OS == "web") ? "flex-start" : "",
   },
   icon: {
     marginRight: 5,
@@ -524,20 +529,28 @@ const styles = StyleSheet.create({
     fontSize: 14,
     borderRadius: 20,
     color: "#fff",
+    transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}],
   },
   placeholderStyle: {
     fontSize: 16,
     color: "white",
+    flexDirection: (Platform.OS == "web") ? "row" : "",
+    justifyContent: (Platform.OS == "web") ? "flex-start" : "",
   },
   selectedTextStyle: {
     fontSize: 16,
+    transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}],
+    color: "white",
+
   },
   ayahWordStyle: {
     color: "black",
     fontSize: 25,
     fontFamily: "NewmetRegular",
-    letterSpacing: 5,
-    alignSelf: "flex-start",
+    letterSpacing: Platform.OS === "web" ? 0 : 5,
+    alignSelf: "center",
+    transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}]
+
   },
 });
 

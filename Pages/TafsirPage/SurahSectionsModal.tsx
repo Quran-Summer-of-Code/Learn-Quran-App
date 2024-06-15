@@ -1,5 +1,12 @@
-import React from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import Modal from "react-native-modal";
 
 // Helper functions and data
@@ -31,13 +38,24 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
 }) => {
   return (
     <Modal
-      style={{ marginHorizontal: -5 }}
+      style={{
+        marginHorizontal: -5,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: Platform.OS == "web" ? "10%" : undefined,
+      }}
       isVisible={sectionsModalVisible}
       backdropOpacity={0.45}
       onBackButtonPress={() => setSectionsModalVisible(false)}
       onBackdropPress={() => setSectionsModalVisible(false)}
     >
-      <View style={{ ...styles.modalView, backgroundColor: appColor }}>
+      <View
+        style={{
+          ...styles.modalView,
+          backgroundColor: appColor,
+          maxHeight: Platform.OS == "web" ? "90%" : undefined,
+        }}
+      >
         <View
           style={{
             backgroundColor: colorize(-0.1, appColor),
@@ -57,6 +75,7 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
         </View>
         {/* Surah Sections List */}
         <ScrollView
+          showsVerticalScrollIndicator={(Platform.OS !== "web") ? true : false}
           contentContainerStyle={styles.scrollViewContent}
           style={{ maxHeight: "90%", marginVertical: 20, width: "100%" }}
         >
@@ -71,14 +90,14 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
                       onPress={() => {
                         setSectionsModalVisible(false);
                         if (!surahMode) {
-                        scrollToIndex(
-                          parseInt(key.replace(/S/g, "")) -
-                            startAyahForJuz -
-                            1
-                        );
-                      } else {
-                        scrollToIndex(parseInt(key.replace(/S/g, "")));
-                      }
+                          scrollToIndex(
+                            parseInt(key.replace(/S/g, "")) -
+                              startAyahForJuz -
+                              1
+                          );
+                        } else {
+                          scrollToIndex(parseInt(key.replace(/S/g, "")));
+                        }
                       }}
                       key={key}
                       style={styles.itemContainer}
@@ -104,16 +123,21 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
               </React.Fragment>
             ))}
         </ScrollView>
-        {Object.keys(currentSurahSections).length <= 1 && 
-        <Text style={{color: 'white', fontFamily:'UthmanBold', paddingVertical: 20, fontSize: 18}}>
-          هذه السورة غير مقسمة إلى مواضيع
-          </Text>}
+        {Object.keys(currentSurahSections).length <= 1 && (
+          <Text
+            style={{
+              color: "white",
+              fontFamily: "UthmanBold",
+              paddingVertical: 20,
+              fontSize: 18,
+            }}
+          >
+            هذه السورة غير مقسمة إلى مواضيع
+          </Text>
+        )}
         {/* Back Button */}
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: colorize(0.1, appColor) },
-          ]}
+          style={[styles.button, { backgroundColor: colorize(0.1, appColor) }]}
           onPress={() => setSectionsModalVisible(!sectionsModalVisible)}
         >
           <Text style={styles.textStyle}>الرجوع</Text>
@@ -127,7 +151,7 @@ export default SurahSectionsModal;
 
 const styles = StyleSheet.create({
   modalView: {
-    margin: 20,
+    margin: Platform.OS == "web" ? 20 : 10,
     backgroundColor: "white",
     borderRadius: 20,
     paddingHorizontal: 35,
@@ -159,14 +183,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "UthmanBold",
     fontSize: 23,
-    letterSpacing: 6,
+    letterSpacing: Platform.OS === "web" ? 0 : 6,
   },
   scrollViewContent: {
     alignItems: "center",
   },
   itemContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
+    flexDirection: Platform.OS === "web" ? "row-reverse" : "row",
     alignItems: "center",
     gap: 10,
     marginVertical: 5,
@@ -188,7 +211,6 @@ const styles = StyleSheet.create({
     textAlign: "justify",
   },
 });
-
 
 /*
 Renders Surah Sections in a vertical list.
