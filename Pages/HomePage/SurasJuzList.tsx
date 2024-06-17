@@ -164,7 +164,6 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                 }}
               >
                 {item.name}{" "}
-                <Text style={{ fontSize: 18 }}>{`(${item.juzAltName})`}</Text>
               </Text>
             </View>
           </View>
@@ -198,6 +197,10 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
       </Pressable>
       {/* Shows suras under the juz */}
       {!juzCollapse[index] && (
+        <>
+        <View>
+          <Text style={{ marginHorizontal:10, fontSize: 18, color: "#e1e1e1", fontFamily: "UthmanBold" }}>{`جزء ${item.juzAltName}`}</Text>
+          </View>
         <Animatable.View
           animation={!juzCollapse[index] ? "zoomInUp" : "zoomOutDown"}
           duration={400}
@@ -217,7 +220,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
                 margin: 5,
                 borderRadius: 10,
                 backgroundColor: "#ffffff33",
-                minWidth: "25%",
+                minWidth: "33%",
                 alignItems: "center",
               }}
               onPress={() => {
@@ -239,7 +242,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
               {/* show surah name and Ayah range */}
               <Text>
                 <Text style={[styles.title, { textAlign: "center" }]}>
-                  {suras[surahInd].name}{" "}
+                  {`(${englishToArabicNumber(surahInd+1)}) `}{suras[surahInd].name}{" "}
                 </Text>
                 {index < 29 && !containsFullSurah(item, surahInd, ind) && (
                   <Text
@@ -257,6 +260,7 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
             </TouchableOpacity>
           ))}
         </Animatable.View>
+        </>
       )}
     </View>
   );
@@ -327,7 +331,7 @@ const styles = StyleSheet.create({
     fontSize: 48,
   },
   title: {
-    fontSize: 21,
+    fontSize: 20,
     fontFamily: "UthmanBold",
     color: "white",
     letterSpacing: Platform.OS === "web" ? 0 : 4,

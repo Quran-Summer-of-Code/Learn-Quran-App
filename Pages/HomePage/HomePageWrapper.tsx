@@ -26,7 +26,7 @@ const HomePageWrapper = () => {
   const tabStyles = {
     tabBarStyle: {
       backgroundColor: appColor,
-      height: 75,
+      height: 70,
       borderTopColor: appColor,
     },
     tabBarActiveTintColor: "#ffffff",

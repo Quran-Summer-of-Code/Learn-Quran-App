@@ -141,7 +141,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
         <View
           style={{
             position: "absolute",
-            right: Platform.OS == "web" ? 70 : 90,
+            right: Platform.OS == "web" ? 70 : 76,
           }}
         >
           <Text
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     fontSize: 48,
   },
   title: {
-    fontSize: 23,
+    fontSize: 22,
     fontFamily: "UthmanBold",
     color: "white",
     letterSpacing: Platform.OS === "web" ? 0 : 4,
