@@ -42,7 +42,7 @@ const SettingsPage: React.FC<Props> = () => {
 
   // Settings allowed options
   const fontsMap = [
-    { label: "عثماني", value: "UthmanBold" },
+    { label: "عثماني", value: "UthmanicHafs" },
     { label: "كوفيان", value: "KufyanMedium" },
     { label: "قلم", value: "QalamRegular" },
     { label: "نيومت", value: "NewmetRegular" },
