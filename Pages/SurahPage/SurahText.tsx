@@ -17,6 +17,7 @@ import {
   getGlobalAyahInd,
   colorize,
   englishToArabicNumber,
+  getAyahTopic
 } from "../../helpers";
 import Constants from "expo-constants";
 
@@ -129,6 +130,15 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
             marginHorizontal: 8
           }}
         >
+          {Object.keys(surahSections[surah]).length > 1 && <Text style={{
+              fontFamily: ayahFontFamily,
+              textAlign: "center",
+              fontSize: ayahFontSize - 4,
+              color: "#f0f0f0",
+              marginHorizontal: 10
+           }}>
+            {`(${getAyahTopic(surahSections[surah], ayah+1)})`}
+          </Text>}
           <Text
             style={{
               fontFamily: ayahFontFamily,

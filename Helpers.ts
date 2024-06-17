@@ -39,23 +39,6 @@ export const prepareAudio = async (baseUrl: string, author: string, img: NodeReq
             };
             audioObjs.push(obj);
         }
-        // for each surah in surasList add bismillah (`${baseUrl}/${0}.mp3`) with skips of numAyas
-        // num_ayas_so_far = 0
-        // for (let i = 0; i < surasList.length; i++) {
-        //     let url = `${baseUrl}/${1}.mp3`;
-        //     let title = surasList[i].name;
-        //     let obj: AudioObject = {
-        //         title: title,
-        //         url: url,
-        //         artist: author,
-        //         artwork: img,
-        //     };
-        //     // insert in at num_ayas_so_far
-        //     audioObjs.splice(num_ayas_so_far, 0, obj);
-        //     num_ayas_so_far += parseInt(surasList[i].numAyas);
-        //     console.log(num_ayas_so_far);
-        //     console.log("\n");
-        // }
 
         setAudioList(audioObjs);
     } catch (error) {
@@ -211,6 +194,29 @@ export const customSort = (a: string, b: string): number => {
     flattenedIndex += innerIndex;
     return flattenedIndex;
   }
+
+
+  export function getAyahTopic(surahSectionsDict, ayahIndex) {
+    // Check if the dictionary has only one key (excluding "UNK0")
+    if (Object.keys(surahSectionsDict).length === 1 && surahSectionsDict.hasOwnProperty("UNK0")) {
+        return "";
+    }
+
+    // Extract the keys and convert them to integers, excluding "UNK0"
+    const keys = Object.keys(surahSectionsDict)
+        .filter(key => key !== "UNK0")
+        .map(key => parseInt(key))
+        .sort((a, b) => a - b);
+
+    // Iterate over the sorted keys to find the appropriate description
+    for (let i = 0; i < keys.length; i++) {
+        if (i === keys.length - 1 || (keys[i] <= ayahIndex && ayahIndex < keys[i + 1])) {
+            return surahSectionsDict[keys[i].toString()];
+        }
+    }
+
+    return "";
+}
 
 /*
 This file has helper functions used throughout the app (e.g., mapping words, juzs, ayahs together).
