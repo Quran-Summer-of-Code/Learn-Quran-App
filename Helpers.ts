@@ -4,15 +4,15 @@ import suras from "./Quran/suras.json";
 
 // sheikh URL handles and their names
 export const sheiksDict: { [key: string]: string } = {
-    "ar.alafasy": "مشاري العفاسي",
-    "ar.husarymujawwad": "محمود خليل الحصري",
+    "ar.alafasy-2": "مشاري العفاسي",
+    "ar.husarymujawwad-2": "محمود خليل الحصري",
     "ar.abdulsamad": "عبدالباسط عبدالصمد",   // will require bitrate 64
-    "ar.shaatree": "أبو بكر الشاطري",
-    "ar.hudhaify": "علي بن عبدالرحمن الحذيفي",
-    "ar.mahermuaiqly": "ماهر المعيقلي",
-    "ar.muhammadjibreel": "محمد جبريل",
-    "ar.minshawi": "محمد صديق المنشاوي",
-  };
+    "ar.shaatree-2": "أبو بكر الشاطري",
+    "ar.hudhaify-2": "علي بن عبدالرحمن الحذيفي",
+    "ar.mahermuaiqly-2": "ماهر المعيقلي",
+    "ar.muhammadjibreel-2": "محمد جبريل",
+    "ar.minshawi-2": "محمد صديق المنشاوي",
+};
 
 // After calling this audioList state will have an audio object for each ayah in Quran (interface below)
 export const prepareAudio = async (baseUrl: string, author: string, img: NodeRequire, setAudioList: CallableFunction) => {
@@ -95,13 +95,13 @@ export function isWithinRange(x: number, range: number[]) {
 }
 
 // Given index of a word in some Surah and index os some ayah in the same surah see if the word exists in the Ayah
-export function isWordInAyah(wordInd:number, ayahInd:number, currentSurahByWords:any) {
-    return  isWithinRange(wordInd, currentSurahByWords.ayahRanges[ayahInd])
+export function isWordInAyah(wordInd: number, ayahInd: number, currentSurahByWords: any) {
+    return isWithinRange(wordInd, currentSurahByWords.ayahRanges[ayahInd])
 }
 
 
 // get the index of juz given the surahInd and its local ayahInd
-export function findJuzSurahAyahIndex(juzData:any, surahIndex:number, ayahIndex:number) {
+export function findJuzSurahAyahIndex(juzData: any, surahIndex: number, ayahIndex: number) {
     for (let i = 0; i < juzData.length; i++) {
         const juz = juzData[i];
         if (juz.juzSuras.includes(surahIndex)) {
@@ -118,29 +118,30 @@ export function findJuzSurahAyahIndex(juzData:any, surahIndex:number, ayahIndex:
 
 // Copied from https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
 // Helps brighten or darken a given color (and more stuff) which is used for styling
-export const colorize=(p,c0,c1=null,l=null)=>{
-    let r,g,b,P,f,t,h,i=parseInt,m=Math.round,a=typeof(c1)=="string";
-    if(typeof(p)!="number"||p<-1||p>1||typeof(c0)!="string"||(c0[0]!='r'&&c0[0]!='#')||(c1&&!a))return "";
-    if(!this.pSBCr)this.pSBCr=(d)=>{
-        let n=d.length,x={};
-        if(n>9){
-            [r,g,b,a]=d=d.split(","),n=d.length;
-            if(n<3||n>4)return "";
-            x.r=i(r[3]=="a"?r.slice(5):r.slice(4)),x.g=i(g),x.b=i(b),x.a=a?parseFloat(a):-1
-        }else{
-            if(n==8||n==6||n<4)return "";
-            if(n<6)d="#"+d[1]+d[1]+d[2]+d[2]+d[3]+d[3]+(n>4?d[4]+d[4]:"");
-            d=i(d.slice(1),16);
-            if(n==9||n==5)x.r=d>>24&255,x.g=d>>16&255,x.b=d>>8&255,x.a=m((d&255)/0.255)/1000;
-            else x.r=d>>16,x.g=d>>8&255,x.b=d&255,x.a=-1
-        }return x};
-    h=c0.length>9,h=a?c1.length>9?true:c1=="c"?!h:false:h,f=this.pSBCr(c0),P=p<0,t=c1&&c1!="c"?this.pSBCr(c1):P?{r:0,g:0,b:0,a:-1}:{r:255,g:255,b:255,a:-1},p=P?p*-1:p,P=1-p;
-    if(!f||!t)return "";
-    if(l)r=m(P*f.r+p*t.r),g=m(P*f.g+p*t.g),b=m(P*f.b+p*t.b);
-    else r=m((P*f.r**2+p*t.r**2)**0.5),g=m((P*f.g**2+p*t.g**2)**0.5),b=m((P*f.b**2+p*t.b**2)**0.5);
-    a=f.a,t=t.a,f=a>=0||t>=0,a=f?a<0?t:t<0?a:a*P+t*p:0;
-    if(h)return"rgb"+(f?"a(":"(")+r+","+g+","+b+(f?","+m(a*1000)/1000:"")+")";
-    else return"#"+(4294967296+r*16777216+g*65536+b*256+(f?m(a*255):0)).toString(16).slice(1,f?undefined:-2)
+export const colorize = (p, c0, c1 = null, l = null) => {
+    let r, g, b, P, f, t, h, i = parseInt, m = Math.round, a = typeof (c1) == "string";
+    if (typeof (p) != "number" || p < -1 || p > 1 || typeof (c0) != "string" || (c0[0] != 'r' && c0[0] != '#') || (c1 && !a)) return "";
+    if (!this.pSBCr) this.pSBCr = (d) => {
+        let n = d.length, x = {};
+        if (n > 9) {
+            [r, g, b, a] = d = d.split(","), n = d.length;
+            if (n < 3 || n > 4) return "";
+            x.r = i(r[3] == "a" ? r.slice(5) : r.slice(4)), x.g = i(g), x.b = i(b), x.a = a ? parseFloat(a) : -1
+        } else {
+            if (n == 8 || n == 6 || n < 4) return "";
+            if (n < 6) d = "#" + d[1] + d[1] + d[2] + d[2] + d[3] + d[3] + (n > 4 ? d[4] + d[4] : "");
+            d = i(d.slice(1), 16);
+            if (n == 9 || n == 5) x.r = d >> 24 & 255, x.g = d >> 16 & 255, x.b = d >> 8 & 255, x.a = m((d & 255) / 0.255) / 1000;
+            else x.r = d >> 16, x.g = d >> 8 & 255, x.b = d & 255, x.a = -1
+        } return x
+    };
+    h = c0.length > 9, h = a ? c1.length > 9 ? true : c1 == "c" ? !h : false : h, f = this.pSBCr(c0), P = p < 0, t = c1 && c1 != "c" ? this.pSBCr(c1) : P ? { r: 0, g: 0, b: 0, a: -1 } : { r: 255, g: 255, b: 255, a: -1 }, p = P ? p * -1 : p, P = 1 - p;
+    if (!f || !t) return "";
+    if (l) r = m(P * f.r + p * t.r), g = m(P * f.g + p * t.g), b = m(P * f.b + p * t.b);
+    else r = m((P * f.r ** 2 + p * t.r ** 2) ** 0.5), g = m((P * f.g ** 2 + p * t.g ** 2) ** 0.5), b = m((P * f.b ** 2 + p * t.b ** 2) ** 0.5);
+    a = f.a, t = t.a, f = a >= 0 || t >= 0, a = f ? a < 0 ? t : t < 0 ? a : a * P + t * p : 0;
+    if (h) return "rgb" + (f ? "a(" : "(") + r + "," + g + "," + b + (f ? "," + m(a * 1000) / 1000 : "") + ")";
+    else return "#" + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2)
 }
 
 
@@ -148,55 +149,55 @@ export const colorize=(p,c0,c1=null,l=null)=>{
 export const customSort = (a: string, b: string): number => {
     // Function to parse each part of the keys
     const parsePart = (part: string): number | string => {
-      const num = parseInt(part);
-      return isNaN(num) ? part : num;
+        const num = parseInt(part);
+        return isNaN(num) ? part : num;
     };
-  
+
     // Split keys into parts and parse them
     const partsA: (number | string)[] = a.match(/\d+|\D+/g)!.map(parsePart);
     const partsB: (number | string)[] = b.match(/\d+|\D+/g)!.map(parsePart);
-  
+
     // Compare each part of the keys
     for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
-      const partA = partsA[i];
-      const partB = partsB[i];
-  
-      // If one part exists and the other doesn't, prioritize the existing one
-      if (partA !== undefined && partB === undefined) return -1;
-      if (partA === undefined && partB !== undefined) return 1;
-  
-      // Compare parts
-      if (partA !== partB) return partA < partB ? -1 : 1;
-    }
-  
-    return 0; // Keys are equal
-  };
+        const partA = partsA[i];
+        const partB = partsB[i];
 
-  // To get length of bookmarks array (list of litsts)
-  export function getTotalLength(arr: number[][]) {
+        // If one part exists and the other doesn't, prioritize the existing one
+        if (partA !== undefined && partB === undefined) return -1;
+        if (partA === undefined && partB !== undefined) return 1;
+
+        // Compare parts
+        if (partA !== partB) return partA < partB ? -1 : 1;
+    }
+
+    return 0; // Keys are equal
+};
+
+// To get length of bookmarks array (list of litsts)
+export function getTotalLength(arr: number[][]) {
     let totalElements = 0;
     for (let i = 0; i < arr.length; i++) {
-      totalElements += arr[i].length;
+        totalElements += arr[i].length;
     }
     return totalElements;
-  }
-  
-  // To be able to index its corresponding flattened list
-  export function getFlattenedIndex(
+}
+
+// To be able to index its corresponding flattened list
+export function getFlattenedIndex(
     arr: number[][],
     outerIndex: number,
     innerIndex: number
-  ) {
+) {
     let flattenedIndex = 0;
     for (let i = 0; i < outerIndex; i++) {
-      flattenedIndex += arr[i].length;
+        flattenedIndex += arr[i].length;
     }
     flattenedIndex += innerIndex;
     return flattenedIndex;
-  }
+}
 
 
-  export function getAyahTopic(surahSectionsDict, ayahIndex) {
+export function getAyahTopic(surahSectionsDict, ayahIndex) {
     // Check if the dictionary has only one key (excluding "UNK0")
     if (Object.keys(surahSectionsDict).length === 1 && surahSectionsDict.hasOwnProperty("UNK0")) {
         return "";

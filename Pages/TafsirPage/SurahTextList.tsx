@@ -3,7 +3,7 @@ import { View, FlatList, Text, TouchableOpacity, Platform } from "react-native";
 import { useWindowDimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
 import HTML from "react-native-render-html";
-import { MaterialIcons} from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 // External Components
@@ -42,6 +42,7 @@ import {
   SetBookmarks,
   Sheikh,
   TafsirBook,
+  OpenTafsirBoxes
 } from "../../Redux/slices/app";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -76,6 +77,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   const ayahFontFamily = useSelector(AyahFontFamily);
   const tafsirFontSize = useSelector(TafsirFontSize);
   const sectionsDisplay = useSelector(SectionsDisplay);
+  const openTafsirBoxes = useSelector(OpenTafsirBoxes);
   const scrolledFarTafsir = useSelector(ScrolledFarTafsir);
   const setScrolledFarTafsir = wrapDispatch(SetScrolledFarTafsir);
   const sheikh = useSelector(Sheikh);
@@ -99,7 +101,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   // for each Ayah make a boolean state and set it initially to false (Tafsir shown or not)
   const numAyas = parseInt(surasList[currentSurahInd].numAyas);
   const [tafsirOpenStates, setTafsirOpenStates] = useState(
-    Array(numAyas).fill(false)
+    Array(numAyas).fill(openTafsirBoxes ?? false)
   );
   const toggleTafsirOpenState = (index: number) => {
     setTafsirOpenStates((prevStates) => {
@@ -152,119 +154,120 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
   const renderItem = ({ item, index }: { item: any; index: number }) => {
 
     return (
-    <View style={{ marginBottom: 15 }}>
-      <SectionBanner
-        index={index + startAyahForJuz + 1}
-        currentSurahSections={currentSurahSections}
-        sectionsDisplay={sectionsDisplay}
-        appColor={appColor}
-      />
-      <AyahWithBar
-        index={index}
-        ayahItem={item}
-        sheikh={sheikh}
-        tafsirOpenStates={tafsirOpenStates}
-        toggleTafsirOpenState={toggleTafsirOpenState}
-        bookmarks={bookmarks}
-        setBookmarks={setBookmarks}
-        appColor={appColor}
-        sound={sound}
-        currentSurahInd={currentSurahInd}
-        startAyahForJuz={startAyahForJuz}
-        ayahFontSize={ayahFontSize}
-        ayahFontFamily={ayahFontFamily}
-      />
-      {tafsirOpenStates[index + startAyahForJuz] && (
-        <>
-          <View
-            style={{
-              flexDirection: (Platform.OS == "web") ? "row-reverse": "row",
-              gap: 14,
-              marginLeft: 40,
-              marginRight: (Platform.OS == "web") ? 40: undefined,
-              marginTop: 10,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => chooseSelectedTafsir(index, "Mukhtassar")}
+      <View style={{ marginBottom: 15 }}>
+        <SectionBanner
+          index={index + startAyahForJuz + 1}
+          currentSurahSections={currentSurahSections}
+          sectionsDisplay={sectionsDisplay}
+          appColor={appColor}
+        />
+        <AyahWithBar
+          index={index}
+          ayahItem={item}
+          sheikh={sheikh}
+          tafsirOpenStates={tafsirOpenStates}
+          toggleTafsirOpenState={toggleTafsirOpenState}
+          bookmarks={bookmarks}
+          setBookmarks={setBookmarks}
+          appColor={appColor}
+          sound={sound}
+          currentSurahInd={currentSurahInd}
+          startAyahForJuz={startAyahForJuz}
+          ayahFontSize={ayahFontSize}
+          ayahFontFamily={ayahFontFamily}
+        />
+        {tafsirOpenStates[index + startAyahForJuz] && (
+          <>
+            <View
               style={{
-                backgroundColor: (selectedTafsirs[index] == "Mukhtassar") ?  colorize(0.6, appColor) : colorize(0.50, appColor),
-                paddingHorizontal: 14,
-                paddingVertical: 3,
-                borderRadius: 15,
-                marginBottom: -28,
-                height: 44,
+                flexDirection: (Platform.OS == "web") ? "row-reverse" : "row",
+                gap: 14,
+                marginLeft: 40,
+                marginRight: (Platform.OS == "web") ? 40 : undefined,
+                marginTop: 10,
               }}
             >
-              <Text style={{fontFamily: 'UthmanBold'}}>المختصر</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => chooseSelectedTafsir(index, "Waseet")}
-              style={{
-                backgroundColor: (selectedTafsirs[index] == "Waseet") ?  colorize(0.6, appColor) : colorize(0.50, appColor),
-                paddingHorizontal: 14,
-                paddingVertical: 3,
-                borderRadius: 15,
-                marginBottom: -28,
-                height: 44,
-              }}
-            >
-              <Text style={{fontFamily: 'UthmanBold'}}>الوسيط</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => chooseSelectedTafsir(index, "Ibn-Kathir")}
-              style={{
-                backgroundColor: (selectedTafsirs[index]  == "Ibn-Kathir") ?  colorize(0.6, appColor) : colorize(0.50, appColor),
-                paddingHorizontal: 14,
-                paddingVertical: 3,
-                borderRadius: 15,
-                marginBottom: -28,
-                height: 44,
-              }}
-            >
-              <Text style={{fontFamily: 'UthmanBold'}}>ابن كثير</Text>
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              marginTop: 10,
-              marginHorizontal: 20,
-              backgroundColor: colorize(0.6, appColor),
-              padding: 20,
-              borderRadius: 20,
-            }}
-          >
-            <Animatable.View
-              animation={
-                tafsirOpenStates[index + startAyahForJuz]
-                  ? "fadeInRight"
-                  : "zoomOutDown"
-              }
-              duration={400}
-            >
-              <HTML
-                contentWidth={width}
-                source={{
-                  html: surahTafsirs[selectedTafsirs[index]][currentSurahInd][index + startAyahForJuz].text,
+              <TouchableOpacity
+                onPress={() => chooseSelectedTafsir(index, "Mukhtassar")}
+                style={{
+                  backgroundColor: (selectedTafsirs[index] == "Mukhtassar") ? colorize(0.6, appColor) : colorize(0.50, appColor),
+                  paddingHorizontal: 14,
+                  paddingVertical: 3,
+                  borderRadius: 15,
+                  marginBottom: -28,
+                  height: 44,
                 }}
-                tagsStyles={{
-                  i: {
-                    color: colorize(-0.2, appColor),
-                    fontStyle: "normal",
-                  },
-                  body: {
-                    textAlign: "justify",
-                    lineHeight: 20,
-                    fontSize: tafsirFontSize,
-                  },
+              >
+                <Text style={{ fontFamily: 'UthmanBold' }}>المختصر</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => chooseSelectedTafsir(index, "Waseet")}
+                style={{
+                  backgroundColor: (selectedTafsirs[index] == "Waseet") ? colorize(0.6, appColor) : colorize(0.50, appColor),
+                  paddingHorizontal: 14,
+                  paddingVertical: 3,
+                  borderRadius: 15,
+                  marginBottom: -28,
+                  height: 44,
                 }}
-              />
-            </Animatable.View>
-          </View>
-        </>
-      )}
-    </View>
-  )};
+              >
+                <Text style={{ fontFamily: 'UthmanBold' }}>الوسيط</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => chooseSelectedTafsir(index, "Ibn-Kathir")}
+                style={{
+                  backgroundColor: (selectedTafsirs[index] == "Ibn-Kathir") ? colorize(0.6, appColor) : colorize(0.50, appColor),
+                  paddingHorizontal: 14,
+                  paddingVertical: 3,
+                  borderRadius: 15,
+                  marginBottom: -28,
+                  height: 44,
+                }}
+              >
+                <Text style={{ fontFamily: 'UthmanBold' }}>ابن كثير</Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                marginTop: 10,
+                marginHorizontal: 20,
+                backgroundColor: colorize(0.6, appColor),
+                padding: 20,
+                borderRadius: 20,
+              }}
+            >
+              <Animatable.View
+                animation={
+                  tafsirOpenStates[index + startAyahForJuz]
+                    ? "fadeInRight"
+                    : "zoomOutDown"
+                }
+                duration={400}
+              >
+                <HTML
+                  contentWidth={width}
+                  source={{
+                    html: surahTafsirs[selectedTafsirs[index]][currentSurahInd][index + startAyahForJuz].text,
+                  }}
+                  tagsStyles={{
+                    i: {
+                      color: colorize(-0.2, appColor),
+                      fontStyle: "normal",
+                    },
+                    body: {
+                      textAlign: "justify",
+                      lineHeight: 20,
+                      fontSize: tafsirFontSize,
+                    },
+                  }}
+                />
+              </Animatable.View>
+            </View>
+          </>
+        )}
+      </View>
+    )
+  };
 
   let currentSurahSliced = currentSurah.slice(
     startAyahForJuz,
@@ -332,30 +335,30 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
       {scrolledFarTafsir && (
         <SectionsButton setSectionsModalVisible={setSectionsModalVisible} />
       )}
-      {Platform.OS == "web" && 
-      <View
-      style={{
-        position: "absolute",
-        backgroundColor: appColor,
-        left: 20,
-        top: 90,
-        zIndex: 9999,
-        padding: 15,
-        borderRadius: 50,
-      }}
-    >
-      <TouchableOpacity onPress={()=>
-      navigation.goBack()  
-    }>
-        <MaterialIcons
-          name="arrow-back"
+      {Platform.OS == "web" &&
+        <View
           style={{
-            color: "white",
-            fontSize: 18,
+            position: "absolute",
+            backgroundColor: appColor,
+            left: 20,
+            top: 90,
+            zIndex: 9999,
+            padding: 15,
+            borderRadius: 50,
           }}
-        />
-      </TouchableOpacity>
-    </View>
+        >
+          <TouchableOpacity onPress={() =>
+            navigation.goBack()
+          }>
+            <MaterialIcons
+              name="arrow-back"
+              style={{
+                color: "white",
+                fontSize: 18,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
       }
     </>
   );

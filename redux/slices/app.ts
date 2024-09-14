@@ -26,6 +26,7 @@ interface AppState {
   cardModalVisbile: boolean;
   meaningModalVisible: boolean;
   bookmarks: any[];
+  openTafsirBoxes: boolean;
 }
 
 // Remember: can CTRL+Shift+F to find where it's being used
@@ -54,7 +55,8 @@ const initialState: AppState = {
   sectionsModalVisible: false,       // for modal showing surah sections in tafsir page
   cardModalVisbile: false,           // for modal showing surah card in tafsir page
   meaningModalVisible: false,        // for modal showing ayah meaning in Surah page
-  bookmarks: Array.from({ length: 114 }, () => [])  // array of bookmarked ayah inds per sura
+  bookmarks: Array.from({ length: 114 }, () => []),  // array of bookmarked ayah inds per sura
+  openTafsirBoxes: false,            // whether to open tafsir boxes for each ayah
 };
 
 const appSlice = createSlice({
@@ -136,7 +138,10 @@ const appSlice = createSlice({
     },
     SetMeaningModalVisible(state, action: PayloadAction<boolean>) {
       state.meaningModalVisible = action.payload;
-    }
+    },
+    SetOpenTafsirBoxes(state, action: PayloadAction<boolean>) {
+      state.openTafsirBoxes = action.payload;
+    },
   },
 });
 
@@ -165,34 +170,36 @@ export const {
   SetSectionsModalVisible,
   SetCardModalVisbile,
   SetMeaningModalVisible,
-  SetBookmarks
+  SetBookmarks,
+  SetOpenTafsirBoxes
 } = appSlice.actions;
 
-export const InHomePage = (state:any) => state.store.inHomePage;
-export const CurrentSurahInd = (state:any) => state.store.currentSurahInd;
-export const CurrentAyahInd = (state:any) => state.store.currentAyahInd;
-export const JustEnteredNewSurah = (state:any) => state.store.justEnteredNewSurah;
-export const JustEnteredNewSurahJuz = (state:any) => state.store.justEnteredNewSurahJuz;
-export const JustChoseNewAyah = (state:any) => state.store.justChoseNewAyah;
-export const Pause = (state:any) => state.store.pause;
-export const Fullscreen = (state:any) => state.store.fullscreen;
-export const JuzMode = (state:any) => state.store.juzMode;
-export const TafsirMode = (state:any) => state.store.tafsirMode;
-export const CurrentJuzInd = (state:any) => state.store.currentJuzInd;
-export const JuzCollapse = (state:any) => state.store.juzCollapse;
-export const PlayBackChanged = (state:any) => state.store.playBackChanged;
-export const AppColor = (state:any) => state.store.appColor;
-export const AyahFontSize = (state:any) => state.store.ayahFontSize; 
-export const AyahFontFamily = (state:any) => state.store.ayahFontFamily; 
-export const Sheikh = (state:any) => state.store.sheikh;
-export const TafsirBook = (state:any) => state.store.tafsirBook;
-export const TafsirFontSize = (state:any) => state.store.tafsirFontSize;
-export const SectionsDisplay = (state:any) => state.store.sectionsDisplay;
-export const ScrolledFarTafsir = (state:any) => state.store.scrolledFarTafsir;
-export const SectionsModalVisible = (state:any) => state.store.sectionsModalVisible;
-export const CardModalVisbile = (state:any) => state.store.cardModalVisbile;
-export const Bookmarks = (state:any) => state.store.bookmarks;
-export const MeaningModalVisible = (state:any) => state.store.meaningModalVisible;
+export const InHomePage = (state: any) => state.store.inHomePage;
+export const CurrentSurahInd = (state: any) => state.store.currentSurahInd;
+export const CurrentAyahInd = (state: any) => state.store.currentAyahInd;
+export const JustEnteredNewSurah = (state: any) => state.store.justEnteredNewSurah;
+export const JustEnteredNewSurahJuz = (state: any) => state.store.justEnteredNewSurahJuz;
+export const JustChoseNewAyah = (state: any) => state.store.justChoseNewAyah;
+export const Pause = (state: any) => state.store.pause;
+export const Fullscreen = (state: any) => state.store.fullscreen;
+export const JuzMode = (state: any) => state.store.juzMode;
+export const TafsirMode = (state: any) => state.store.tafsirMode;
+export const CurrentJuzInd = (state: any) => state.store.currentJuzInd;
+export const JuzCollapse = (state: any) => state.store.juzCollapse;
+export const PlayBackChanged = (state: any) => state.store.playBackChanged;
+export const AppColor = (state: any) => state.store.appColor;
+export const AyahFontSize = (state: any) => state.store.ayahFontSize;
+export const AyahFontFamily = (state: any) => state.store.ayahFontFamily;
+export const Sheikh = (state: any) => state.store.sheikh;
+export const TafsirBook = (state: any) => state.store.tafsirBook;
+export const TafsirFontSize = (state: any) => state.store.tafsirFontSize;
+export const SectionsDisplay = (state: any) => state.store.sectionsDisplay;
+export const ScrolledFarTafsir = (state: any) => state.store.scrolledFarTafsir;
+export const SectionsModalVisible = (state: any) => state.store.sectionsModalVisible;
+export const CardModalVisbile = (state: any) => state.store.cardModalVisbile;
+export const Bookmarks = (state: any) => state.store.bookmarks;
+export const MeaningModalVisible = (state: any) => state.store.meaningModalVisible;
+export const OpenTafsirBoxes = (state: any) => state.store.openTafsirBoxes;
 
 export default appSlice.reducer;
 

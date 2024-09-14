@@ -27,6 +27,8 @@ import {
   SetSheikh,
   TafsirBook,
   SetTafsirBook,
+  OpenTafsirBoxes,
+  SetOpenTafsirBoxes
 } from "../../Redux/slices/app";
 
 // Icons
@@ -34,7 +36,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { FontAwesome6 } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-interface Props {}
+interface Props { }
 
 const SettingsPage: React.FC<Props> = () => {
   const dispatch = useDispatch();
@@ -56,11 +58,16 @@ const SettingsPage: React.FC<Props> = () => {
 
   const tafsirsMap = [
     { label: "كتاب التفسير الوسيط لطنطاوي", value: "Waseet" },
-    { label: "كتاب تفسير القرآن العظيم لابن كثير", value: "Ibn-Kathir"},
-    { label: "كتاب المختصر في تفسير القرآن الكريم", value: "Mukhtassar"}
+    { label: "كتاب تفسير القرآن العظيم لابن كثير", value: "Ibn-Kathir" },
+    { label: "كتاب المختصر في تفسير القرآن الكريم", value: "Mukhtassar" }
   ];
 
   const allowSectionsMap = [
+    { label: "نعم", value: true },
+    { label: "لا", value: false },
+  ];
+
+  const openTafsirBoxesMap = [
     { label: "نعم", value: true },
     { label: "لا", value: false },
   ];
@@ -100,6 +107,10 @@ const SettingsPage: React.FC<Props> = () => {
     useSelector(AppColor),
     wrapDispatch(SetAppColor),
   ];
+  const [openTafsirBoxes, setOpenTafsirBoxes] = [
+    useSelector(OpenTafsirBoxes),
+    wrapDispatch(SetOpenTafsirBoxes),
+  ]
   // for dropdown
   const [isFocus, setIsFocus] = useState(false);
 
@@ -205,7 +216,7 @@ const SettingsPage: React.FC<Props> = () => {
               style={{ width: 30, height: 30, position: "absolute", right: 15 }}
             >
               <Text
-                style={{ color: "white", fontSize: 20, textAlign: "center",  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}
+                style={{ color: "white", fontSize: 20, textAlign: "center", transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }] }}
               >
                 {englishToArabicNumber(ayahFontSize)}
               </Text>
@@ -225,10 +236,10 @@ const SettingsPage: React.FC<Props> = () => {
             }}
           />
           <View style={{ ...styles.progressLevelDuraiton }}>
-            <Text style={{ color: "#fff", fontWeight: 700,  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}>
+            <Text style={{ color: "#fff", fontWeight: 700, transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }] }}>
               {englishToArabicNumber(20)}
             </Text>
-            <Text style={{ color: "#fff", fontWeight: 700,  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}>
+            <Text style={{ color: "#fff", fontWeight: 700, transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }] }}>
               {englishToArabicNumber(35)}
             </Text>
           </View>
@@ -254,7 +265,7 @@ const SettingsPage: React.FC<Props> = () => {
               style={{ width: 30, height: 30, position: "absolute", right: 15 }}
             >
               <Text
-                style={{ color: "white", fontSize: 20, textAlign: "center",  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}
+                style={{ color: "white", fontSize: 20, textAlign: "center", transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }] }}
               >
                 {englishToArabicNumber(tafsirFontSize)}
               </Text>
@@ -274,10 +285,10 @@ const SettingsPage: React.FC<Props> = () => {
             }}
           />
           <View style={{ ...styles.progressLevelDuraiton }}>
-            <Text style={{ color: "#fff", fontWeight: 700,  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}>
+            <Text style={{ color: "#fff", fontWeight: 700, transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }] }}>
               {englishToArabicNumber(10)}
             </Text>
-            <Text style={{ color: "#fff", fontWeight: 700,  transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}>
+            <Text style={{ color: "#fff", fontWeight: 700, transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }] }}>
               {englishToArabicNumber(26)}
             </Text>
           </View>
@@ -312,10 +323,11 @@ const SettingsPage: React.FC<Props> = () => {
               borderWidth: 0.5,
               borderColor: "#ffffff44",
             }}
-            itemTextStyle={{ color: "#fff",
-              transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}]
+            itemTextStyle={{
+              color: "#fff",
+              transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }]
 
-             }}
+            }}
             activeColor={colorize(-0.4, appColor)}
             data={sheiksMap}
             maxHeight={300}
@@ -425,6 +437,54 @@ const SettingsPage: React.FC<Props> = () => {
             iconColor={"#fff"}
           />
         </View>
+        {/* Choose whether to display tafsir boxes by default */}
+        <View style={styles.itemWrapper}>
+          <View
+            style={{
+              ...styles.itemContainer,
+              backgroundColor: colorize(-0.1, appColor),
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 9,
+              marginBottom: 15,
+            }}
+          >
+            <FontAwesome6
+              name="section"
+              color={"#fff"}
+              style={{ fontSize: 22 }}
+            />
+            <Text style={styles.textItem}>عرض التفسير بشكل الأساسى</Text>
+            <View style={{ width: 30, height: 30, marginLeft: "55%" }}></View>
+          </View>
+          <Dropdown
+            style={[styles.dropdown]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            containerStyle={{
+              backgroundColor: appColor,
+              borderRadius: 10,
+              borderWidth: 0.5,
+              borderColor: "#ffffff44",
+            }}
+            itemTextStyle={{ color: "#fff" }}
+            activeColor={colorize(-0.4, appColor)}
+            data={openTafsirBoxesMap}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!isFocus ? "اختر" : ""}
+            value={openTafsirBoxes ?? false}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            onChange={(item) => {
+              setOpenTafsirBoxes(item.value);
+              setIsFocus(false);
+            }}
+            fontFamily="UthmanBold"
+            iconColor={"#fff"}
+          />
+        </View>
         {/* Choose app theme */}
         <View style={styles.itemWrapper}>
           <View
@@ -483,10 +543,10 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}]
+    transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }]
   },
   itemWrapper: {
-    padding: (Platform.OS == "web") ? 20 :10,
+    padding: (Platform.OS == "web") ? 20 : 10,
     margin: 5,
     borderBottomWidth: 1,
     borderBottomColor: "#ffffff44",
@@ -499,7 +559,7 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontFamily: "UthmanBold",
     color: "#fff",
-    transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}]
+    transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }]
   },
   progressLevelDuraiton: {
     width: width * 0.9,
@@ -529,7 +589,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     borderRadius: 20,
     color: "#fff",
-    transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}],
+    transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }],
   },
   placeholderStyle: {
     fontSize: 16,
@@ -539,7 +599,7 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     fontSize: 16,
-    transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}],
+    transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }],
     color: "white",
 
   },
@@ -549,7 +609,7 @@ const styles = StyleSheet.create({
     fontFamily: "NewmetRegular",
     letterSpacing: Platform.OS === "web" ? 0 : 5,
     alignSelf: "center",
-    transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}]
+    transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }]
 
   },
 });

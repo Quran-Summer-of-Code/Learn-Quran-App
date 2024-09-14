@@ -2,7 +2,7 @@
   "expo": {
     "name": "تعلم القرآن الكريم",
     "slug": "quran-app",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -25,7 +25,7 @@
       },
       "package": "com.essamwisam.quranapp",
       "permissions": [],
-      "versionCode": 2
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"
