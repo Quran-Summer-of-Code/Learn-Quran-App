@@ -310,7 +310,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
             surahFontName={surahFontName}
             ayahFontSize={ayahFontSize}
             ayahFontFamily={ayahFontFamily}
-            showBismillah={currentSurahInd !== 8}
+            showBismillah={currentSurahInd !== 8 && currentSurahInd !== 0}
           />
         }
       />

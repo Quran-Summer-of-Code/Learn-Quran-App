@@ -131,13 +131,13 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
           }}
         >
           {Object.keys(surahSections[surah]).length > 1 && <Text style={{
-              fontFamily: ayahFontFamily,
-              textAlign: "center",
-              fontSize: ayahFontSize - 4,
-              color: "#f0f0f0",
-              marginHorizontal: 10
-           }}>
-            {`(${getAyahTopic(surahSections[surah], ayah+1)})`}
+            fontFamily: ayahFontFamily,
+            textAlign: "center",
+            fontSize: ayahFontSize - 4,
+            color: "#f0f0f0",
+            marginHorizontal: 10
+          }}>
+            {`(${getAyahTopic(surahSections[surah], ayah + 1)})`}
           </Text>}
           <Text
             style={{
@@ -187,12 +187,12 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
                 >
                   {"\n"}
                   <Text
-                  style={{
-                   fontWeight: 900,
-                   lineHeight:50,
-                   includeFontPadding: true
-                  }}
-                  >{"(" + key +")" + " "}</Text> { value}
+                    style={{
+                      fontWeight: 900,
+                      lineHeight: 50,
+                      includeFontPadding: true
+                    }}
+                  >{"(" + key + ")" + " "}</Text> {value}
                 </Text>
               ))
             ) : (
@@ -353,24 +353,24 @@ const SurahText: React.FC<SurahTextProps> = ({
           contentContainerStyle={styles.contentContainerStyle}
           scrollEventThrottle={16}
           onScrollToIndexFailed={(error) => {
-          // @ts-ignore
-          flatListRef?.current?.scrollToOffset({
-            offset: error.averageItemLength * error.index,
-            animated: true,
-          });
-          setTimeout(() => {
             // @ts-ignore
-            flatListRef?.current?.scrollToIndex({
-              index: error.index,
+            flatListRef?.current?.scrollToOffset({
+              offset: error.averageItemLength * error.index,
               animated: true,
-              viewPosition: 0.5,
             });
-          }, 300);
+            setTimeout(() => {
+              // @ts-ignore
+              flatListRef?.current?.scrollToIndex({
+                index: error.index,
+                animated: true,
+                viewPosition: 0.5,
+              });
+            }, 300);
           }}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           ListHeaderComponent={() =>
-            currentSurahInd !== 8 && (
+            currentSurahInd !== 8 && currentSurahInd !== 0 && (
               <Text
                 style={{
                   ...styles.basmalaStyle,
@@ -415,7 +415,7 @@ const SurahText: React.FC<SurahTextProps> = ({
         <TouchableOpacity
           style={{
             position: "absolute",
-            top: Platform.OS != "web" ?  (!fullscreen ? "62.5%" : "95.5%") : 10,
+            top: Platform.OS != "web" ? (!fullscreen ? "62.5%" : "95.5%") : 10,
             right: 5,
             zIndex: 999,
             backgroundColor: "#f1f1f1",
@@ -431,7 +431,7 @@ const SurahText: React.FC<SurahTextProps> = ({
         {Platform.OS == "web" && <TouchableOpacity
           style={{
             position: "absolute",
-            top: Platform.OS != "web" ?  (!fullscreen ? "62.5%" : "95.5%") : 10,
+            top: Platform.OS != "web" ? (!fullscreen ? "62.5%" : "95.5%") : 10,
             left: 5,
             zIndex: 999,
             backgroundColor: "#f1f1f1",
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
     flexGrow: 0,
   },
   contentContainerStyle: {
-    flexDirection: Platform.OS === "web" ? "row-reverse": "row",
+    flexDirection: Platform.OS === "web" ? "row-reverse" : "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
     marginHorizontal: 10,
@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
     padding: 5,
     textAlign: "center",
-    width:  width,
+    width: width,
   },
   ayahNumStyle: {
     fontFamily: "UthmanRegular",

@@ -27,9 +27,9 @@ export const prepareAudio = async (baseUrl: string, author: string, img: NodeReq
         let audioObjs: AudioObject[] = [];
         // Loop over all 6236 ayahs of the Quran
         // Skips the Bismillah in Fatiha (align with moshaf numbering of Ayat)
-        for (let i = 2; i <= 6236; i++) {
+        for (let i = 1; i <= 6236; i++) {
             let url = `${baseUrl}/${i}.mp3`;
-            let title = suras[getSurahIndGivenAyah(i - 2)][getLocalAyahInd(i - 2)].ayah;
+            let title = suras[getSurahIndGivenAyah(i - 1)][getLocalAyahInd(i - 1)].ayah;
             // subtracted 2 to account for zero indexing and the Bismillah
             let obj: AudioObject = {
                 title: title,

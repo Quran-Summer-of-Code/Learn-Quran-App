@@ -21,7 +21,7 @@
         "hasSagda": "لا",
         "fontName": "2",
         "fontFamily": "SurasA",
-        "firstAyah": 6
+        "firstAyah": 7
     },
     {
         "name": "آل عِمرَان",
@@ -33,7 +33,7 @@
         "hasSagda": "لا",
         "fontName": "4",
         "fontFamily": "SurasA",
-        "firstAyah": 292
+        "firstAyah": 293
     },
     {
         "name": "النِّسَاء",
@@ -45,7 +45,7 @@
         "hasSagda": "لا",
         "fontName": "6",
         "fontFamily": "SurasA",
-        "firstAyah": 492
+        "firstAyah": 493
     },
     {
         "name": "المَائدة",
@@ -57,7 +57,7 @@
         "hasSagda": "لا",
         "fontName": "8",
         "fontFamily": "SurasA",
-        "firstAyah": 668
+        "firstAyah": 669
     },
     {
         "name": "الأنعَام",
@@ -69,7 +69,7 @@
         "hasSagda": "لا",
         "fontName": "A",
         "fontFamily": "SurasA",
-        "firstAyah": 788
+        "firstAyah": 789
     },
     {
         "name": "الأعرَاف",
@@ -81,7 +81,7 @@
         "hasSagda": "نعم، الآية 206",
         "fontName": "C",
         "fontFamily": "SurasA",
-        "firstAyah": 953
+        "firstAyah": 954
     },
     {
         "name": "الأنفَال",
@@ -93,7 +93,7 @@
         "hasSagda": "لا",
         "fontName": "E",
         "fontFamily": "SurasA",
-        "firstAyah": 1159
+        "firstAyah": 1160
     },
     {
         "name": "التوبَة",
@@ -105,7 +105,7 @@
         "hasSagda": "لا",
         "fontName": "G",
         "fontFamily": "SurasA",
-        "firstAyah": 1234
+        "firstAyah": 1235
     },
     {
         "name": "يُونس",
@@ -117,7 +117,7 @@
         "hasSagda": "لا",
         "fontName": "I",
         "fontFamily": "SurasA",
-        "firstAyah": 1363
+        "firstAyah": 1364
     },
     {
         "name": "هُود",
@@ -129,7 +129,7 @@
         "hasSagda": "لا",
         "fontName": "K",
         "fontFamily": "SurasA",
-        "firstAyah": 1472
+        "firstAyah": 1473
     },
     {
         "name": "يُوسُف",
@@ -141,7 +141,7 @@
         "hasSagda": "لا",
         "fontName": "M",
         "fontFamily": "SurasA",
-        "firstAyah": 1595
+        "firstAyah": 1596
     },
     {
         "name": "الرَّعْد",
@@ -153,7 +153,7 @@
         "hasSagda": "نعم، الآية 15",
         "fontName": "O",
         "fontFamily": "SurasA",
-        "firstAyah": 1706
+        "firstAyah": 1707
     },
     {
         "name": "إبراهِيم",
@@ -165,7 +165,7 @@
         "hasSagda": "لا",
         "fontName": "Q",
         "fontFamily": "SurasA",
-        "firstAyah": 1749
+        "firstAyah": 1750
     },
     {
         "name": "الحِجْر",
@@ -177,7 +177,7 @@
         "hasSagda": "لا",
         "fontName": "S",
         "fontFamily": "SurasA",
-        "firstAyah": 1801
+        "firstAyah": 1802
     },
     {
         "name": "النَّحْل",
@@ -189,7 +189,7 @@
         "hasSagda": "نعم، الآية 49",
         "fontName": "U",
         "fontFamily": "SurasA",
-        "firstAyah": 1900
+        "firstAyah": 1901
     },
     {
         "name": "الإسْرَاء",
@@ -201,7 +201,7 @@
         "hasSagda": "نعم، الآية 107",
         "fontName": "W",
         "fontFamily": "SurasA",
-        "firstAyah": 2028
+        "firstAyah": 2029
     },
     {
         "name": "الكهْف",
@@ -213,7 +213,7 @@
         "hasSagda": "لا",
         "fontName": "Y",
         "fontFamily": "SurasA",
-        "firstAyah": 2139
+        "firstAyah": 2140
     },
     {
         "name": "مَريَم",
@@ -225,7 +225,7 @@
         "hasSagda": "نعم، الآية 58",
         "fontName": "a",
         "fontFamily": "SurasA",
-        "firstAyah": 2249
+        "firstAyah": 2250
     },
     {
         "name": "طه",
@@ -237,7 +237,7 @@
         "hasSagda": "لا",
         "fontName": "c",
         "fontFamily": "SurasA",
-        "firstAyah": 2347
+        "firstAyah": 2348
     },
     {
         "name": "الأنبيَاء",
@@ -249,7 +249,7 @@
         "hasSagda": "لا",
         "fontName": "e",
         "fontFamily": "SurasA",
-        "firstAyah": 2482
+        "firstAyah": 2483
     },
     {
         "name": "الحَج",
@@ -261,7 +261,7 @@
         "hasSagda": "نعم، سجدتان، الآية 18، والآية 77",
         "fontName": "g",
         "fontFamily": "SurasA",
-        "firstAyah": 2594
+        "firstAyah": 2595
     },
     {
         "name": "المُؤمنون",
@@ -273,7 +273,7 @@
         "hasSagda": "لا",
         "fontName": "i",
         "fontFamily": "SurasA",
-        "firstAyah": 2672
+        "firstAyah": 2673
     },
     {
         "name": "النُّور",
@@ -285,7 +285,7 @@
         "hasSagda": "لا",
         "fontName": "k",
         "fontFamily": "SurasA",
-        "firstAyah": 2790
+        "firstAyah": 2791
     },
     {
         "name": "الفُرْقان",
@@ -297,7 +297,7 @@
         "hasSagda": "نعم، الآية 60",
         "fontName": "l",
         "fontFamily": "SurasA",
-        "firstAyah": 2854
+        "firstAyah": 2855
     },
     {
         "name": "الشُّعَرَاء",
@@ -309,7 +309,7 @@
         "hasSagda": "لا",
         "fontName": "n",
         "fontFamily": "SurasA",
-        "firstAyah": 2931
+        "firstAyah": 2932
     },
     {
         "name": "النَّمْل",
@@ -321,7 +321,7 @@
         "hasSagda": "نعم، الآية 25",
         "fontName": "p",
         "fontFamily": "SurasA",
-        "firstAyah": 3158
+        "firstAyah": 3159
     },
     {
         "name": "القَصَص",
@@ -333,7 +333,7 @@
         "hasSagda": "لا",
         "fontName": "r",
         "fontFamily": "SurasA",
-        "firstAyah": 3251
+        "firstAyah": 3252
     },
     {
         "name": "العَنكبوت",
@@ -345,7 +345,7 @@
         "hasSagda": "لا",
         "fontName": "t",
         "fontFamily": "SurasA",
-        "firstAyah": 3339
+        "firstAyah": 3340
     },
     {
         "name": "الرُّوم",
@@ -357,7 +357,7 @@
         "hasSagda": "لا",
         "fontName": "v",
         "fontFamily": "SurasA",
-        "firstAyah": 3408
+        "firstAyah": 3409
     },
     {
         "name": "لقمَان",
@@ -369,7 +369,7 @@
         "hasSagda": "لا",
         "fontName": "x",
         "fontFamily": "SurasA",
-        "firstAyah": 3468
+        "firstAyah": 3469
     },
     {
         "name": "السَّجدَة",
@@ -381,7 +381,7 @@
         "hasSagda": "نعم، الآية 15",
         "fontName": "0",
         "fontFamily": "SurasB",
-        "firstAyah": 3502
+        "firstAyah": 3503
     },
     {
         "name": "الأحزَاب",
@@ -393,7 +393,7 @@
         "hasSagda": "لا",
         "fontName": "2",
         "fontFamily": "SurasB",
-        "firstAyah": 3532
+        "firstAyah": 3533
     },
     {
         "name": "سَبَأ",
@@ -405,7 +405,7 @@
         "hasSagda": "لا",
         "fontName": "4",
         "fontFamily": "SurasB",
-        "firstAyah": 3605
+        "firstAyah": 3606
     },
     {
         "name": "فَاطِر",
@@ -417,7 +417,7 @@
         "hasSagda": "لا",
         "fontName": "6",
         "fontFamily": "SurasB",
-        "firstAyah": 3659
+        "firstAyah": 3660
     },
     {
         "name": "يس",
@@ -429,7 +429,7 @@
         "hasSagda": "لا",
         "fontName": "8",
         "fontFamily": "SurasB",
-        "firstAyah": 3704
+        "firstAyah": 3705
     },
     {
         "name": "الصَّافات",
@@ -441,7 +441,7 @@
         "hasSagda": "لا",
         "fontName": "A",
         "fontFamily": "SurasB",
-        "firstAyah": 3787
+        "firstAyah": 3788
     },
     {
         "name": "ص",
@@ -453,7 +453,7 @@
         "hasSagda": "نعم، الآية 24",
         "fontName": "C",
         "fontFamily": "SurasB",
-        "firstAyah": 3969
+        "firstAyah": 3970
     },
     {
         "name": "الزُّمَر",
@@ -465,7 +465,7 @@
         "hasSagda": "لا",
         "fontName": "E",
         "fontFamily": "SurasB",
-        "firstAyah": 4057
+        "firstAyah": 4058
     },
     {
         "name": "غَافِر",
@@ -477,7 +477,7 @@
         "hasSagda": "لا",
         "fontName": "G",
         "fontFamily": "SurasB",
-        "firstAyah": 4132
+        "firstAyah": 4133
     },
     {
         "name": "فُصِّلَتْ",
@@ -489,7 +489,7 @@
         "hasSagda": "نعم، الآية 37",
         "fontName": "I",
         "fontFamily": "SurasB",
-        "firstAyah": 4217
+        "firstAyah": 4218
     },
     {
         "name": "الشُّورَى",
@@ -501,7 +501,7 @@
         "hasSagda": "لا",
         "fontName": "K",
         "fontFamily": "SurasB",
-        "firstAyah": 4271
+        "firstAyah": 4272
     },
     {
         "name": "الزُّخْرُف",
@@ -513,7 +513,7 @@
         "hasSagda": "لا",
         "fontName": "M",
         "fontFamily": "SurasB",
-        "firstAyah": 4324
+        "firstAyah": 4325
     },
     {
         "name": "الدخَان",
@@ -525,7 +525,7 @@
         "hasSagda": "لا",
         "fontName": "O",
         "fontFamily": "SurasB",
-        "firstAyah": 4413
+        "firstAyah": 4414
     },
     {
         "name": "الجَاثيَة",
@@ -537,7 +537,7 @@
         "hasSagda": "لا",
         "fontName": "Q",
         "fontFamily": "SurasB",
-        "firstAyah": 4472
+        "firstAyah": 4473
     },
     {
         "name": "الأحْقاف",
@@ -549,7 +549,7 @@
         "hasSagda": "لا",
         "fontName": "S",
         "fontFamily": "SurasB",
-        "firstAyah": 4509
+        "firstAyah": 4510
     },
     {
         "name": "محَمَّد",
@@ -561,7 +561,7 @@
         "hasSagda": "لا",
         "fontName": "U",
         "fontFamily": "SurasB",
-        "firstAyah": 4544
+        "firstAyah": 4545
     },
     {
         "name": "الفَتْح",
@@ -573,7 +573,7 @@
         "hasSagda": "لا",
         "fontName": "W",
         "fontFamily": "SurasB",
-        "firstAyah": 4582
+        "firstAyah": 4583
     },
     {
         "name": "الحُجرَات",
@@ -585,7 +585,7 @@
         "hasSagda": "لا",
         "fontName": "Y",
         "fontFamily": "SurasB",
-        "firstAyah": 4611
+        "firstAyah": 4612
     },
     {
         "name": "ق",
@@ -597,7 +597,7 @@
         "hasSagda": "لا",
         "fontName": "a",
         "fontFamily": "SurasB",
-        "firstAyah": 4629
+        "firstAyah": 4630
     },
     {
         "name": "الذَّاريَات",
@@ -609,7 +609,7 @@
         "hasSagda": "لا",
         "fontName": "c",
         "fontFamily": "SurasB",
-        "firstAyah": 4674
+        "firstAyah": 4675
     },
     {
         "name": "الطُّور",
@@ -621,7 +621,7 @@
         "hasSagda": "لا",
         "fontName": "e",
         "fontFamily": "SurasB",
-        "firstAyah": 4734
+        "firstAyah": 4735
     },
     {
         "name": "النَّجْم",
@@ -633,7 +633,7 @@
         "hasSagda": "نعم، الآية 62",
         "fontName": "g",
         "fontFamily": "SurasB",
-        "firstAyah": 4783
+        "firstAyah": 4784
     },
     {
         "name": "القَمَر",
@@ -645,7 +645,7 @@
         "hasSagda": "لا",
         "fontName": "i",
         "fontFamily": "SurasB",
-        "firstAyah": 4845
+        "firstAyah": 4846
     },
     {
         "name": "الرَّحمن",
@@ -657,7 +657,7 @@
         "hasSagda": "لا",
         "fontName": "k",
         "fontFamily": "SurasB",
-        "firstAyah": 4900
+        "firstAyah": 4901
     },
     {
         "name": "الوَاقِعَة",
@@ -669,7 +669,7 @@
         "hasSagda": "لا",
         "fontName": "m",
         "fontFamily": "SurasB",
-        "firstAyah": 4978
+        "firstAyah": 4979
     },
     {
         "name": "الحَديد",
@@ -681,7 +681,7 @@
         "hasSagda": "لا",
         "fontName": "o",
         "fontFamily": "SurasB",
-        "firstAyah": 5074
+        "firstAyah": 5075
     },
     {
         "name": "المجَادلة",
@@ -693,7 +693,7 @@
         "hasSagda": "لا",
         "fontName": "q",
         "fontFamily": "SurasB",
-        "firstAyah": 5103
+        "firstAyah": 5104
     },
     {
         "name": "الحَشر",
@@ -705,7 +705,7 @@
         "hasSagda": "لا",
         "fontName": "s",
         "fontFamily": "SurasB",
-        "firstAyah": 5125
+        "firstAyah": 5126
     },
     {
         "name": "المُمتَحنَة",
@@ -717,7 +717,7 @@
         "hasSagda": "لا",
         "fontName": "u",
         "fontFamily": "SurasB",
-        "firstAyah": 5149
+        "firstAyah": 5150
     },
     {
         "name": "الصَّف",
@@ -729,7 +729,7 @@
         "hasSagda": "لا",
         "fontName": "w",
         "fontFamily": "SurasB",
-        "firstAyah": 5162
+        "firstAyah": 5163
     },
     {
         "name": "الجُمُعَة",
@@ -741,7 +741,7 @@
         "hasSagda": "لا",
         "fontName": "y",
         "fontFamily": "SurasB",
-        "firstAyah": 5176
+        "firstAyah": 5177
     },
     {
         "name": "المنَافِقون",
@@ -753,7 +753,7 @@
         "hasSagda": "لا",
         "fontName": "0",
         "fontFamily": "SurasC",
-        "firstAyah": 5187
+        "firstAyah": 5188
     },
     {
         "name": "التغَابُن",
@@ -765,7 +765,7 @@
         "hasSagda": "لا",
         "fontName": "2",
         "fontFamily": "SurasC",
-        "firstAyah": 5198
+        "firstAyah": 5199
     },
     {
         "name": "الطلَاق",
@@ -777,7 +777,7 @@
         "hasSagda": "لا",
         "fontName": "4",
         "fontFamily": "SurasC",
-        "firstAyah": 5216
+        "firstAyah": 5217
     },
     {
         "name": "التحْريم",
@@ -789,7 +789,7 @@
         "hasSagda": "لا",
         "fontName": "6",
         "fontFamily": "SurasC",
-        "firstAyah": 5228
+        "firstAyah": 5229
     },
     {
         "name": "المُلْك",
@@ -801,7 +801,7 @@
         "hasSagda": "لا",
         "fontName": "8",
         "fontFamily": "SurasC",
-        "firstAyah": 5240
+        "firstAyah": 5241
     },
     {
         "name": "القَلَم",
@@ -813,7 +813,7 @@
         "hasSagda": "لا",
         "fontName": "A",
         "fontFamily": "SurasC",
-        "firstAyah": 5270
+        "firstAyah": 5271
     },
     {
         "name": "الحَاقَّة",
@@ -825,7 +825,7 @@
         "hasSagda": "لا",
         "fontName": "C",
         "fontFamily": "SurasC",
-        "firstAyah": 5322
+        "firstAyah": 5323
     },
     {
         "name": "المعَارج",
@@ -837,7 +837,7 @@
         "hasSagda": "لا",
         "fontName": "E",
         "fontFamily": "SurasC",
-        "firstAyah": 5374
+        "firstAyah": 5375
     },
     {
         "name": "نُوح",
@@ -849,7 +849,7 @@
         "hasSagda": "لا",
         "fontName": "G",
         "fontFamily": "SurasC",
-        "firstAyah": 5418
+        "firstAyah": 5419
     },
     {
         "name": "الجِن",
@@ -861,7 +861,7 @@
         "hasSagda": "لا",
         "fontName": "I",
         "fontFamily": "SurasC",
-        "firstAyah": 5446
+        "firstAyah": 5447
     },
     {
         "name": "المُزَّمِّل",
@@ -873,7 +873,7 @@
         "hasSagda": "لا",
         "fontName": "K",
         "fontFamily": "SurasC",
-        "firstAyah": 5474
+        "firstAyah": 5475
     },
     {
         "name": "المُدَّثِّر",
@@ -885,7 +885,7 @@
         "hasSagda": "لا",
         "fontName": "M",
         "fontFamily": "SurasC",
-        "firstAyah": 5494
+        "firstAyah": 5495
     },
     {
         "name": "القِيَامَة",
@@ -897,7 +897,7 @@
         "hasSagda": "لا",
         "fontName": "O",
         "fontFamily": "SurasC",
-        "firstAyah": 5550
+        "firstAyah": 5551
     },
     {
         "name": "الإنسَان",
@@ -909,7 +909,7 @@
         "hasSagda": "لا",
         "fontName": "Q",
         "fontFamily": "SurasC",
-        "firstAyah": 5590
+        "firstAyah": 5591
     },
     {
         "name": "المُرسَلات",
@@ -921,7 +921,7 @@
         "hasSagda": "لا",
         "fontName": "S",
         "fontFamily": "SurasC",
-        "firstAyah": 5621
+        "firstAyah": 5622
     },
     {
         "name": "النَّبَأ",
@@ -933,7 +933,7 @@
         "hasSagda": "لا",
         "fontName": "U",
         "fontFamily": "SurasC",
-        "firstAyah": 5671
+        "firstAyah": 5672
     },
     {
         "name": "النّازعَات",
@@ -945,7 +945,7 @@
         "hasSagda": "لا",
         "fontName": "W",
         "fontFamily": "SurasC",
-        "firstAyah": 5711
+        "firstAyah": 5712
     },
     {
         "name": "عَبَس",
@@ -957,7 +957,7 @@
         "hasSagda": "لا",
         "fontName": "Y",
         "fontFamily": "SurasC",
-        "firstAyah": 5757
+        "firstAyah": 5758
     },
     {
         "name": "التَّكوير",
@@ -969,7 +969,7 @@
         "hasSagda": "لا",
         "fontName": "a",
         "fontFamily": "SurasC",
-        "firstAyah": 5799
+        "firstAyah": 5800
     },
     {
         "name": "الانفِطار",
@@ -981,7 +981,7 @@
         "hasSagda": "لا",
         "fontName": "c",
         "fontFamily": "SurasC",
-        "firstAyah": 5828
+        "firstAyah": 5829
     },
     {
         "name": "المطفِّفِين",
@@ -993,7 +993,7 @@
         "hasSagda": "لا",
         "fontName": "e",
         "fontFamily": "SurasC",
-        "firstAyah": 5847
+        "firstAyah": 5848
     },
     {
         "name": "الانْشِقَاق",
@@ -1005,7 +1005,7 @@
         "hasSagda": "نعم، الآية 21",
         "fontName": "g",
         "fontFamily": "SurasC",
-        "firstAyah": 5883
+        "firstAyah": 5884
     },
     {
         "name": "البرُوج",
@@ -1017,7 +1017,7 @@
         "hasSagda": "لا",
         "fontName": "i",
         "fontFamily": "SurasC",
-        "firstAyah": 5908
+        "firstAyah": 5909
     },
     {
         "name": "الطَّارِق",
@@ -1029,7 +1029,7 @@
         "hasSagda": "لا",
         "fontName": "k",
         "fontFamily": "SurasC",
-        "firstAyah": 5930
+        "firstAyah": 5931
     },
     {
         "name": "الأَعْلى",
@@ -1041,7 +1041,7 @@
         "hasSagda": "لا",
         "fontName": "m",
         "fontFamily": "SurasC",
-        "firstAyah": 5947
+        "firstAyah": 5948
     },
     {
         "name": "الغَاشِية",
@@ -1053,7 +1053,7 @@
         "hasSagda": "لا",
         "fontName": "o",
         "fontFamily": "SurasC",
-        "firstAyah": 5966
+        "firstAyah": 5967
     },
     {
         "name": "الفَجْر",
@@ -1065,7 +1065,7 @@
         "hasSagda": "لا",
         "fontName": "q",
         "fontFamily": "SurasC",
-        "firstAyah": 5992
+        "firstAyah": 5993
     },
     {
         "name": "البَلَد",
@@ -1077,7 +1077,7 @@
         "hasSagda": "لا",
         "fontName": "s",
         "fontFamily": "SurasC",
-        "firstAyah": 6022
+        "firstAyah": 6023
     },
     {
         "name": "الشَّمْس",
@@ -1089,7 +1089,7 @@
         "hasSagda": "لا",
         "fontName": "u",
         "fontFamily": "SurasC",
-        "firstAyah": 6042
+        "firstAyah": 6043
     },
     {
         "name": "الليْل",
@@ -1101,7 +1101,7 @@
         "hasSagda": "لا",
         "fontName": "w",
         "fontFamily": "SurasC",
-        "firstAyah": 6057
+        "firstAyah": 6058
     },
     {
         "name": "الضُّحَى",
@@ -1113,7 +1113,7 @@
         "hasSagda": "لا",
         "fontName": "y",
         "fontFamily": "SurasC",
-        "firstAyah": 6078
+        "firstAyah": 6079
     },
     {
         "name": "الشَّرْح",
@@ -1125,7 +1125,7 @@
         "hasSagda": "لا",
         "fontName": "0",
         "fontFamily": "SurasD",
-        "firstAyah": 6089
+        "firstAyah": 6090
     },
     {
         "name": "التِّين",
@@ -1137,7 +1137,7 @@
         "hasSagda": "لا",
         "fontName": "2",
         "fontFamily": "SurasD",
-        "firstAyah": 6097
+        "firstAyah": 6098
     },
     {
         "name": "العَلَق",
@@ -1149,7 +1149,7 @@
         "hasSagda": "نعم، الآية 19",
         "fontName": "4",
         "fontFamily": "SurasD",
-        "firstAyah": 6105
+        "firstAyah": 6106
     },
     {
         "name": "القَدْر",
@@ -1161,7 +1161,7 @@
         "hasSagda": "لا",
         "fontName": "6",
         "fontFamily": "SurasD",
-        "firstAyah": 6124
+        "firstAyah": 6125
     },
     {
         "name": "البَينَة",
@@ -1173,7 +1173,7 @@
         "hasSagda": "لا",
         "fontName": "8",
         "fontFamily": "SurasD",
-        "firstAyah": 6129
+        "firstAyah": 6130
     },
     {
         "name": "الزلزَلة",
@@ -1185,7 +1185,7 @@
         "hasSagda": "لا",
         "fontName": "A",
         "fontFamily": "SurasD",
-        "firstAyah": 6137
+        "firstAyah": 6138
     },
     {
         "name": "العَادِيات",
@@ -1197,7 +1197,7 @@
         "hasSagda": "لا",
         "fontName": "C",
         "fontFamily": "SurasD",
-        "firstAyah": 6145
+        "firstAyah": 6146
     },
     {
         "name": "القَارِعة",
@@ -1209,7 +1209,7 @@
         "hasSagda": "لا",
         "fontName": "E",
         "fontFamily": "SurasD",
-        "firstAyah": 6156
+        "firstAyah": 6157
     },
     {
         "name": "التَّكَاثر",
@@ -1221,7 +1221,7 @@
         "hasSagda": "لا",
         "fontName": "G",
         "fontFamily": "SurasD",
-        "firstAyah": 6167
+        "firstAyah": 6168
     },
     {
         "name": "العَصْر",
@@ -1233,7 +1233,7 @@
         "hasSagda": "لا",
         "fontName": "I",
         "fontFamily": "SurasD",
-        "firstAyah": 6175
+        "firstAyah": 6176
     },
     {
         "name": "الهُمَزَة",
@@ -1245,7 +1245,7 @@
         "hasSagda": "لا",
         "fontName": "K",
         "fontFamily": "SurasD",
-        "firstAyah": 6178
+        "firstAyah": 6179
     },
     {
         "name": "الفِيل",
@@ -1257,7 +1257,7 @@
         "hasSagda": "لا",
         "fontName": "M",
         "fontFamily": "SurasD",
-        "firstAyah": 6187
+        "firstAyah": 6188
     },
     {
         "name": "قُرَيْش",
@@ -1269,7 +1269,7 @@
         "hasSagda": "لا",
         "fontName": "O",
         "fontFamily": "SurasD",
-        "firstAyah": 6192
+        "firstAyah": 6193
     },
     {
         "name": "المَاعُون",
@@ -1281,7 +1281,7 @@
         "hasSagda": "لا",
         "fontName": "Q",
         "fontFamily": "SurasD",
-        "firstAyah": 6196
+        "firstAyah": 6197
     },
     {
         "name": "الكَوْثَر",
@@ -1293,7 +1293,7 @@
         "hasSagda": "لا",
         "fontName": "S",
         "fontFamily": "SurasD",
-        "firstAyah": 6203
+        "firstAyah": 6204
     },
     {
         "name": "الكَافِرُون",
@@ -1305,7 +1305,7 @@
         "hasSagda": "لا",
         "fontName": "U",
         "fontFamily": "SurasD",
-        "firstAyah": 6206
+        "firstAyah": 6207
     },
     {
         "name": "النَّصر",
@@ -1317,7 +1317,7 @@
         "hasSagda": "لا",
         "fontName": "W",
         "fontFamily": "SurasD",
-        "firstAyah": 6212
+        "firstAyah": 6213
     },
     {
         "name": "المَسَد",
@@ -1329,7 +1329,7 @@
         "hasSagda": "لا",
         "fontName": "Y",
         "fontFamily": "SurasD",
-        "firstAyah": 6215
+        "firstAyah": 6216
     },
     {
         "name": "الإخْلَاص",
@@ -1341,7 +1341,7 @@
         "hasSagda": "لا",
         "fontName": "a",
         "fontFamily": "SurasD",
-        "firstAyah": 6220
+        "firstAyah": 6221
     },
     {
         "name": "الفَلَق",
@@ -1353,7 +1353,7 @@
         "hasSagda": "لا",
         "fontName": "c",
         "fontFamily": "SurasD",
-        "firstAyah": 6224
+        "firstAyah": 6225
     },
     {
         "name": "النَّاس",
@@ -1365,6 +1365,6 @@
         "hasSagda": "لا",
         "fontName": "e",
         "fontFamily": "SurasD",
-        "firstAyah": 6229
+        "firstAyah": 6230
     }
 ]

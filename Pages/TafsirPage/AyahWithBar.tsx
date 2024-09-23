@@ -49,9 +49,9 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
   startAyahForJuz,
   ayahFontSize,
   ayahFontFamily,
-  whiteAyah=false,
-  flatToggleList=false,
-  realIndex=0
+  whiteAyah = false,
+  flatToggleList = false,
+  realIndex = 0
 }) => {
   return (
     <View
@@ -64,7 +64,7 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
       }}
     >
       {/* Ayah Text */}
-      <Text style={[styles.ayahStyle, { textAlign: "justify", fontSize: ayahFontSize, fontFamily: ayahFontFamily, color: whiteAyah ? "#DFDFDF" :"black" }]}>
+      <Text style={[styles.ayahStyle, { textAlign: "justify", fontSize: ayahFontSize, fontFamily: ayahFontFamily, color: whiteAyah ? "#DFDFDF" : "black" }]}>
         {ayahItem.ayah}
       </Text>
       {/* Bar */}
@@ -86,15 +86,15 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
           {/* Button to show or hide tafsir */}
           <TouchableOpacity
             onPress={() => {
-              (!flatToggleList)?
-              toggleTafsirOpenState(index + startAyahForJuz):
-              toggleTafsirOpenState(getFlattenedIndex(bookmarks, currentSurahInd, realIndex));
+              (!flatToggleList) ?
+                toggleTafsirOpenState(index + startAyahForJuz) :
+                toggleTafsirOpenState(getFlattenedIndex(bookmarks, currentSurahInd, realIndex));
             }}
           >
             <Feather
               name={
                 ((!flatToggleList) ? tafsirOpenStates[index + startAyahForJuz] : tafsirOpenStates[getFlattenedIndex(bookmarks, currentSurahInd, realIndex)])
-                ? "minimize-2" : "maximize-2"}
+                  ? "minimize-2" : "maximize-2"}
               style={{
                 color: "white",
                 fontSize: 20,
@@ -107,7 +107,7 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
             onPress={() => {
               playSound(
                 sound,
-                getGlobalAyahInd(currentSurahInd, ayahItem.rakam + 1),
+                getGlobalAyahInd(currentSurahInd, ayahItem.rakam),
                 sheikh
               );
             }}
@@ -144,17 +144,17 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
             onPress={() => {
               checkBookmark(currentSurahInd, index + startAyahForJuz, bookmarks)
                 ? removeBookmark(
-                    currentSurahInd,
-                    index + startAyahForJuz,
-                    bookmarks,
-                    setBookmarks
-                  )
+                  currentSurahInd,
+                  index + startAyahForJuz,
+                  bookmarks,
+                  setBookmarks
+                )
                 : addBookmark(
-                    currentSurahInd,
-                    index + startAyahForJuz,
-                    bookmarks,
-                    setBookmarks
-                  );
+                  currentSurahInd,
+                  index + startAyahForJuz,
+                  bookmarks,
+                  setBookmarks
+                );
             }}
           >
             <FontAwesome
