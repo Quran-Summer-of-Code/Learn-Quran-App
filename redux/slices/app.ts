@@ -12,6 +12,9 @@ interface AppState {
   scrolledFarTafsir: boolean;
   juzMode: boolean;
   tafsirMode: boolean;
+  rukuSkipMode: boolean;
+  repeatMode: boolean;
+  maxRepeatCount: number;  // 0 = infinite, else repeat N times
   currentJuzInd: number;
   juzCollapse: boolean[];
   playBackChanged: boolean;
@@ -42,6 +45,9 @@ const initialState: AppState = {
   fullscreen: false,                // has the user scrolled far enough to hide the Surah Header
   juzMode: false,                    // should homepage be viewed by Juz or by Surah
   tafsirMode: false,                 // should Surah view full Surah or per-Ayah tafsir
+  rukuSkipMode: false,               // should skip buttons jump to ruku boundaries instead of surahs
+  repeatMode: false,                 // should audio repeat current ruku/surah/juz when it ends
+  maxRepeatCount: 0,                 // 0 = infinite, else repeat N times then advance
   currentJuzInd: 0,                  // the current juz (i.e., 0-29)
   juzCollapse: Array(30).fill(true), // whether each juz list item is collapsed
   appColor: "#009193",               // app theme picked in the settings
@@ -93,6 +99,15 @@ const appSlice = createSlice({
     },
     SetTafsirMode(state, action: PayloadAction<boolean>) {
       state.tafsirMode = action.payload;
+    },
+    SetRukuSkipMode(state, action: PayloadAction<boolean>) {
+      state.rukuSkipMode = action.payload;
+    },
+    SetRepeatMode(state, action: PayloadAction<boolean>) {
+      state.repeatMode = action.payload;
+    },
+    SetMaxRepeatCount(state, action: PayloadAction<number>) {
+      state.maxRepeatCount = action.payload;
     },
     SetCurrentJuzInd(state, action: PayloadAction<number>) {
       state.currentJuzInd = action.payload;
@@ -156,6 +171,9 @@ export const {
   SetFullscreen,
   SetJuzMode,
   SetTafsirMode,
+  SetRukuSkipMode,
+  SetRepeatMode,
+  SetMaxRepeatCount,
   SetCurrentJuzInd,
   SetJuzCollapse,
   SetPlayBackChanged,
@@ -184,6 +202,9 @@ export const Pause = (state: any) => state.store.pause;
 export const Fullscreen = (state: any) => state.store.fullscreen;
 export const JuzMode = (state: any) => state.store.juzMode;
 export const TafsirMode = (state: any) => state.store.tafsirMode;
+export const RukuSkipMode = (state: any) => state.store.rukuSkipMode;
+export const RepeatMode = (state: any) => state.store.repeatMode;
+export const MaxRepeatCount = (state: any) => state.store.maxRepeatCount;
 export const CurrentJuzInd = (state: any) => state.store.currentJuzInd;
 export const JuzCollapse = (state: any) => state.store.juzCollapse;
 export const PlayBackChanged = (state: any) => state.store.playBackChanged;

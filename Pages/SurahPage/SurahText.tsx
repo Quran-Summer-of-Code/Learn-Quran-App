@@ -252,6 +252,7 @@ const SurahText: React.FC<SurahTextProps> = ({
             wordObj={wordObj}
             index={index + startWordIndForJuz}
             currentSurahByWords={currentSurahByWords}
+            currentSurahInd={currentSurahInd}
           />
         );
       }

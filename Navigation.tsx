@@ -18,7 +18,7 @@ import { useSelector } from "react-redux";
 import { Fullscreen, ScrolledFarTafsir, InHomePage, AppColor, TafsirMode, CardModalVisbile, SectionsModalVisible, Sheikh, MeaningModalVisible, CurrentSurahInd } from "./Redux/slices/app";
 
 // for loading audio data initially
-import { prepareAudio, colorize } from "./helpers";
+import { prepareAudio, colorize, getGlobalAyahInd } from "./helpers";
 
 // sheikhs name
 import { sheiksDict } from "./helpers";
@@ -26,6 +26,8 @@ import { sheiksDict } from "./helpers";
 const Drawer = createDrawerNavigator();
 
 function Navigation() {
+  console.log(getGlobalAyahInd(80, 0));
+
   // Setup the audio data needed (temporary initialization then full population on first load)
   const [audioList, setAudioList] = useState([
     {
@@ -91,12 +93,12 @@ function Navigation() {
 
   return (
     <>
-        <StatusBar  backgroundColor={(!scrolledFarTafsir && !fullscreen) ? colorize(
-          (cardModalVisbile || sectionsModalVisible || meaningModalVisible) ? 0.45 : 0.0
-          , appColor, '#000', true) : 
-          (cardModalVisbile || sectionsModalVisible || meaningModalVisible) ? '#00000054' :'transparent'
-        } 
-          style={((fullscreen) && !inHomePage) ? "dark" : "light"} />
+      <StatusBar backgroundColor={(!scrolledFarTafsir && !fullscreen) ? colorize(
+        (cardModalVisbile || sectionsModalVisible || meaningModalVisible) ? 0.45 : 0.0
+        , appColor, '#000', true) :
+        (cardModalVisbile || sectionsModalVisible || meaningModalVisible) ? '#00000054' : 'transparent'
+      }
+        style={((fullscreen) && !inHomePage) ? "dark" : "light"} />
       <NavigationContainer>
         <Drawer.Navigator
           useLegacyImplementation={false}
@@ -128,7 +130,7 @@ function Navigation() {
           <Drawer.Screen
             name="TafsirPage"
             options={{
-              headerShown:  false,
+              headerShown: false,
               headerTitle: () => <></>,
               headerTitleAlign: "center",
             }}

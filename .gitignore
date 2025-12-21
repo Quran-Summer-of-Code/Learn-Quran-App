@@ -37,3 +37,5 @@ yarn-error.*
 Quran/Tafsirs
 # Local Netlify folder
 .netlify
+/.cache
+/.cache/alquran_cloud

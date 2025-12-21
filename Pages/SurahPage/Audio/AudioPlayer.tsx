@@ -37,6 +37,11 @@ import {
   PlayBackChanged,
   SetPlayBackChanged,
   AppColor,
+  RukuSkipMode,
+  SetRukuSkipMode,
+  RepeatMode,
+  SetRepeatMode,
+  MaxRepeatCount,
 } from "../../../Redux/slices/app";
 
 // Data
@@ -49,7 +54,11 @@ import {
   getLocalAyahInd,
   getGlobalAyahInd,
   findJuzSurahAyahIndex,
-  englishToArabicNumber 
+  englishToArabicNumber,
+  getNextRukuStartAyah,
+  getPrevRukuStartAyah,
+  getCurrentRukuStartAyah,
+  getCurrentRukuEndAyah,
 } from "../../../helpers";
 
 
@@ -85,6 +94,16 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
   const juzMode = useSelector(JuzMode);
   const currentJuzInd = useSelector(CurrentJuzInd);
   const setCurrentJuzInd = wrapDispatch(SetCurrentJuzInd);
+  const [rukuSkipMode, setRukuSkipMode] = [
+    useSelector(RukuSkipMode),
+    wrapDispatch(SetRukuSkipMode),
+  ];
+  const [repeatMode, setRepeatMode] = [
+    useSelector(RepeatMode),
+    wrapDispatch(SetRepeatMode),
+  ];
+  const maxRepeatCount = useSelector(MaxRepeatCount);
+  const [currentRepeatCount, setCurrentRepeatCount] = useState(0);
 
   const surasCount = 114;
   const [trackMD, setTrackMD] = useState<any>(audioList[currentSurahInd]);
@@ -165,16 +184,73 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
     if (event.type === "playback-track-changed" && event.nextTrack !== null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
       const newSurahInd = getSurahIndGivenAyah(event.nextTrack);
+      const newLocalAyahInd = getLocalAyahInd(event.nextTrack);
+      
+      // Repeat mode logic: check if we've crossed the boundary
+      if (repeatMode) {
+        let shouldRepeat = false;
+        let repeatTarget = 0;
+        
+        if (rukuSkipMode) {
+          // Ruku repeat: check if we've passed the ruku end
+          // Use current state only if we're in the same surah, otherwise it's a surah change
+          if (newSurahInd === currentSurahInd) {
+            const rukuEnd = getCurrentRukuEndAyah(currentSurahInd, currentAyahInd);
+            const rukuStart = getCurrentRukuStartAyah(currentSurahInd, currentAyahInd);
+            if (newLocalAyahInd > rukuEnd) {
+              shouldRepeat = true;
+              repeatTarget = getGlobalAyahInd(currentSurahInd, rukuStart);
+            }
+          } else {
+            // Crossed surah boundary - this means last ruku of previous surah ended
+            // Repeat from the last ruku's start in the previous surah
+            const rukuStart = getCurrentRukuStartAyah(currentSurahInd, currentAyahInd);
+            shouldRepeat = true;
+            repeatTarget = getGlobalAyahInd(currentSurahInd, rukuStart);
+          }
+        } else if (juzMode && currentJuzInd < 29) {
+          // Juz repeat: check if we've gone past endAyahIndForJuz
+          if (newLocalAyahInd > endAyahIndForJuz || newSurahInd !== currentSurahInd) {
+            shouldRepeat = true;
+            repeatTarget = getGlobalAyahInd(currentSurahInd, startAyahIndForJuz);
+          }
+        } else {
+          // Surah repeat: check if we've moved to a new surah
+          if (newSurahInd !== currentSurahInd) {
+            shouldRepeat = true;
+            repeatTarget = surasList[currentSurahInd].firstAyah;
+          }
+        }
+        
+        if (shouldRepeat) {
+          const newCount = currentRepeatCount + 1;
+          // 0 = infinite, otherwise check if we've hit the limit
+          if (maxRepeatCount === 0 || newCount < maxRepeatCount) {
+            setCurrentRepeatCount(newCount);
+            await TrackPlayer.skip(repeatTarget);
+            return;
+          } else {
+            // Hit max reps, reset counter and let it continue to next
+            setCurrentRepeatCount(0);
+          }
+        }
+      }
+      
+      // Reset repeat counter when changing surah/ruku
+      if (newSurahInd !== currentSurahInd) {
+        setCurrentRepeatCount(0);
+      }
+      
       if (newSurahInd !== 0 || newSurahInd == currentSurahInd){     // otherwise, it gets randomly set as that before the real value (init track?)
       setCurrentSurahInd(newSurahInd);
-      setCurrentAyahInd(getLocalAyahInd(event.nextTrack));
+      setCurrentAyahInd(newLocalAyahInd);
       
       setTrackMD(track);
       if (juzMode) {
         const newJuzInd = findJuzSurahAyahIndex(
           juzInfo,
           newSurahInd,
-          getLocalAyahInd(event.nextTrack)
+          newLocalAyahInd
         );
         setCurrentJuzInd(newJuzInd);
       }
@@ -202,6 +278,17 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
     currentSurahInd: number,
     setCurrentSurahInd: Function
   ) => {
+    // Ruku skip mode: jump to next ruku start within current surah
+    if (rukuSkipMode) {
+      const nextRukuAyah = getNextRukuStartAyah(currentSurahInd, currentAyahInd);
+      if (nextRukuAyah !== -1) {
+        setCurrentAyahInd(nextRukuAyah);
+        await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, nextRukuAyah));
+      }
+      // If no more rukus in surah, stay at current position
+      return;
+    }
+    
     if (!juzMode || currentJuzInd == 29 || currentJuzInd == null) {
       const nextIndex = (currentSurahInd + 1) % surasCount;
       setCurrentSurahInd(nextIndex);
@@ -243,6 +330,28 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
     currentSurahInd: number,
     setCurrentSurahInd: Function
   ) => {
+    // Ruku skip mode: jump to current ruku start, or previous ruku start if already at start
+    if (rukuSkipMode) {
+      const currentRukuStart = getCurrentRukuStartAyah(currentSurahInd, currentAyahInd);
+      if (currentAyahInd > currentRukuStart) {
+        // Jump to start of current ruku
+        setCurrentAyahInd(currentRukuStart);
+        await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, currentRukuStart));
+      } else {
+        // Already at start of ruku, jump to previous ruku
+        const prevRukuAyah = getPrevRukuStartAyah(currentSurahInd, currentAyahInd);
+        if (prevRukuAyah !== -1) {
+          setCurrentAyahInd(prevRukuAyah);
+          await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, prevRukuAyah));
+        } else {
+          // No previous ruku, jump to first ayah
+          setCurrentAyahInd(0);
+          await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, 0));
+        }
+      }
+      return;
+    }
+    
     if (!juzMode || currentJuzInd == 29 || currentJuzInd == null) {
       const previousIndex = (currentSurahInd - 1 + surasCount) % surasCount;
       await TrackPlayer.skip(surasList[previousIndex].firstAyah);
@@ -323,6 +432,21 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
         {/* Audio controller */}
         <View style={styles.audioControlsContainer}>
           <TouchableOpacity
+            onPress={() => setRukuSkipMode(!rukuSkipMode)}
+            style={[
+              styles.toggleButton,
+              { borderColor: appColor, backgroundColor: rukuSkipMode ? appColor : 'transparent' }
+            ]}
+          >
+            <Text style={{ 
+              color: rukuSkipMode ? '#fff' : appColor, 
+              fontSize: 14, 
+              fontWeight: 'bold' 
+            }}>
+              ر
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => previousTrack(currentSurahInd, setCurrentSurahInd)}
           >
             <Ionicons
@@ -356,6 +480,19 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
               name="play-skip-back-outline"
               size={35}
               color={appColor}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setRepeatMode(!repeatMode)}
+            style={[
+              styles.toggleButton,
+              { borderColor: appColor, backgroundColor: repeatMode ? appColor : 'transparent' }
+            ]}
+          >
+            <Ionicons
+              name="repeat-outline"
+              size={18}
+              color={repeatMode ? '#fff' : appColor}
             />
           </TouchableOpacity>
         </View>
@@ -405,8 +542,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-
-    width: "60%",
+    width: "80%",
+  },
+  toggleButton: {
+    borderWidth: 1.5,
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

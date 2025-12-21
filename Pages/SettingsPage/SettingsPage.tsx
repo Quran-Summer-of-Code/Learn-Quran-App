@@ -28,7 +28,9 @@ import {
   TafsirBook,
   SetTafsirBook,
   OpenTafsirBoxes,
-  SetOpenTafsirBoxes
+  SetOpenTafsirBoxes,
+  MaxRepeatCount,
+  SetMaxRepeatCount,
 } from "../../Redux/slices/app";
 
 // Icons
@@ -71,6 +73,14 @@ const SettingsPage: React.FC<Props> = () => {
     { label: "نعم", value: true },
     { label: "لا", value: false },
   ];
+  // Slider steps: 2-10, then ∞ (represented as 0)
+  const repeatSteps = [2, 3, 4, 5, 6, 7, 8, 9, 10, 0]; // 0 = infinite
+  const repeatStepToValue = (step: number) => repeatSteps[Math.round(step)] ?? 0;
+  const valueToRepeatStep = (val: number) => {
+    const idx = repeatSteps.indexOf(val ?? 0);
+    return idx === -1 ? 9 : idx; // default to ∞ (index 9) if not found
+  };
+  const formatRepeatCount = (val: number) => (val === 0 || val === undefined || val === null) ? '∞' : englishToArabicNumber(val);
 
   const colors = [
     "#009193",
@@ -102,6 +112,10 @@ const SettingsPage: React.FC<Props> = () => {
   const [sectionsDisplay, setSectionsDisplay] = [
     useSelector(SectionsDisplay),
     wrapDispatch(SetSectionsDisplay),
+  ];
+  const [maxRepeatCount, setMaxRepeatCount] = [
+    useSelector(MaxRepeatCount),
+    wrapDispatch(SetMaxRepeatCount),
   ];
   const [appColor, setAppColor] = [
     useSelector(AppColor),
@@ -484,6 +498,52 @@ const SettingsPage: React.FC<Props> = () => {
             fontFamily="UthmanBold"
             iconColor={"#fff"}
           />
+        </View>
+        {/* Choose max repeat count */}
+        <View style={styles.itemWrapper}>
+          <View
+            style={{
+              ...styles.itemContainer,
+              backgroundColor: colorize(-0.1, appColor),
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 9,
+            }}
+          >
+            <FontAwesome name="repeat" color={"#fff"} style={{ fontSize: 20 }} />
+            <Text style={styles.textItem}>عدد مرات التكرار</Text>
+            <View
+              style={{ width: 30, height: 30, position: "absolute", right: 15 }}
+            >
+              <Text
+                style={{ color: "white", fontSize: 20, textAlign: "center", transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}
+              >
+                {formatRepeatCount(maxRepeatCount)}
+              </Text>
+            </View>
+          </View>
+          <Slider
+            style={{ paddingVertical: 10 }}
+            value={valueToRepeatStep(maxRepeatCount)}
+            minimumValue={0}
+            maximumValue={9}
+            step={1}
+            thumbTintColor={colorize(0.5, appColor)}
+            minimumTrackTintColor={colorize(0.5, appColor)}
+            maximumTrackTintColor="#919191"
+            inverted
+            onSlidingComplete={(value) => {
+              setMaxRepeatCount(repeatStepToValue(value));
+            }}
+          />
+          <View style={{ ...styles.progressLevelDuraiton }}>
+            <Text style={{ color: "#fff", fontWeight: "700", transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}>
+              {englishToArabicNumber(2)}
+            </Text>
+            <Text style={{ color: "#fff", fontWeight: "700", transform: [{scaleX: (Platform.OS == "web") ? -1 : 1}] }}>
+              ∞
+            </Text>
+          </View>
         </View>
         {/* Choose app theme */}
         <View style={styles.itemWrapper}>

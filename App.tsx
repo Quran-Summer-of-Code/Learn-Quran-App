@@ -11,7 +11,7 @@ import { LogBox } from "react-native";
 
 // Fonts
 import { useFonts } from "expo-font";
-import { fonts } from "./fonts";
+import { fonts } from "./Fonts";
 
 // Main app
 import Navigation from "./Navigation";
@@ -26,10 +26,10 @@ const AppWrapper = () => {
   I18nManager.allowRTL(true);
   I18nManager.forceRTL(true);
 
-  if(!I18nManager.isRTL ){
+  if (!I18nManager.isRTL) {
     I18nManager.forceRTL(true);
     if (Platform.OS !== "web") RNRestart.restart();
- }
+  }
 
   //Ignore app screen warnings (still show in terminal)
   React.useEffect(() => {

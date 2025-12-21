@@ -219,6 +219,56 @@ export function getAyahTopic(surahSectionsDict, ayahIndex) {
     return "";
 }
 
+// Find the next ruku start ayah index (local) within the current surah, or -1 if none
+export function getNextRukuStartAyah(surahInd: number, currentAyahInd: number): number {
+    const surahAyahs = suras[surahInd];
+    for (let i = currentAyahInd + 1; i < surahAyahs.length; i++) {
+        if (surahAyahs[i]?.ruku?.start) {
+            return i;
+        }
+    }
+    return -1; // No more ruku starts in this surah
+}
+
+// Find the previous ruku start ayah index (local) within the current surah, or -1 if none
+export function getPrevRukuStartAyah(surahInd: number, currentAyahInd: number): number {
+    const surahAyahs = suras[surahInd];
+    for (let i = currentAyahInd - 1; i >= 0; i--) {
+        if (surahAyahs[i]?.ruku?.start) {
+            return i;
+        }
+    }
+    return -1; // No previous ruku start in this surah
+}
+
+// Get the ruku start ayah for the current ayah's ruku (for jumping to beginning of current ruku)
+export function getCurrentRukuStartAyah(surahInd: number, currentAyahInd: number): number {
+    const surahAyahs = suras[surahInd];
+    // If current ayah is a ruku start, return it
+    if (surahAyahs[currentAyahInd]?.ruku?.start) {
+        return currentAyahInd;
+    }
+    // Otherwise find the previous ruku start
+    for (let i = currentAyahInd - 1; i >= 0; i--) {
+        if (surahAyahs[i]?.ruku?.start) {
+            return i;
+        }
+    }
+    return 0; // First ayah if no ruku start found (shouldn't happen)
+}
+
+// Get the ruku end ayah for the current ayah's ruku
+export function getCurrentRukuEndAyah(surahInd: number, currentAyahInd: number): number {
+    const surahAyahs = suras[surahInd];
+    // Find the next ruku end from current position (or current if it's end)
+    for (let i = currentAyahInd; i < surahAyahs.length; i++) {
+        if (surahAyahs[i]?.ruku?.end) {
+            return i;
+        }
+    }
+    return surahAyahs.length - 1; // Last ayah if no ruku end found
+}
+
 /*
 This file has helper functions used throughout the app (e.g., mapping words, juzs, ayahs together).
 */
