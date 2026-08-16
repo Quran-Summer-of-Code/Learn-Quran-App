@@ -1,12 +1,15 @@
 import { Text, Platform, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import  Constants  from "expo-constants";
+import Constants from "expo-constants";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 //Main Components
 import HomePage from "./HomePage";
 import EmptyPage from "../EmptyPage/EmptyPage";
 import BookmarksPage from "../BookmarksPage/BookmarksPage";
 import SettingsPage from "../SettingsPage/SettingsPage";
+import ReviewPage from "../ReviewPage/ReviewPage";
 
 //State
 import { useSelector, useDispatch } from "react-redux";
@@ -17,6 +20,7 @@ const Tab = createBottomTabNavigator();
 const HomePageWrapper = () => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter) => (arg) => dispatch(setter(arg));
+  const insets = useSafeAreaInsets();
 
   // color from settings
   const appColor = useSelector(AppColor);
@@ -26,12 +30,17 @@ const HomePageWrapper = () => {
   const tabStyles = {
     tabBarStyle: {
       backgroundColor: appColor,
-      height: 70,
+      height: 72 + insets.bottom,
       borderTopColor: appColor,
+      paddingTop: 6,
+      paddingBottom: Math.max(insets.bottom, 6),
     },
     tabBarActiveTintColor: "#ffffff",
     tabBarInactiveTintColor: "#ffffff99",
-    tabBarLabelStyle: { fontSize: 15, fontFamily: "Amiri" },
+    tabBarItemStyle: { paddingVertical: 2 },
+    tabBarLabelStyle: { fontSize: 15, lineHeight: 22, fontFamily: "Amiri" },
+    tabBarAllowFontScaling: false,
+    tabBarHideOnKeyboard: true,
     headerStyle: {
       backgroundColor: appColor,
       height: Platform.OS !== "web" ? 90 : 70,
@@ -45,14 +54,13 @@ const HomePageWrapper = () => {
       component: HomePage,
       options: {
         headerShown: false,
-        tabBarIcon: ({ color }) => (
+        tabBarIcon: ({ color }: { color: string }) => (
           <Text
+            allowFontScaling={false}
             style={{
               fontFamily: "Tabs",
               color: color,
               fontSize: 35,
-              position: "absolute",
-              top: 10,
             }}
           >
             {"\ue903"}
@@ -75,12 +83,11 @@ const HomePageWrapper = () => {
         headerShown: false,
         tabBarIcon: ({ color }) => (
           <Text
+            allowFontScaling={false}
             style={{
               fontFamily: "Tabs",
               color: color,
               fontSize: 35,
-              position: "absolute",
-              top: 10,
             }}
           >
             {"\ue901"}
@@ -94,6 +101,20 @@ const HomePageWrapper = () => {
         tabPress: (e) => {
           dispatch(SetTafsirMode(true));
         },
+      },
+    },
+    {
+      name: "مراجعة",
+      component: ReviewPage,
+      options: {
+        headerShown: false,
+        tabBarIcon: ({ color }: { color: string }) => (
+          <MaterialCommunityIcons
+            name="book-refresh-outline"
+            color={color}
+            size={29}
+          />
+        ),
       },
     },
     {
@@ -129,12 +150,11 @@ const HomePageWrapper = () => {
         headerTitleAlign: "center",
         tabBarIcon: ({ color }) => (
           <Text
+            allowFontScaling={false}
             style={{
               fontFamily: "Tabs",
               color: color,
               fontSize: 27,
-              position: "absolute",
-              top: 14,
             }}
           >
             {"\ue902"}
@@ -151,12 +171,11 @@ const HomePageWrapper = () => {
         headerTitleAlign: "center",
         tabBarIcon: ({ color }) => (
           <Text
+            allowFontScaling={false}
             style={{
               fontFamily: "Tabs",
               color: color,
               fontSize: 27,
-              position: "absolute",
-              top: 16,
             }}
           >
             {"\ue900"}

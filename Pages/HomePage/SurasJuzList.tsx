@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   CurrentSurahInd,
   SetCurrentSurahInd,
+  SetLastReadingSurahInd,
   JustEnteredNewSurah,
   SetJustEnteredNewSurah,
   SetInHomePage,
@@ -198,68 +199,69 @@ const SurasJuzList: React.FC<Props> = ({ suras }) => {
       {/* Shows suras under the juz */}
       {!juzCollapse[index] && (
         <>
-        <View>
-          <Text style={{ marginHorizontal:10, fontSize: 18, color: "#e1e1e1", fontFamily: "UthmanBold" }}>{`جزء ${item.juzAltName}`}</Text>
+          <View>
+            <Text style={{ marginHorizontal: 10, fontSize: 18, color: "#e1e1e1", fontFamily: "UthmanBold" }}>{`جزء ${item.juzAltName}`}</Text>
           </View>
-        <Animatable.View
-          animation={!juzCollapse[index] ? "zoomInUp" : "zoomOutDown"}
-          duration={400}
-          style={{
-            flexDirection: Platform.OS == "web" ? "row-reverse" : "row",
-            flexWrap: "wrap",
-            justifyContent: "flex-start",
-            marginVertical: 8,
-          }}
-        >
-          {item.juzSuras.map((surahInd: number, ind: number) => (
-            <TouchableOpacity
-              key={ind.toString()}
-              style={{
-                padding: 5,
-                paddingHorizontal: 15,
-                margin: 5,
-                borderRadius: 10,
-                backgroundColor: "#ffffff33",
-                minWidth: "33%",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                if (index !== currentJuzInd || surahInd !== currentSurahInd) {
-                  setJustEnteredNewSurahJuz(!justEnteredNewSurahJuz);
-                }
-                setInHomePage(false);
-                setCurrentJuzInd(index);
-                setCurrentSurahInd(surahInd);
-                if (!tafsirMode) {
+          <Animatable.View
+            animation={!juzCollapse[index] ? "zoomInUp" : "zoomOutDown"}
+            duration={400}
+            style={{
+              flexDirection: Platform.OS == "web" ? "row-reverse" : "row",
+              flexWrap: "wrap",
+              justifyContent: "flex-start",
+              marginVertical: 8,
+            }}
+          >
+            {item.juzSuras.map((surahInd: number, ind: number) => (
+              <TouchableOpacity
+                key={ind.toString()}
+                style={{
+                  padding: 5,
+                  paddingHorizontal: 15,
+                  margin: 5,
+                  borderRadius: 10,
+                  backgroundColor: "#ffffff33",
+                  minWidth: "33%",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  if (index !== currentJuzInd || surahInd !== currentSurahInd) {
+                    setJustEnteredNewSurahJuz(!justEnteredNewSurahJuz);
+                  }
+                  setInHomePage(false);
+                  setCurrentJuzInd(index);
                   setCurrentSurahInd(surahInd);
-                  navigation.navigate("SurahPage");
-                } else {
-                  setCurrentSurahInd(surahInd);
-                  navigation.navigate("TafsirPage");
-                }
-              }}
-            >
-              {/* show surah name and Ayah range */}
-              <Text>
-                <Text style={[styles.title, { textAlign: "center" }]}>
-                  {`(${englishToArabicNumber(surahInd+1)}) `}{suras[surahInd].name}{" "}
-                </Text>
-                {index < 29 && !containsFullSurah(item, surahInd, ind) && (
-                  <Text
-                    style={{
-                      fontFamily: "UthmanRegular",
-                      fontSize: 19,
-                      color: "#fff",
-                    }}
-                  >
-                    ({englishToArabicNumber(item.splits[ind][0] + 1)}:
-                    {englishToArabicNumber(item.splits[ind][1] + 1)})
+                  if (!tafsirMode) {
+                    setCurrentSurahInd(surahInd);
+                    dispatch(SetLastReadingSurahInd(surahInd));
+                    navigation.navigate("SurahPage");
+                  } else {
+                    setCurrentSurahInd(surahInd);
+                    navigation.navigate("TafsirPage");
+                  }
+                }}
+              >
+                {/* show surah name and Ayah range */}
+                <Text>
+                  <Text style={[styles.title, { textAlign: "center" }]}>
+                    {`(${englishToArabicNumber(surahInd + 1)}) `}{suras[surahInd].name}{" "}
                   </Text>
-                )}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </Animatable.View>
+                  {index < 29 && !containsFullSurah(item, surahInd, ind) && (
+                    <Text
+                      style={{
+                        fontFamily: "UthmanRegular",
+                        fontSize: 19,
+                        color: "#fff",
+                      }}
+                    >
+                      ({englishToArabicNumber(item.splits[ind][0] + 1)}:
+                      {englishToArabicNumber(item.splits[ind][1] + 1)})
+                    </Text>
+                  )}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </Animatable.View>
         </>
       )}
     </View>
@@ -334,7 +336,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "UthmanBold",
     color: "white",
-    letterSpacing: Platform.OS === "web" ? 0 : 4,
+    letterSpacing: 0,
   },
 });
 

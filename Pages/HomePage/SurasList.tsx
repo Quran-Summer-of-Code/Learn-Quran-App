@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   CurrentSurahInd,
   SetCurrentSurahInd,
+  SetLastReadingSurahInd,
   JustEnteredNewSurah,
   SetJustEnteredNewSurah,
   SetInHomePage,
@@ -34,9 +35,11 @@ import juzInfo from "../../Quran/juzInfo.json";
 
 interface Props {
   suras: any[];
+  onSurahPress?: (surahIndex: number) => void;
+  alwaysVisible?: boolean;
 }
 
-const SurasList: React.FC<Props> = ({ suras }) => {
+const SurasList: React.FC<Props> = ({ suras, onSurahPress, alwaysVisible = false }) => {
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
@@ -75,6 +78,10 @@ const SurasList: React.FC<Props> = ({ suras }) => {
     <TouchableOpacity
       style={{ ...styles.itemWrapper, borderBottomColor: appColor }}
       onPress={() => {
+        if (onSurahPress) {
+          onSurahPress(index);
+          return;
+        }
         if (index !== currentSurahInd) {
           // to detect in audio player and go back to 1st Ayah
           setJustEnteredSurah(!justEnteredNewSurah);
@@ -88,6 +95,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
         setInHomePage(false);
         if (!tafsirMode) {
           setCurrentSurahInd(index);
+          dispatch(SetLastReadingSurahInd(index));
           navigation.navigate("SurahPage");
         } else {
           setCurrentSurahInd(index);
@@ -126,8 +134,9 @@ const SurasList: React.FC<Props> = ({ suras }) => {
               {englishToArabicNumber(index + 1)}
             </Text>
           </View>
-          <View>
+          <View style={{ flexShrink: 1 }}>
             <Text
+              numberOfLines={1}
               style={{
                 ...styles.title,
                 transform: [{ scaleX: Platform.OS == "web" ? -1 : 1 }],
@@ -140,8 +149,8 @@ const SurasList: React.FC<Props> = ({ suras }) => {
         {/* contains the string with number of Ayas */}
         <View
           style={{
-            position: "absolute",
-            right: Platform.OS == "web" ? 70 : 76,
+            width: 80,
+            alignItems: "center",
           }}
         >
           <Text
@@ -172,7 +181,7 @@ const SurasList: React.FC<Props> = ({ suras }) => {
         style={[
           styles.containerStyle,
           {
-            display: !juzMode ? "flex" : "none",
+            display: alwaysVisible || !juzMode ? "flex" : "none",
             backgroundColor: colorize(-0.3, appColor),
           },
         ]}
@@ -212,8 +221,9 @@ const styles = StyleSheet.create({
   },
   surahAndNumberContainer: {
     flexDirection: "row",
+    flex: 1,
+    minWidth: 0,
     gap: 7,
-    justifyContent: "center",
     alignItems: "center",
   },
   itemWrapper: {
@@ -239,7 +249,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: "UthmanBold",
     color: "white",
-    letterSpacing: Platform.OS === "web" ? 0 : 4,
+    letterSpacing: 0,
   },
   locIcon: {
     fontFamily: "Khatim",

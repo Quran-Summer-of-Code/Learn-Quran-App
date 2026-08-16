@@ -24,6 +24,8 @@ interface AyahWordProps {
   index: number;
   currentSurahByWords: any;
   currentSurahInd: number;
+  isRukuShaded: boolean;
+  ayahMarkerSuffix?: React.ReactNode;
 }
 
 export const AyahWord: React.FC<AyahWordProps> = ({
@@ -31,6 +33,8 @@ export const AyahWord: React.FC<AyahWordProps> = ({
   index,
   currentSurahByWords,
   currentSurahInd,
+  isRukuShaded,
+  ayahMarkerSuffix,
 }) => {
   const dispatch = useDispatch();
   const wrapDispatch = (setter: any) => (arg: any) => dispatch(setter(arg));
@@ -55,6 +59,9 @@ export const AyahWord: React.FC<AyahWordProps> = ({
   const ayahIndexInWords = currentSurahByWords?.lastWordsinAyah?.includes(index)
     ? currentSurahByWords.lastWordsinAyah.indexOf(index)
     : -1;
+  const isLastWordOfAyah = ayahIndexInWords !== -1;
+  const isFirstWordOfAyah =
+    currentSurahByWords?.firstWordsinAyah?.includes(index);
   // The displayed ayah number is ayahIndexInWords + 1, but suras.json uses rakam (1-based)
   // So we need to use ayahIndexInWords directly to index into the suras array
   const isRukuEnd =
@@ -68,6 +75,14 @@ export const AyahWord: React.FC<AyahWordProps> = ({
         {
           fontSize: ayahFontSize,
           fontFamily: ayahFontFamily,
+          color: isRukuShaded
+            ? colorize(0.55, "#000000", appColor, true)
+            : "black",
+          ...(Platform.OS === "android" && !isLastWordOfAyah
+            ? isFirstWordOfAyah
+              ? { marginStart: 0, marginEnd: 5 }
+              : { marginHorizontal: 5 }
+            : {}),
         },
         isWordInAyah(index, currentAyahInd, currentSurahByWords)
           ? { color: appColor }
@@ -75,9 +90,9 @@ export const AyahWord: React.FC<AyahWordProps> = ({
       ]}
     >
       {/* render the Ayah word */}
-      {wordObj + " "}
+      {wordObj + (isLastWordOfAyah ? "\u00a0" : " ")}
       {/* render the sajda if needed */}
-      {currentSurahByWords.lastWordsinAyah.includes(index) &&
+      {isLastWordOfAyah &&
         ((sajdaLocs &&
           isWordInAyah(index, sajdaLocs[0], currentSurahByWords)) ||
           (secondSagda !== -1 &&
@@ -85,7 +100,7 @@ export const AyahWord: React.FC<AyahWordProps> = ({
           <Text style={styles.sajdaStyle}>{"\u06e9"}</Text>
         )}
       {/* render the ayah number */}
-      {currentSurahByWords.lastWordsinAyah.includes(index) && (
+      {isLastWordOfAyah && (
         <Text
           style={[
             { ...styles.ayahNumStyle, fontSize: ayahFontSize },
@@ -109,6 +124,7 @@ export const AyahWord: React.FC<AyahWordProps> = ({
           {"\ufd3e"}
         </Text>
       )}
+      {isLastWordOfAyah && ayahMarkerSuffix}
     </Text>
   );
 };
@@ -123,7 +139,7 @@ const styles = StyleSheet.create({
   },
   ayahWordStyle: {
     color: "black",
-    letterSpacing: Platform.OS === "web" ? 0 : 5,
+    letterSpacing: Platform.OS === "ios" ? 5 : 0,
     alignSelf: "flex-start",    
   },
   sajdaStyle: {

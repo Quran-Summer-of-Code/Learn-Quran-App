@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { FontAwesome5,  Feather } from '@expo/vector-icons';
-import Constants from 'expo-constants';
+import { FontAwesome5, Feather } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface SurahHeaderProps {
   appColor: string;
@@ -24,21 +24,24 @@ const SurahHeader: React.FC<SurahHeaderProps> = ({
   ayahFontFamily,
   showBismillah = true,
 }) => {
+  const insets = useSafeAreaInsets();
+
   return (
     <>
       <View
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          flexDirection: "row-reverse",
-          marginTop: Constants.statusBarHeight,
-          alignItems: "center",
-          backgroundColor: appColor,
-          padding: 10,
-        }}
+        style={[
+          styles.header,
+          {
+            backgroundColor: appColor,
+            paddingTop: insets.top + 10,
+          },
+        ]}
       >
         {/* Show Sections Button */}
-        <TouchableOpacity onPress={() => setSectionsModalVisible(true)}>
+        <TouchableOpacity
+          style={styles.headerAction}
+          onPress={() => setSectionsModalVisible(true)}
+        >
           <FontAwesome5
             name="list-ul"
             style={{
@@ -48,15 +51,18 @@ const SurahHeader: React.FC<SurahHeaderProps> = ({
           />
         </TouchableOpacity>
         {/* Surah Name */}
-        <Text style={{ color: "white", fontSize: 40 }}>
+        <Text style={styles.surahName}>
           <Text style={{ fontFamily: surahFontFamily, fontSize: 40 }}>
             {surahFontName}
             <Text style={{ fontFamily: "KaalaTaala", fontSize: 45 }}>S</Text>
           </Text>
         </Text>
         {/* Show Surah Card Button */}
-        <TouchableOpacity onPress={() => setCardModalVisible(true)}>
-        <Feather
+        <TouchableOpacity
+          style={styles.headerAction}
+          onPress={() => setCardModalVisible(true)}
+        >
+          <Feather
             name="book-open"
             style={{
               color: "white",
@@ -67,12 +73,15 @@ const SurahHeader: React.FC<SurahHeaderProps> = ({
       </View>
       {/* Basmallah */}
       {showBismillah && <Text
-        style={{
-        ...styles.basmalaStyle,
-          color: appColor,
-          fontSize: ayahFontSize + 12,
-          fontFamily: ayahFontFamily,
-        }}
+        style={[
+          styles.basmalaStyle,
+          {
+            color: appColor,
+            fontSize: ayahFontSize + 12,
+            fontFamily: ayahFontFamily,
+            lineHeight: Math.ceil((ayahFontSize + 12) * 1.5),
+          },
+        ]}
       >
         بِسْمِ اللَّــهِ الرَّحْمَـٰنِ الرَّحِيمِ
       </Text>}
@@ -82,13 +91,33 @@ const SurahHeader: React.FC<SurahHeaderProps> = ({
 
 
 const styles = StyleSheet.create({
-    basmalaStyle: {
-      fontSize: 35,
-      padding: 5,
-      textAlign: "center",
-      marginBottom: 10,
-    },
-  });
+  header: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  headerAction: {
+    width: 48,
+    minHeight: 48,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  surahName: {
+    flex: 1,
+    color: "white",
+    fontSize: 40,
+    textAlign: "center",
+  },
+  basmalaStyle: {
+    alignSelf: "stretch",
+    width: "100%",
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    textAlign: "center",
+    marginBottom: 10,
+  },
+});
 
 export default SurahHeader;
 

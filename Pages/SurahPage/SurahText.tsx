@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect, useState } from "react";
+import React, { useRef, useCallback, useEffect, useState, useMemo } from "react";
 import {
   Text,
   StyleSheet,
@@ -17,7 +17,8 @@ import {
   getGlobalAyahInd,
   colorize,
   englishToArabicNumber,
-  getAyahTopic
+  getAyahTopic,
+  getActiveGroupBoundaries,
 } from "../../helpers";
 import Constants from "expo-constants";
 
@@ -31,11 +32,11 @@ import SurahSectionsModal from "../TafsirPage/SurahSectionsModal";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 // Data
-import surasByWords from "../../Quran/surasByWords";
+import surasByWords from "../../Quran/surasByWords.json";
 import surasList from "../../Quran/surasList.json";
 import surahSections from "../../Quran/surahSectionsUpdated.json";
 import albitaqat from "../../Quran/albitaqat.json";
-import surasMaany from "../../Quran/surasMaany.json";
+import surasMaanyMappedData from "../../Quran/surasMaanyMapped.json";
 import suras from "../../Quran/suras.json";
 
 // State
@@ -53,6 +54,8 @@ import {
   SetSectionsModalVisible,
   MeaningModalVisible,
   SetMeaningModalVisible,
+  RukuSkipMode,
+  SurahGroupBoundaries,
 } from "../../Redux/slices/app";
 
 import { useNavigation } from "@react-navigation/native";
@@ -75,6 +78,25 @@ type AyahViewProps = {
   setShowMeaningsModal: any;
 };
 
+type MaanySegment = {
+  ayah: number;
+  key: string;
+  ranges: [number, number][];
+};
+
+type MaanyEntry = {
+  key: string;
+  meaning: string;
+  sourceAyah: number;
+  segments: MaanySegment[];
+};
+
+type SurasMaanyMapped = {
+  surahs: Record<string, MaanyEntry[]>[];
+};
+
+const surasMaanyMapped = surasMaanyMappedData as unknown as SurasMaanyMapped;
+
 const AyahViewModal: React.FC<AyahViewProps> = ({
   surah,
   ayah,
@@ -84,7 +106,21 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
   showMeaningsModal,
   setShowMeaningsModal,
 }) => {
-  const ayahContent = surasMaany[surah][String(ayah + 1)];
+  const ayahNumber = ayah + 1;
+  const ayahContent = surasMaanyMapped.surahs[surah]?.[String(ayahNumber)] ?? [];
+  const ayahRanges = ayahContent.flatMap((entry) =>
+    entry.segments
+      .filter((segment) => segment.ayah === ayahNumber)
+      .flatMap((segment) => segment.ranges)
+  );
+  const [firstWord, lastWord] = surasByWords[surah].ayahRanges[ayah];
+  const ayahWords = surasByWords[surah].words.slice(firstWord, lastWord + 1);
+
+  const isMappedWord = (wordIndex: number) =>
+    ayahRanges.some(([rangeStart, rangeEnd]) =>
+      wordIndex >= rangeStart && wordIndex <= rangeEnd
+    );
+
   return (
     <Modal
       isVisible={showMeaningsModal}
@@ -149,7 +185,18 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
               marginHorizontal: 10
             }}
           >
-            {suras[surah][ayah]?.ayah}
+            {ayahWords.map((word: string, wordOffset: number) => (
+              <Text
+                key={`${firstWord + wordOffset}-${word}`}
+                style={
+                  isMappedWord(firstWord + wordOffset)
+                    ? styles.mappedMeaningWord
+                    : undefined
+                }
+              >
+                {word + " "}
+              </Text>
+            ))}
             <Text
               style={{
                 ...styles.ayahNumStyle,
@@ -173,10 +220,15 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
 
             }}
           >
-            {ayahContent ? (
-              Object.entries(ayahContent).map(([key, value], index) => (
+            {ayahContent.length > 0 ? (
+              ayahContent.map((entry, index) => {
+                const segmentKeys = entry.segments
+                  .filter((segment) => segment.ayah === ayahNumber)
+                  .map((segment) => segment.key);
+
+                return (
                 <Text
-                  key={index}
+                  key={`${entry.sourceAyah}-${entry.key}-${index}`}
                   style={{
                     fontSize: ayahFontSize - 2,
                     fontFamily: "Scheher",
@@ -192,9 +244,10 @@ const AyahViewModal: React.FC<AyahViewProps> = ({
                       lineHeight: 50,
                       includeFontPadding: true
                     }}
-                  >{"(" + key + ")" + " "}</Text> {value}
+                  >{"(" + segmentKeys.join(" ") + ")" + " "}</Text> {entry.meaning}
                 </Text>
-              ))
+                );
+              })
             ) : (
               <Text
                 style={{
@@ -242,23 +295,49 @@ const SurahText: React.FC<SurahTextProps> = ({
   currentSurahByWordsWords = [...currentSurahByWordsWords, ..."⠀".repeat(10)];
   // index of current Ayah
   const currentAyahInd = useSelector(CurrentAyahInd);
+  const rukuSkipMode = useSelector(RukuSkipMode);
+  const savedGroupBoundaries = useSelector(SurahGroupBoundaries);
+  const shadedRukuAyahs = useMemo(() => {
+    const shadedAyahs = new Set<number>();
+    const groupBoundaries = getActiveGroupBoundaries(
+      currentSurahInd,
+      savedGroupBoundaries
+    );
+    let groupIndex = 0;
+
+    suras[currentSurahInd].forEach((_, ayahIndex) => {
+      if (groupIndex % 2 === 1) {
+        shadedAyahs.add(ayahIndex);
+      }
+      if (groupBoundaries.includes(ayahIndex)) {
+        groupIndex += 1;
+      }
+    });
+
+    return shadedAyahs;
+  }, [currentSurahInd, savedGroupBoundaries]);
 
   const renderItem = useCallback(
     ({ item: wordObj, index }: any) => {
+      const wordIndex = index + startWordIndForJuz;
+      const ayahIndex = currentSurahByWords.lastWordsinAyah.findIndex(
+        (lastWordIndex: number) => wordIndex <= lastWordIndex
+      );
       // The empty character signifies the start of the Ayah (not included but can be used later to insert text (e.g., titles before some Ayah))
       if (wordObj !== "‎") {
         return (
           <AyahWord
             wordObj={wordObj}
-            index={index + startWordIndForJuz}
+            index={wordIndex}
             currentSurahByWords={currentSurahByWords}
             currentSurahInd={currentSurahInd}
+            isRukuShaded={rukuSkipMode && shadedRukuAyahs.has(ayahIndex)}
           />
         );
       }
       return null;
     },
-    [currentAyahInd, currentSurahInd, startWordIndForJuz]
+    [currentAyahInd, currentSurahInd, rukuSkipMode, shadedRukuAyahs, startWordIndForJuz]
   );
 
   // To control scroll
@@ -370,6 +449,7 @@ const SurahText: React.FC<SurahTextProps> = ({
           }}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
+          ListHeaderComponentStyle={styles.listHeaderStyle}
           ListHeaderComponent={() =>
             currentSurahInd !== 8 && currentSurahInd !== 0 && (
               <Text
@@ -502,11 +582,14 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingBottom: 30,
   },
+  listHeaderStyle: {
+    width: "100%",
+  },
   basmalaStyle: {
     fontSize: 35,
     padding: 5,
     textAlign: "center",
-    width: width,
+    width: "100%",
   },
   ayahNumStyle: {
     fontFamily: "UthmanRegular",
@@ -524,6 +607,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "UthmanBold",
     fontSize: 16,
+  },
+  mappedMeaningWord: {
+    color: "#ffe082",
+    fontWeight: "700",
   },
 });
 

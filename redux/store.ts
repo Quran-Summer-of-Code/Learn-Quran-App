@@ -1,11 +1,35 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { persistReducer, persistStore } from 'redux-persist';
+import { createMigrate, persistReducer, persistStore } from 'redux-persist';
 import appReducer from './slices/app';
+
+const removedAyahFonts = [
+  'NewmetRegular',
+  'ScheherazadeNewBold',
+  'UthmanicHafs',
+];
+
+const migrations = {
+  1: (state: any) => {
+    if (removedAyahFonts.includes(state?.store?.ayahFontFamily)) {
+      return {
+        ...state,
+        store: {
+          ...state.store,
+          ayahFontFamily: 'ScheherazadeNewMedium',
+        },
+      };
+    }
+
+    return state;
+  },
+};
 
 const persistConfig = {
   key: 'root',
-  storage: AsyncStorage
+  storage: AsyncStorage,
+  version: 1,
+  migrate: createMigrate(migrations, { debug: false }),
 }
 
 const reducers = combineReducers({

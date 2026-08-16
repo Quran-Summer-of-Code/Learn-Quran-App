@@ -6,8 +6,10 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
+  useWindowDimensions,
 } from "react-native";
 import Modal from "react-native-modal";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // Helper functions and data
 import { englishToArabicNumber, colorize, customSort } from "../../helpers";
@@ -36,37 +38,46 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
   endAyahForJuz,
   surahMode = false,
 }) => {
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const horizontalSpacing = Math.max(16, insets.left, insets.right);
+  const topSpacing = Math.max(16, insets.top + 12);
+  const bottomSpacing = Math.max(height * 0.05, insets.bottom + 12);
+  const modalWidth = Math.min(width - horizontalSpacing * 2, 700);
+  const modalMaxHeight = height - topSpacing - bottomSpacing;
+
   return (
     <Modal
       style={{
-        marginHorizontal: -5,
+        margin: 0,
+        paddingHorizontal: horizontalSpacing,
+        paddingTop: topSpacing,
+        paddingBottom: bottomSpacing,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: Platform.OS == "web" ? "10%" : undefined,
       }}
       isVisible={sectionsModalVisible}
+      deviceWidth={width}
+      deviceHeight={height}
       backdropOpacity={0.45}
       onBackButtonPress={() => setSectionsModalVisible(false)}
       onBackdropPress={() => setSectionsModalVisible(false)}
     >
       <View
-        style={{
-          ...styles.modalView,
-          backgroundColor: appColor,
-          maxHeight: Platform.OS == "web" ? "90%" : undefined,
-        }}
+        style={[
+          styles.modalView,
+          {
+            backgroundColor: appColor,
+            width: modalWidth,
+            maxHeight: modalMaxHeight,
+          },
+        ]}
       >
         <View
-          style={{
-            backgroundColor: colorize(-0.1, appColor),
-            paddingHorizontal: 14,
-            paddingVertical: 8,
-            borderRadius: 30,
-            justifyContent: "center",
-            alignItems: "center",
-            position: "absolute",
-            top: -20,
-          }}
+          style={[
+            styles.modalHeader,
+            { backgroundColor: colorize(-0.1, appColor) },
+          ]}
         >
           {/* Modal title */}
           <Text style={{ ...styles.modalText }}>
@@ -75,9 +86,9 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
         </View>
         {/* Surah Sections List */}
         <ScrollView
-          showsVerticalScrollIndicator={(Platform.OS !== "web") ? true : false}
+          showsVerticalScrollIndicator={Platform.OS !== "web"}
           contentContainerStyle={styles.scrollViewContent}
-          style={{ maxHeight: "90%", marginVertical: 20, width: "100%" }}
+          style={styles.scrollView}
         >
           {Object.keys(currentSurahSections)
             .sort(customSort)
@@ -92,8 +103,8 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
                         if (!surahMode) {
                           scrollToIndex(
                             parseInt(key.replace(/S/g, "")) -
-                              startAyahForJuz -
-                              1
+                            startAyahForJuz -
+                            1
                           );
                         } else {
                           scrollToIndex(parseInt(key.replace(/S/g, "")));
@@ -138,7 +149,7 @@ const SurahSectionsModal: React.FC<SurahSectionsModalProps> = ({
         {/* Back Button */}
         <TouchableOpacity
           style={[styles.button, { backgroundColor: colorize(0.1, appColor) }]}
-          onPress={() => setSectionsModalVisible(!sectionsModalVisible)}
+          onPress={() => setSectionsModalVisible(false)}
         >
           <Text style={styles.textStyle}>الرجوع</Text>
         </TouchableOpacity>
@@ -151,12 +162,10 @@ export default SurahSectionsModal;
 
 const styles = StyleSheet.create({
   modalView: {
-    margin: Platform.OS == "web" ? 20 : 10,
     backgroundColor: "white",
     borderRadius: 20,
-    paddingHorizontal: 35,
-    paddingVertical: 10,
     alignItems: "center",
+    overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -166,10 +175,22 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  modalHeader: {
+    width: "100%",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  scrollView: {
+    flexShrink: 1,
+    width: "100%",
+  },
   button: {
     borderRadius: 20,
     paddingHorizontal: 40,
     paddingVertical: 7,
+    marginVertical: 12,
     elevation: 2,
   },
   textStyle: {
@@ -187,6 +208,8 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 10,
   },
   itemContainer: {
     flexDirection: Platform.OS === "web" ? "row-reverse" : "row",

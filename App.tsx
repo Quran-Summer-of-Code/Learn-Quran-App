@@ -16,6 +16,7 @@ import { fonts } from "./Fonts";
 // Main app
 import Navigation from "./Navigation";
 import Toast from "react-native-toast-message";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // RTL
 import { I18nManager } from "react-native";
@@ -40,15 +41,17 @@ const AppWrapper = () => {
   const [fontsLoaded] = useFonts(fonts);
   if (!fontsLoaded) return null;
   return (
-    <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <RootSiblingParent>
-          <Navigation />
-          {/* Allows showing toast messages anywhere with Toast.show({...}) */}
-          {Platform.OS !== "web" && <Toast />}
-        </RootSiblingParent>
-      </PersistGate>
-    </Provider>
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <RootSiblingParent>
+            <Navigation />
+            {/* Allows showing toast messages anywhere with Toast.show({...}) */}
+            {Platform.OS !== "web" && <Toast />}
+          </RootSiblingParent>
+        </PersistGate>
+      </Provider>
+    </SafeAreaProvider>
   );
 };
 export default AppWrapper;

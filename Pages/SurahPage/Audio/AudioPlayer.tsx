@@ -29,6 +29,7 @@ import {
   Pause,
   SetCurrentAyahInd,
   SetCurrentSurahInd,
+  SetLastReadingSurahInd,
   SetJustChoseNewAyah,
   SetCurrentJuzInd,
   SetPause,
@@ -42,6 +43,7 @@ import {
   RepeatMode,
   SetRepeatMode,
   MaxRepeatCount,
+  SurahGroupBoundaries,
 } from "../../../Redux/slices/app";
 
 // Data
@@ -55,10 +57,11 @@ import {
   getGlobalAyahInd,
   findJuzSurahAyahIndex,
   englishToArabicNumber,
-  getNextRukuStartAyah,
-  getPrevRukuStartAyah,
-  getCurrentRukuStartAyah,
-  getCurrentRukuEndAyah,
+  getActiveGroupBoundaries,
+  getNextGroupStartAyah,
+  getPrevGroupStartAyah,
+  getCurrentGroupStartAyah,
+  getCurrentGroupEndAyah,
 } from "../../../helpers";
 
 
@@ -103,6 +106,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
     wrapDispatch(SetRepeatMode),
   ];
   const maxRepeatCount = useSelector(MaxRepeatCount);
+  const savedGroupBoundaries = useSelector(SurahGroupBoundaries);
+  const activeGroupBoundaries = getActiveGroupBoundaries(
+    currentSurahInd,
+    savedGroupBoundaries
+  );
   const [currentRepeatCount, setCurrentRepeatCount] = useState(0);
 
   const surasCount = 114;
@@ -192,21 +200,31 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
         let repeatTarget = 0;
         
         if (rukuSkipMode) {
-          // Ruku repeat: check if we've passed the ruku end
+          // Group repeat: check if we've passed the configured group end
           // Use current state only if we're in the same surah, otherwise it's a surah change
           if (newSurahInd === currentSurahInd) {
-            const rukuEnd = getCurrentRukuEndAyah(currentSurahInd, currentAyahInd);
-            const rukuStart = getCurrentRukuStartAyah(currentSurahInd, currentAyahInd);
-            if (newLocalAyahInd > rukuEnd) {
+            const groupEnd = getCurrentGroupEndAyah(
+              activeGroupBoundaries,
+              currentAyahInd,
+              parseInt(surasList[currentSurahInd].numAyas) - 1
+            );
+            const groupStart = getCurrentGroupStartAyah(
+              activeGroupBoundaries,
+              currentAyahInd
+            );
+            if (newLocalAyahInd > groupEnd) {
               shouldRepeat = true;
-              repeatTarget = getGlobalAyahInd(currentSurahInd, rukuStart);
+              repeatTarget = getGlobalAyahInd(currentSurahInd, groupStart);
             }
           } else {
             // Crossed surah boundary - this means last ruku of previous surah ended
             // Repeat from the last ruku's start in the previous surah
-            const rukuStart = getCurrentRukuStartAyah(currentSurahInd, currentAyahInd);
+            const groupStart = getCurrentGroupStartAyah(
+              activeGroupBoundaries,
+              currentAyahInd
+            );
             shouldRepeat = true;
-            repeatTarget = getGlobalAyahInd(currentSurahInd, rukuStart);
+            repeatTarget = getGlobalAyahInd(currentSurahInd, groupStart);
           }
         } else if (juzMode && currentJuzInd < 29) {
           // Juz repeat: check if we've gone past endAyahIndForJuz
@@ -243,6 +261,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
       
       if (newSurahInd !== 0 || newSurahInd == currentSurahInd){     // otherwise, it gets randomly set as that before the real value (init track?)
       setCurrentSurahInd(newSurahInd);
+      dispatch(SetLastReadingSurahInd(newSurahInd));
       setCurrentAyahInd(newLocalAyahInd);
       
       setTrackMD(track);
@@ -278,12 +297,15 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
     currentSurahInd: number,
     setCurrentSurahInd: Function
   ) => {
-    // Ruku skip mode: jump to next ruku start within current surah
+    // Group skip mode: jump to the next configured group start
     if (rukuSkipMode) {
-      const nextRukuAyah = getNextRukuStartAyah(currentSurahInd, currentAyahInd);
-      if (nextRukuAyah !== -1) {
-        setCurrentAyahInd(nextRukuAyah);
-        await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, nextRukuAyah));
+      const nextGroupAyah = getNextGroupStartAyah(
+        activeGroupBoundaries,
+        currentAyahInd
+      );
+      if (nextGroupAyah !== -1) {
+        setCurrentAyahInd(nextGroupAyah);
+        await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, nextGroupAyah));
       }
       // If no more rukus in surah, stay at current position
       return;
@@ -332,17 +354,23 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
   ) => {
     // Ruku skip mode: jump to current ruku start, or previous ruku start if already at start
     if (rukuSkipMode) {
-      const currentRukuStart = getCurrentRukuStartAyah(currentSurahInd, currentAyahInd);
-      if (currentAyahInd > currentRukuStart) {
-        // Jump to start of current ruku
-        setCurrentAyahInd(currentRukuStart);
-        await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, currentRukuStart));
+      const currentGroupStart = getCurrentGroupStartAyah(
+        activeGroupBoundaries,
+        currentAyahInd
+      );
+      if (currentAyahInd > currentGroupStart) {
+        // Jump to start of current group
+        setCurrentAyahInd(currentGroupStart);
+        await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, currentGroupStart));
       } else {
-        // Already at start of ruku, jump to previous ruku
-        const prevRukuAyah = getPrevRukuStartAyah(currentSurahInd, currentAyahInd);
-        if (prevRukuAyah !== -1) {
-          setCurrentAyahInd(prevRukuAyah);
-          await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, prevRukuAyah));
+        // Already at start of group, jump to previous group
+        const previousGroupAyah = getPrevGroupStartAyah(
+          activeGroupBoundaries,
+          currentAyahInd
+        );
+        if (previousGroupAyah !== -1) {
+          setCurrentAyahInd(previousGroupAyah);
+          await TrackPlayer.skip(getGlobalAyahInd(currentSurahInd, previousGroupAyah));
         } else {
           // No previous ruku, jump to first ayah
           setCurrentAyahInd(0);
@@ -503,7 +531,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioList, key, display }) =>
 
 export default AudioPlayer;
 
-const { width, height } = Dimensions.get("screen");
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {

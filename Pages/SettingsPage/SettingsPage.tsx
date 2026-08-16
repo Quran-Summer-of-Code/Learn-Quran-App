@@ -1,14 +1,23 @@
 // @ts-nocheck (due to icon packages)
 import React, { useState } from "react";
-import { View, StyleSheet, Text, ScrollView, Dimensions, Platform } from "react-native";
+import { View, StyleSheet, Text, ScrollView, Dimensions, Platform, TouchableOpacity, Alert, Share } from "react-native";
 
 // External components
 import ColorPicker, { Swatches } from "reanimated-color-picker";
 import Slider from "@react-native-community/slider";
 import { Dropdown } from "react-native-element-dropdown";
+import ReviewRangeEditor from "../ReviewPage/ReviewRangeEditor";
+import suras from "../../Quran/suras.json";
+import surasList from "../../Quran/surasList.json";
 
 // Helper functions
-import { colorize, englishToArabicNumber, sheiksDict } from "../../helpers";
+import {
+  colorize,
+  englishToArabicNumber,
+  getActiveGroupBoundaries,
+  getDefaultGroupBoundaries,
+  sheiksDict,
+} from "../../helpers";
 
 // States
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +40,10 @@ import {
   SetOpenTafsirBoxes,
   MaxRepeatCount,
   SetMaxRepeatCount,
+  LastReadingSurahInd,
+  RestoreDefaultSurahGroupBoundaries,
+  SetSurahGroupBoundaries,
+  SurahGroupBoundaries,
 } from "../../Redux/slices/app";
 
 // Icons
@@ -46,10 +59,10 @@ const SettingsPage: React.FC<Props> = () => {
 
   // Settings allowed options
   const fontsMap = [
-    { label: "عثماني", value: "UthmanicHafs" },
+    { label: "شهرزاد متوسط", value: "ScheherazadeNewMedium" },
+    { label: "أميري قرآني", value: "AmiriQuran" },
     { label: "كوفيان", value: "KufyanMedium" },
     { label: "قلم", value: "QalamRegular" },
-    { label: "نيومت", value: "NewmetRegular" },
     { label: "اميري", value: "Amiri" },
   ];
 
@@ -125,6 +138,29 @@ const SettingsPage: React.FC<Props> = () => {
     useSelector(OpenTafsirBoxes),
     wrapDispatch(SetOpenTafsirBoxes),
   ]
+  const currentSurahInd = useSelector(LastReadingSurahInd);
+  const savedGroupBoundaries = useSelector(SurahGroupBoundaries);
+  const [groupEditorVisible, setGroupEditorVisible] = useState(false);
+  const defaultGroupBoundaries = getDefaultGroupBoundaries(currentSurahInd);
+  const activeGroupBoundaries = getActiveGroupBoundaries(
+    currentSurahInd,
+    savedGroupBoundaries
+  );
+
+  const saveGroupBoundaries = (boundaries: number[]) => {
+    const matchesDefault =
+      boundaries.length === defaultGroupBoundaries.length &&
+      boundaries.every(
+        (boundary, index) => boundary === defaultGroupBoundaries[index]
+      );
+
+    dispatch(
+      matchesDefault
+        ? RestoreDefaultSurahGroupBoundaries(currentSurahInd)
+        : SetSurahGroupBoundaries({ surahIndex: currentSurahInd, boundaries })
+    );
+    setGroupEditorVisible(false);
+  };
   // for dropdown
   const [isFocus, setIsFocus] = useState(false);
 
@@ -592,7 +628,109 @@ const SettingsPage: React.FC<Props> = () => {
             />
           </ColorPicker>
         </View>
+        <TouchableOpacity
+          style={[styles.itemWrapper, styles.groupEditorWrapper]}
+          accessibilityRole="button"
+          onPress={() => setGroupEditorVisible(true)}
+        >
+          <View
+            style={{
+              ...styles.itemContainer,
+              backgroundColor: colorize(-0.1, appColor),
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 9,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="playlist-edit"
+              color="#fff"
+              size={25}
+            />
+            <Text style={styles.groupEditorText}>
+              تغيير مجموعات سورة {surasList[currentSurahInd].name}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <Text style={styles.groupEditorGuidance}>
+          لتغيير مجموعات سورة أخرى، افتحها أولًا في وضع القراءة، ثم عُد إلى الإعدادات.
+        </Text>
+        {/* Ruku Toggle Note */}
+        <View style={{
+          padding: 20,
+          margin: 15,
+          backgroundColor: colorize(-0.2, appColor),
+            borderRadius: 15,
+            borderWidth: 1,
+            borderColor: "#ffffff44",
+            position: 'relative'
+        }}>
+          <View style={{
+            position: 'absolute',
+            top: -12,
+            left: 20,
+            backgroundColor: colorize(-0.1, appColor),
+            paddingHorizontal: 10,
+            paddingVertical: 2,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: "#ffffff44",
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 5
+          }}>
+             <FontAwesome name="info-circle" color={"#fff"} style={{ fontSize: 14 }} />
+             <Text style={{ color: "#fff", fontSize: 14, fontFamily: "UthmanBold", transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }] }}>
+               توضيح
+             </Text>
+          </View>
+          <Text style={{ color: "#eee", fontSize: 15, fontFamily: "UthmanBold", textAlign: "center", lineHeight: 26, marginTop: 5, transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }] }}>
+            زر (ر) ينقّل بين مجموعات السورة وفق التقسيم المحدد أعلاه.
+            {"\n"}
+            وعند تفعيل التكرار، تُكرّر المجموعة الحالية وفق التقسيم نفسه.
+          </Text>
+        </View>
+        {/* Share App */}
+        <TouchableOpacity
+          style={styles.itemWrapper}
+          onPress={async () => {
+            try {
+              await Share.share({
+                message: "تطبيق تعلم وتدبر القرآن الكريم\nhttps://play.google.com/store/apps/details?id=com.essamwisam.quranapp",
+              });
+            } catch (error) {
+              console.log(error);
+            }
+          }}
+        >
+          <View
+            style={{
+              ...styles.itemContainer,
+              backgroundColor: colorize(-0.1, appColor),
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 9,
+            }}
+          >
+            <FontAwesome
+              name="share-alt"
+              color={"#fff"}
+              style={{ fontSize: 20 }}
+            />
+            <Text style={styles.textItem}>مشاركة التطبيق</Text>
+          </View>
+        </TouchableOpacity>
       </ScrollView>
+      <ReviewRangeEditor
+        visible={groupEditorVisible}
+        appColor={appColor}
+        surahName={surasList[currentSurahInd].name}
+        ayahs={suras[currentSurahInd]}
+        boundaries={activeGroupBoundaries}
+        defaultBoundaries={defaultGroupBoundaries}
+        onClose={() => setGroupEditorVisible(false)}
+        onSave={saveGroupBoundaries}
+      />
     </View>
   );
 };
@@ -620,6 +758,29 @@ const styles = StyleSheet.create({
     fontFamily: "UthmanBold",
     color: "#fff",
     transform: [{ scaleX: (Platform.OS == "web") ? -1 : 1 }]
+  },
+  groupEditorText: {
+    flex: 1,
+    color: "#fff",
+    fontFamily: "UthmanBold",
+    fontSize: 20,
+    textAlign: "right",
+    transform: [{ scaleX: Platform.OS === "web" ? -1 : 1 }],
+  },
+  groupEditorWrapper: {
+    borderBottomWidth: 0,
+  },
+  groupEditorGuidance: {
+    marginHorizontal: 20,
+    marginTop: -4,
+    marginBottom: 12,
+    color: "#eeeeee",
+    fontFamily: "UthmanRegular",
+    fontSize: 15,
+    lineHeight: 24,
+    textAlign: "right",
+    writingDirection: "rtl",
+    transform: [{ scaleX: Platform.OS === "web" ? -1 : 1 }],
   },
   progressLevelDuraiton: {
     width: width * 0.9,

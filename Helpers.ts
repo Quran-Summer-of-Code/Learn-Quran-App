@@ -219,6 +219,44 @@ export function getAyahTopic(surahSectionsDict, ayahIndex) {
     return "";
 }
 
+export function getDefaultGroupBoundaries(surahInd: number): number[] {
+    const surahAyahs = suras[surahInd];
+    return surahAyahs.flatMap((ayah, ayahIndex) =>
+        ayah.ruku?.end && ayahIndex < surahAyahs.length - 1 ? [ayahIndex] : []
+    );
+}
+
+export function getActiveGroupBoundaries(
+    surahInd: number,
+    savedBoundaries: Record<number, number[]>
+): number[] {
+    return Object.prototype.hasOwnProperty.call(savedBoundaries, surahInd)
+        ? savedBoundaries[surahInd]
+        : getDefaultGroupBoundaries(surahInd);
+}
+
+export function getNextGroupStartAyah(boundaries: number[], currentAyahInd: number): number {
+    return boundaries.map((boundary) => boundary + 1).find((start) => start > currentAyahInd) ?? -1;
+}
+
+export function getPrevGroupStartAyah(boundaries: number[], currentAyahInd: number): number {
+    const starts = [0, ...boundaries.map((boundary) => boundary + 1)];
+    return starts.filter((start) => start < currentAyahInd).at(-1) ?? -1;
+}
+
+export function getCurrentGroupStartAyah(boundaries: number[], currentAyahInd: number): number {
+    const starts = [0, ...boundaries.map((boundary) => boundary + 1)];
+    return starts.filter((start) => start <= currentAyahInd).at(-1) ?? 0;
+}
+
+export function getCurrentGroupEndAyah(
+    boundaries: number[],
+    currentAyahInd: number,
+    lastAyahIndex: number
+): number {
+    return boundaries.find((boundary) => boundary >= currentAyahInd) ?? lastAyahIndex;
+}
+
 // Find the next ruku start ayah index (local) within the current surah, or -1 if none
 export function getNextRukuStartAyah(surahInd: number, currentAyahInd: number): number {
     const surahAyahs = suras[surahInd];

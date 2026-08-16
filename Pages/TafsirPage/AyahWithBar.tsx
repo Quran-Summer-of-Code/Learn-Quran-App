@@ -65,7 +65,7 @@ const AyahWithBar: React.FC<AyahWithBarInterface> = ({
     >
       {/* Ayah Text */}
       <Text style={[styles.ayahStyle, { textAlign: "justify", fontSize: ayahFontSize, fontFamily: ayahFontFamily, color: whiteAyah ? "#DFDFDF" : "black" }]}>
-        {ayahItem.ayah}
+        {ayahItem.ayah.replace(/ /g, "\u2002")}
       </Text>
       {/* Bar */}
       <LinearGradient
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 25,
     fontFamily: "NewmetRegular",
-    letterSpacing: Platform.OS === "web" ? 0 : 10,
+    letterSpacing: 0,
   },
 });
 

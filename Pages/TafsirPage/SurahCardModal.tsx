@@ -1,6 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity, Platform } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform, useWindowDimensions } from "react-native";
 import Modal from "react-native-modal";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { englishToArabicNumber, colorize } from "../../helpers";
 import surasList from "../../Quran/surasList.json";
 
@@ -21,198 +22,203 @@ const SurahCardModal: React.FC<SurahCardModalProps> = ({
   currentSurahCard,
   ayahFontSize,
 }) => {
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const horizontalSpacing = Math.max(16, insets.left, insets.right);
+  const topSpacing = Math.max(16, insets.top + 12);
+  const bottomSpacing = Math.max(16, insets.bottom + 12);
+  const modalWidth = Math.min(width - horizontalSpacing * 2, 700);
+  const modalMaxHeight = height - topSpacing - bottomSpacing;
+
   return (
     <Modal
-      style={{ 
-        marginHorizontal: -10,
+      style={{
+        margin: 0,
+        paddingHorizontal: horizontalSpacing,
+        paddingTop: topSpacing,
+        paddingBottom: bottomSpacing,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: (Platform.OS == "web") ? 90: undefined,
-       }}
+      }}
       isVisible={cardModalVisible}
+      deviceWidth={width}
+      deviceHeight={height}
       backdropOpacity={0.45}
       onBackButtonPress={() => setCardModalVisible(false)}
       onBackdropPress={() => setCardModalVisible(false)}
     >
-      <View>
-        <View>
-          <View style={{ ...styles.modalView, backgroundColor: appColor,
-            maxHeight: (Platform.OS == "web") ? 500: undefined,
-
-           }}>
-            <View
-              style={{
-                backgroundColor: colorize(-0.1, appColor),
-                paddingHorizontal: 14,
-                paddingVertical: 8,
-                borderRadius: 30,
-                justifyContent: "center",
-                alignItems: "center",
-                position: "absolute",
-                top: -20,
-              }}
-            >
-              {/* Modal Title */}
-              <Text style={{ ...styles.modalText }}>
-                بطاقة سورةِ {surasList[currentSurahInd].name}
-              </Text>
-            </View>
-            <ScrollView
-              showsVerticalScrollIndicator={(Platform.OS !== "web") ? true : false}
-              contentContainerStyle={{
-                ...styles.scrollViewContent,
-                gap: 10,
-              }}
-              style={{ maxHeight: "90%", marginVertical: 20, width: "100%" }}
-            >
-              {/* Number of Ayahs */}
-              <View style={styles.cardItem}>
-                <Text
-                  style={{
-                    ...styles.ayahStyle,
-                    color: "white",
-                    fontSize: ayahFontSize - 3,
-                  }}
-                >
-                  آيَـــــــــــاتُــــهَا:
-                  <Text
-                    style={{
-                      ...styles.cardLeftTextStyle,
-                      fontSize: ayahFontSize - 5,
-                    }}
-                  >
-                    {" "}
-                    {englishToArabicNumber(currentSurahCard["ayaatiha"])}
-                  </Text>
-                </Text>
-              </View>
-              {/* Meaning of its name */}
-              <View style={styles.cardItem}>
-                <Text
-                  style={{
-                    ...styles.ayahStyle,
-                    color: "white",
-                    fontSize: ayahFontSize - 3,
-                  }}
-                >
-                  مَعنَى اسْـــمِها:
-                  <Text
-                    style={{
-                      ...styles.cardLeftTextStyle,
-                      fontSize: ayahFontSize - 5,
-                    }}
-                  >
-                    {" "}
-                    {currentSurahCard["maeni_asamuha"]}
-                  </Text>
-                </Text>
-              </View>
-              {/* Its names */}
-              <View style={styles.cardItem}>
-                <Text
-                  style={{
-                    ...styles.ayahStyle,
-                    color: "white",
-                    fontSize: ayahFontSize - 3,
-                  }}
-                >
-                  أَسْــــــمَاؤُهــا:
-                  <Text
-                    style={{
-                      ...styles.cardLeftTextStyle,
-                      fontSize: ayahFontSize - 5,
-                    }}
-                  >
-                    {" "}
-                    {englishToArabicNumber(currentSurahCard["asmawuha"])}
-                  </Text>
-                </Text>
-              </View>
-              {/* It's general purpose */}
-              <View style={styles.cardItem}>
-                <Text
-                  style={{
-                    ...styles.ayahStyle,
-                    color: "white",
-                    fontSize: ayahFontSize - 3,
-                  }}
-                >
-                  مَقْصِدُها العَامُّ:
-                  <Text
-                    style={{
-                      ...styles.cardLeftTextStyle,
-                      fontSize: ayahFontSize - 5,
-                    }}
-                  >
-                    {" "}
-                    {englishToArabicNumber(
-                      currentSurahCard["maqsiduha_aleamu"]
-                    )}
-                  </Text>
-                </Text>
-              </View>
-              {/* Reason it was dawned on us */}
-              <View style={styles.cardItem}>
-                <Text
-                  style={{
-                    ...styles.ayahStyle,
-                    color: "white",
-                    fontSize: ayahFontSize - 3,
-                  }}
-                >
-                  سَبَبُ نُــزُولِهَـا:
-                  <Text
-                    style={{
-                      ...styles.cardLeftTextStyle,
-                      fontSize: ayahFontSize - 5,
-                    }}
-                  >
-                    {" "}
-                    {englishToArabicNumber(currentSurahCard["sabab_nuzuliha"])}
-                  </Text>
-                </Text>
-              </View>
-              {/* It's blessings */}
-              <View style={styles.cardItem}>
-                <Text
-                  style={{
-                    ...styles.ayahStyle,
-                    color: "white",
-                    fontSize: ayahFontSize - 3,
-                  }}
-                >
-                  فَضْـــــــــــلُـهـا:
-                  <Text
-                    style={{
-                      ...styles.cardLeftTextStyle,
-                      fontSize: ayahFontSize - 5,
-                    }}
-                  >
-                    {currentSurahCard["fadluha"].map(
-                      (value: any, index: number) => (
-                        <Text>
-                          {"\n("}
-                          {englishToArabicNumber(index + 1) + ") "}
-                          {currentSurahCard["fadluha"][index]} {"\n"}
-                        </Text>
-                      )
-                    )}
-                  </Text>
-                </Text>
-              </View>
-            </ScrollView>
-            {/* Back button */}
-            <TouchableOpacity
-              style={[
-                styles.button,
-                { backgroundColor: colorize(0.1, appColor) },
-              ]}
-              onPress={() => setCardModalVisible(!cardModalVisible)}
-            >
-              <Text style={styles.textStyle}>الرجوع</Text>
-            </TouchableOpacity>
-          </View>
+      <View
+        style={[
+          styles.modalView,
+          {
+            backgroundColor: appColor,
+            width: modalWidth,
+            maxHeight: modalMaxHeight,
+          },
+        ]}
+      >
+        <View
+          style={[
+            styles.modalHeader,
+            { backgroundColor: colorize(-0.1, appColor) },
+          ]}
+        >
+          {/* Modal Title */}
+          <Text style={styles.modalText}>
+            بطاقة سورةِ {surasList[currentSurahInd].name}
+          </Text>
         </View>
+        <ScrollView
+          showsVerticalScrollIndicator={Platform.OS !== "web"}
+          contentContainerStyle={styles.scrollViewContent}
+          style={styles.scrollView}
+        >
+          {/* Number of Ayahs */}
+          <View style={styles.cardItem}>
+            <Text
+              style={{
+                ...styles.ayahStyle,
+                color: "white",
+                fontSize: ayahFontSize - 3,
+              }}
+            >
+              آيَـــــــــــاتُــــهَا:
+              <Text
+                style={{
+                  ...styles.cardLeftTextStyle,
+                  fontSize: ayahFontSize - 5,
+                }}
+              >
+                {" "}
+                {englishToArabicNumber(currentSurahCard["ayaatiha"])}
+              </Text>
+            </Text>
+          </View>
+          {/* Meaning of its name */}
+          <View style={styles.cardItem}>
+            <Text
+              style={{
+                ...styles.ayahStyle,
+                color: "white",
+                fontSize: ayahFontSize - 3,
+              }}
+            >
+              مَعنَى اسْـــمِها:
+              <Text
+                style={{
+                  ...styles.cardLeftTextStyle,
+                  fontSize: ayahFontSize - 5,
+                }}
+              >
+                {" "}
+                {currentSurahCard["maeni_asamuha"]}
+              </Text>
+            </Text>
+          </View>
+          {/* Its names */}
+          <View style={styles.cardItem}>
+            <Text
+              style={{
+                ...styles.ayahStyle,
+                color: "white",
+                fontSize: ayahFontSize - 3,
+              }}
+            >
+              أَسْــــــمَاؤُهــا:
+              <Text
+                style={{
+                  ...styles.cardLeftTextStyle,
+                  fontSize: ayahFontSize - 5,
+                }}
+              >
+                {" "}
+                {englishToArabicNumber(currentSurahCard["asmawuha"])}
+              </Text>
+            </Text>
+          </View>
+          {/* It's general purpose */}
+          <View style={styles.cardItem}>
+            <Text
+              style={{
+                ...styles.ayahStyle,
+                color: "white",
+                fontSize: ayahFontSize - 3,
+              }}
+            >
+              مَقْصِدُها العَامُّ:
+              <Text
+                style={{
+                  ...styles.cardLeftTextStyle,
+                  fontSize: ayahFontSize - 5,
+                }}
+              >
+                {" "}
+                {englishToArabicNumber(
+                  currentSurahCard["maqsiduha_aleamu"]
+                )}
+              </Text>
+            </Text>
+          </View>
+          {/* Reason it was dawned on us */}
+          <View style={styles.cardItem}>
+            <Text
+              style={{
+                ...styles.ayahStyle,
+                color: "white",
+                fontSize: ayahFontSize - 3,
+              }}
+            >
+              سَبَبُ نُــزُولِهَـا:
+              <Text
+                style={{
+                  ...styles.cardLeftTextStyle,
+                  fontSize: ayahFontSize - 5,
+                }}
+              >
+                {" "}
+                {englishToArabicNumber(currentSurahCard["sabab_nuzuliha"])}
+              </Text>
+            </Text>
+          </View>
+          {/* It's blessings */}
+          <View style={styles.cardItem}>
+            <Text
+              style={{
+                ...styles.ayahStyle,
+                color: "white",
+                fontSize: ayahFontSize - 3,
+              }}
+            >
+              فَضْـــــــــــلُـهـا:
+              <Text
+                style={{
+                  ...styles.cardLeftTextStyle,
+                  fontSize: ayahFontSize - 5,
+                }}
+              >
+                {currentSurahCard["fadluha"].map(
+                  (value: any, index: number) => (
+                    <Text>
+                      {"\n("}
+                      {englishToArabicNumber(index + 1) + ") "}
+                      {currentSurahCard["fadluha"][index]} {"\n"}
+                    </Text>
+                  )
+                )}
+              </Text>
+            </Text>
+          </View>
+        </ScrollView>
+        {/* Back button */}
+        <TouchableOpacity
+          style={[
+            styles.button,
+            { backgroundColor: colorize(0.1, appColor) },
+          ]}
+          onPress={() => setCardModalVisible(false)}
+        >
+          <Text style={styles.textStyle}>الرجوع</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
@@ -222,13 +228,10 @@ export default SurahCardModal;
 
 const styles = StyleSheet.create({
   modalView: {
-    margin: (Platform.OS == "web") ? 20 : 10,
     backgroundColor: "white",
     borderRadius: 20,
-    paddingHorizontal: 35,
-    paddingVertical: 10,
-    justifyContent: "center",
     alignItems: "center",
+    overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -237,6 +240,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  modalHeader: {
+    width: "100%",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  scrollView: {
+    flexShrink: 1,
+    width: "100%",
   },
   ayahStyle: {
     marginHorizontal: 9,
@@ -250,6 +264,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 40,
     paddingVertical: 7,
+    marginVertical: 12,
     elevation: 2,
   },
   textStyle: {
@@ -267,6 +282,9 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     alignItems: "center",
+    gap: 10,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
   },
   cardItem: {
     borderBottomWidth: 1,

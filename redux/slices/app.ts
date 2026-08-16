@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface AppState {
   inHomePage: boolean;
   currentSurahInd: number;
+  lastReadingSurahInd: number;
   currentAyahInd: number;
   justEnteredNewSurah: boolean;
   justEnteredNewSurahJuz: boolean;
@@ -30,12 +31,14 @@ interface AppState {
   meaningModalVisible: boolean;
   bookmarks: any[];
   openTafsirBoxes: boolean;
+  reviewBoundaries: Record<number, number[]>;
 }
 
 // Remember: can CTRL+Shift+F to find where it's being used
 const initialState: AppState = {
   inHomePage: true,                  // are we in the home page?
   currentSurahInd: 0,                // the index of the current surah (i.e., 0-113)
+  lastReadingSurahInd: 0,            // last surah opened in reading mode
   currentAyahInd: 0,                 // the index of the current ayah (i.e., 0-6234)
   justEnteredNewSurah: false,        // has the user just entered a new surah? (e.g., reset Ayah and make audio in sync): edge triggered
   justEnteredNewSurahJuz: false,     // has the user just entered a new juz subset (e.g., part of Surah): edge triggered
@@ -52,7 +55,7 @@ const initialState: AppState = {
   juzCollapse: Array(30).fill(true), // whether each juz list item is collapsed
   appColor: "#009193",               // app theme picked in the settings
   ayahFontSize: 25,                  // app ayah font size picked in the settings
-  ayahFontFamily: 'NewmetRegular',   // app ayah font family picked in the settings
+  ayahFontFamily: 'ScheherazadeNewMedium', // app ayah font family picked in the settings
   sheikh: "ar.alafasy-2",             // reciter of ayahs in the app
   tafsirBook: "Waseet",              // tafsir book of the app
   tafsirFontSize: 16,                // tafsir font size in the app
@@ -63,6 +66,7 @@ const initialState: AppState = {
   meaningModalVisible: false,        // for modal showing ayah meaning in Surah page
   bookmarks: Array.from({ length: 114 }, () => []),  // array of bookmarked ayah inds per sura
   openTafsirBoxes: false,            // whether to open tafsir boxes for each ayah
+  reviewBoundaries: {},              // custom group end ayahs shared by review and reading
 };
 
 const appSlice = createSlice({
@@ -75,6 +79,9 @@ const appSlice = createSlice({
     },
     SetCurrentSurahInd(state, action: PayloadAction<number>) {
       state.currentSurahInd = action.payload;
+    },
+    SetLastReadingSurahInd(state, action: PayloadAction<number>) {
+      state.lastReadingSurahInd = action.payload;
     },
     SetCurrentAyahInd(state, action: PayloadAction<number>) {
       state.currentAyahInd = action.payload;
@@ -157,12 +164,24 @@ const appSlice = createSlice({
     SetOpenTafsirBoxes(state, action: PayloadAction<boolean>) {
       state.openTafsirBoxes = action.payload;
     },
+    SetSurahGroupBoundaries(
+      state,
+      action: PayloadAction<{ surahIndex: number; boundaries: number[] }>
+    ) {
+      state.reviewBoundaries ??= {};
+      state.reviewBoundaries[action.payload.surahIndex] = action.payload.boundaries;
+    },
+    RestoreDefaultSurahGroupBoundaries(state, action: PayloadAction<number>) {
+      state.reviewBoundaries ??= {};
+      delete state.reviewBoundaries[action.payload];
+    },
   },
 });
 
 export const {
   SetInHomePage,
   SetCurrentSurahInd,
+  SetLastReadingSurahInd,
   SetCurrentAyahInd,
   SetJustEnteredNewSurah,
   SetJustEnteredNewSurahJuz,
@@ -189,11 +208,15 @@ export const {
   SetCardModalVisbile,
   SetMeaningModalVisible,
   SetBookmarks,
-  SetOpenTafsirBoxes
+  SetOpenTafsirBoxes,
+  SetSurahGroupBoundaries,
+  RestoreDefaultSurahGroupBoundaries,
 } = appSlice.actions;
 
 export const InHomePage = (state: any) => state.store.inHomePage;
 export const CurrentSurahInd = (state: any) => state.store.currentSurahInd;
+export const LastReadingSurahInd = (state: any) =>
+  state.store.lastReadingSurahInd ?? state.store.currentSurahInd ?? 0;
 export const CurrentAyahInd = (state: any) => state.store.currentAyahInd;
 export const JustEnteredNewSurah = (state: any) => state.store.justEnteredNewSurah;
 export const JustEnteredNewSurahJuz = (state: any) => state.store.justEnteredNewSurahJuz;
@@ -210,7 +233,12 @@ export const JuzCollapse = (state: any) => state.store.juzCollapse;
 export const PlayBackChanged = (state: any) => state.store.playBackChanged;
 export const AppColor = (state: any) => state.store.appColor;
 export const AyahFontSize = (state: any) => state.store.ayahFontSize;
-export const AyahFontFamily = (state: any) => state.store.ayahFontFamily;
+export const AyahFontFamily = (state: any) =>
+  ["NewmetRegular", "ScheherazadeNewBold", "UthmanicHafs"].includes(
+    state.store.ayahFontFamily
+  )
+    ? "ScheherazadeNewMedium"
+    : state.store.ayahFontFamily ?? "ScheherazadeNewMedium";
 export const Sheikh = (state: any) => state.store.sheikh;
 export const TafsirBook = (state: any) => state.store.tafsirBook;
 export const TafsirFontSize = (state: any) => state.store.tafsirFontSize;
@@ -221,6 +249,7 @@ export const CardModalVisbile = (state: any) => state.store.cardModalVisbile;
 export const Bookmarks = (state: any) => state.store.bookmarks;
 export const MeaningModalVisible = (state: any) => state.store.meaningModalVisible;
 export const OpenTafsirBoxes = (state: any) => state.store.openTafsirBoxes;
+export const SurahGroupBoundaries = (state: any) => state.store.reviewBoundaries ?? {};
 
 export default appSlice.reducer;
 

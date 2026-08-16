@@ -181,55 +181,44 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
             <View
               style={{
                 flexDirection: (Platform.OS == "web") ? "row-reverse" : "row",
-                gap: 14,
-                marginLeft: 40,
-                marginRight: (Platform.OS == "web") ? 40 : undefined,
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: 8,
+                marginHorizontal: 20,
                 marginTop: 10,
+                marginBottom: 8,
               }}
             >
               <TouchableOpacity
                 onPress={() => chooseSelectedTafsir(index, "Mukhtassar")}
-                style={{
-                  backgroundColor: (selectedTafsirs[index] == "Mukhtassar") ? colorize(0.6, appColor) : colorize(0.50, appColor),
-                  paddingHorizontal: 14,
-                  paddingVertical: 3,
-                  borderRadius: 15,
-                  marginBottom: -28,
-                  height: 44,
-                }}
+                style={[
+                  styles.tafsirTab,
+                  { backgroundColor: (selectedTafsirs[index] == "Mukhtassar") ? colorize(0.6, appColor) : colorize(0.50, appColor) },
+                ]}
               >
-                <Text style={{ fontFamily: 'UthmanBold' }}>المختصر</Text>
+                <Text maxFontSizeMultiplier={1.4} style={styles.tafsirTabText}>المختصر</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => chooseSelectedTafsir(index, "Waseet")}
-                style={{
-                  backgroundColor: (selectedTafsirs[index] == "Waseet") ? colorize(0.6, appColor) : colorize(0.50, appColor),
-                  paddingHorizontal: 14,
-                  paddingVertical: 3,
-                  borderRadius: 15,
-                  marginBottom: -28,
-                  height: 44,
-                }}
+                style={[
+                  styles.tafsirTab,
+                  { backgroundColor: (selectedTafsirs[index] == "Waseet") ? colorize(0.6, appColor) : colorize(0.50, appColor) },
+                ]}
               >
-                <Text style={{ fontFamily: 'UthmanBold' }}>الوسيط</Text>
+                <Text maxFontSizeMultiplier={1.4} style={styles.tafsirTabText}>الوسيط</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => chooseSelectedTafsir(index, "Ibn-Kathir")}
-                style={{
-                  backgroundColor: (selectedTafsirs[index] == "Ibn-Kathir") ? colorize(0.6, appColor) : colorize(0.50, appColor),
-                  paddingHorizontal: 14,
-                  paddingVertical: 3,
-                  borderRadius: 15,
-                  marginBottom: -28,
-                  height: 44,
-                }}
+                style={[
+                  styles.tafsirTab,
+                  { backgroundColor: (selectedTafsirs[index] == "Ibn-Kathir") ? colorize(0.6, appColor) : colorize(0.50, appColor) },
+                ]}
               >
-                <Text style={{ fontFamily: 'UthmanBold' }}>ابن كثير</Text>
+                <Text maxFontSizeMultiplier={1.4} style={styles.tafsirTabText}>ابن كثير</Text>
               </TouchableOpacity>
             </View>
             <View
               style={{
-                marginTop: 10,
                 marginHorizontal: 20,
                 backgroundColor: colorize(0.6, appColor),
                 padding: 20,
@@ -245,7 +234,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
                 duration={400}
               >
                 <HTML
-                  contentWidth={width}
+                  contentWidth={Math.max(width - 80, 0)}
                   source={{
                     html: surahTafsirs[selectedTafsirs[index]][currentSurahInd][index + startAyahForJuz].text,
                   }}
@@ -256,7 +245,7 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
                     },
                     body: {
                       textAlign: "justify",
-                      lineHeight: 20,
+                      lineHeight: Math.ceil(tafsirFontSize * 1.6),
                       fontSize: tafsirFontSize,
                     },
                   }}
@@ -362,6 +351,27 @@ const SurahTextList: React.FC<SurahTextListProps> = ({
       }
     </>
   );
+};
+
+const styles = {
+  tafsirTab: {
+    flexGrow: 1,
+    flexBasis: 88,
+    maxWidth: 160,
+    minHeight: 44,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 15,
+  },
+  tafsirTabText: {
+    fontFamily: "UthmanBold",
+    fontSize: 16,
+    lineHeight: 27,
+    textAlign: "center" as const,
+    writingDirection: "rtl" as const,
+  },
 };
 
 export default SurahTextList;
