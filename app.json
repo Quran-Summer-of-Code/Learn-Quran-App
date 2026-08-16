@@ -2,7 +2,7 @@
   "expo": {
     "name": "تعلم القرآن الكريم",
     "slug": "quran-app",
-    "version": "1.0.4",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -25,13 +25,24 @@
       },
       "package": "com.essamwisam.quranapp",
       "permissions": [],
-      "versionCode": 5
+      "versionCode": 10
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "extraProguardRules": "-keep class ** { *; }",
+            "useLegacyPackaging": false
+          }
+        }
+      ]
     ],
     "extra": {
       "eas": {
