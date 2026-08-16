@@ -34,6 +34,10 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# Python
+__pycache__/
+*.py[cod]
+
 Quran/Tafsirs
 # Local Netlify folder
 .netlify
