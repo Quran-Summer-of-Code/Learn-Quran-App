@@ -53,7 +53,7 @@ const initialState: AppState = {
   maxRepeatCount: 0,                 // 0 = infinite, else repeat N times then advance
   currentJuzInd: 0,                  // the current juz (i.e., 0-29)
   juzCollapse: Array(30).fill(true), // whether each juz list item is collapsed
-  appColor: "#009193",               // app theme picked in the settings
+  appColor: "#036670",               // app theme picked in the settings
   ayahFontSize: 25,                  // app ayah font size picked in the settings
   ayahFontFamily: 'ScheherazadeNewMedium', // app ayah font family picked in the settings
   sheikh: "ar.alafasy-2",             // reciter of ayahs in the app

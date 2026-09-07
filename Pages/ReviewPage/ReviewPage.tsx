@@ -3,11 +3,13 @@ import {
   Alert,
   BackHandler,
   FlatList,
+  LayoutAnimation,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  UIManager,
   View,
 } from "react-native";
 import Constants from "expo-constants";
@@ -77,6 +79,10 @@ const getRanges = (boundaries: number[], lastAyahIndex: number): RukuRange[] => 
 
 const addQuranWordSpacing = (text: string) => text.replace(/ /g, " \u2009\u2009");
 
+if (Platform.OS === "android") {
+  UIManager.setLayoutAnimationEnabledExperimental?.(true);
+}
+
 const ReviewPage = () => {
   const appColor = useSelector(AppColor);
   const ayahFontSize = useSelector(AyahFontSize);
@@ -85,6 +91,7 @@ const ReviewPage = () => {
   const [selectedSurahIndex, setSelectedSurahIndex] = useState<number | null>(null);
   const [expandedRukuIndex, setExpandedRukuIndex] = useState<number | null>(null);
   const [selectedMeanings, setSelectedMeanings] = useState<SelectedMeaning[]>([]);
+  const [showMeaningHighlights, setShowMeaningHighlights] = useState(true);
 
   const activeBoundaries =
     selectedSurahIndex === null
@@ -108,8 +115,12 @@ const ReviewPage = () => {
   );
 
   const selectSurah = (surahIndex: number) => {
+    const boundaries = getActiveGroupBoundaries(
+      surahIndex,
+      savedGroupBoundaries
+    );
     setSelectedSurahIndex(surahIndex);
-    setExpandedRukuIndex(null);
+    setExpandedRukuIndex(boundaries.length === 0 ? 0 : null);
   };
 
   const closeSurah = useCallback(() => {
@@ -135,6 +146,18 @@ const ReviewPage = () => {
   );
 
   const toggleRuku = (groupIndex: number) => {
+    LayoutAnimation.configureNext({
+      duration: 180,
+      create: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: { type: LayoutAnimation.Types.easeInEaseOut },
+      delete: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+    });
     setExpandedRukuIndex((currentIndex) =>
       currentIndex === groupIndex ? null : groupIndex
     );
@@ -221,19 +244,37 @@ const ReviewPage = () => {
         <Text style={styles.surahTitle}>
           {"سُورَةُ " + surasList[selectedSurahIndex].name}
         </Text>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="مساعدة مجموعات الآيات"
-          hitSlop={8}
-          onPress={showGroupsHelp}
-          style={({ pressed }) => [
-            styles.headerButton,
-            styles.rukuHelpButton,
-            pressed && styles.headerButtonPressed,
-          ]}
-        >
-          <MaterialIcons name="help-outline" size={27} color="white" />
-        </Pressable>
+        <View style={styles.rukuHeaderActions}>
+          <Pressable
+            accessibilityRole="switch"
+            accessibilityLabel={`${showMeaningHighlights ? "إخفاء" : "إظهار"} تمييز الكلمات ذات المعاني`}
+            accessibilityState={{ checked: showMeaningHighlights }}
+            hitSlop={6}
+            onPress={() => setShowMeaningHighlights((current) => !current)}
+            style={({ pressed }) => [
+              styles.headerButton,
+              pressed && styles.headerButtonPressed,
+            ]}
+          >
+            <MaterialIcons
+              name="visibility"
+              size={24}
+              color={showMeaningHighlights ? "white" : "rgba(255, 255, 255, 0.42)"}
+            />
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="مساعدة مجموعات الآيات"
+            hitSlop={8}
+            onPress={showGroupsHelp}
+            style={({ pressed }) => [
+              styles.headerButton,
+              pressed && styles.headerButtonPressed,
+            ]}
+          >
+            <MaterialIcons name="help-outline" size={27} color="white" />
+          </Pressable>
+        </View>
       </View>
 
       <FlatList
@@ -248,9 +289,9 @@ const ReviewPage = () => {
           const hasMoreAyahs = item.endAyahIndex > item.startAyahIndex;
           const ayahIndexes = isExpanded
             ? Array.from(
-                { length: item.endAyahIndex - item.startAyahIndex + 1 },
-                (_, ayahOffset) => item.startAyahIndex + ayahOffset
-              )
+              { length: item.endAyahIndex - item.startAyahIndex + 1 },
+              (_, ayahOffset) => item.startAyahIndex + ayahOffset
+            )
             : [item.startAyahIndex];
           const textStyle = [
             styles.reviewGroupText,
@@ -279,75 +320,137 @@ const ReviewPage = () => {
                     firstWord,
                     lastWord + 1
                   );
+                  const isGroupTrigger =
+                    ayahIndex === item.startAyahIndex && hasMoreAyahs;
 
                   return (
-                <View
-                  key={ayahIndex}
-                  style={[
-                    styles.ayahRow,
-                    visibleAyahIndex < ayahIndexes.length - 1 && {
-                      marginBottom: Math.round(ayahFontSize * 0.5),
-                    },
-                  ]}
-                >
-                  {ayahIndex === item.startAyahIndex && hasMoreAyahs && (
                     <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={`${isExpanded ? "إخفاء" : "إظهار"} بقية مجموعة المراجعة ${englishToArabicNumber(item.groupIndex + 1)}`}
-                      accessibilityState={{ expanded: isExpanded }}
-                      hitSlop={8}
+                      key={ayahIndex}
+                      accessibilityRole={isGroupTrigger ? "button" : undefined}
+                      accessibilityLabel={
+                        isGroupTrigger
+                          ? `${isExpanded ? "إخفاء" : "إظهار"} بقية مجموعة المراجعة ${englishToArabicNumber(item.groupIndex + 1)}`
+                          : undefined
+                      }
+                      accessibilityState={
+                        isGroupTrigger ? { expanded: isExpanded } : undefined
+                      }
+                      onPress={
+                        isGroupTrigger
+                          ? () => toggleRuku(item.groupIndex)
+                          : undefined
+                      }
                       style={({ pressed }) => [
-                        styles.groupToggle,
-                        pressed && styles.groupTogglePressed,
-                      ]}
-                      onPress={() => toggleRuku(item.groupIndex)}
-                    >
-                      <MaterialIcons
-                        name={isExpanded ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-                        size={20}
-                        color="white"
-                      />
-                    </Pressable>
-                  )}
-                  <Text style={[textStyle, styles.ayahText]}>
-                    <Text
-                      style={[
-                        styles.reviewAyahMarker,
-                        { fontSize: ayahFontSize },
+                        styles.ayahRow,
+                        visibleAyahIndex < ayahIndexes.length - 1 && {
+                          marginBottom: Math.round(ayahFontSize * 0.95),
+                        },
+                        isGroupTrigger && pressed && styles.ayahRowPressed,
                       ]}
                     >
-                      {"\ufd3f"}
-                      {englishToArabicNumber(ayahIndex + 1)}
-                      {"\ufd3e"}
-                    </Text>
-                    {"\u00a0"}
-                    {ayahWords.map((word: string, wordOffset: number) => {
-                      const wordIndex = firstWord + wordOffset;
-                      const meanings = getMeaningsForWord(ayahNumber, wordIndex);
-                      const hasMeaning = meanings.length > 0;
-
-                      return (
+                      <Text style={[textStyle, styles.ayahText]}>
                         <Text
-                          key={wordIndex}
-                          accessibilityRole={hasMeaning ? "button" : undefined}
-                          accessibilityLabel={
-                            hasMeaning ? `معنى ${word}` : undefined
-                          }
-                          onPress={
-                            hasMeaning
-                              ? () => setSelectedMeanings(meanings)
-                              : undefined
-                          }
+                          style={[
+                            styles.reviewAyahMarker,
+                            { fontSize: ayahFontSize },
+                          ]}
                         >
-                          {word + " \u2009\u2009"}
+                          {"\ufd3f"}
+                          {englishToArabicNumber(ayahIndex + 1)}
+                          {"\ufd3e"}
                         </Text>
-                      );
-                    })}
-                  </Text>
-                </View>
+                        {"\u00a0"}
+                        {ayahWords.map((word: string, wordOffset: number) => {
+                          const wordIndex = firstWord + wordOffset;
+                          const meanings = getMeaningsForWord(ayahNumber, wordIndex);
+                          const hasMeaning = meanings.length > 0;
+                          const nextWordMeanings =
+                            wordOffset < ayahWords.length - 1
+                              ? getMeaningsForWord(ayahNumber, wordIndex + 1)
+                              : [];
+                          const sharesMeaningWithNext = meanings.some((meaning) =>
+                            nextWordMeanings.some(
+                              (nextMeaning) =>
+                                nextMeaning.key === meaning.key &&
+                                nextMeaning.meaning === meaning.meaning
+                            )
+                          );
+
+                          return (
+                            <React.Fragment key={wordIndex}>
+                            <Text
+                              style={
+                                hasMeaning && showMeaningHighlights
+                                  ? styles.meaningWord
+                                  : undefined
+                              }
+                              accessibilityRole={
+                                hasMeaning && (!isGroupTrigger || isExpanded)
+                                  ? "button"
+                                  : undefined
+                              }
+                              accessibilityLabel={
+                                hasMeaning && (!isGroupTrigger || isExpanded)
+                                  ? `معنى ${word}`
+                                  : undefined
+                              }
+                              onPress={
+                                hasMeaning
+                                  ? (event) => {
+                                    event.stopPropagation();
+                                    if (isGroupTrigger && !isExpanded) {
+                                      toggleRuku(item.groupIndex);
+                                      return;
+                                    }
+                                    setSelectedMeanings(meanings);
+                                  }
+                                  : undefined
+                              }
+                            >
+                              {word}
+                              {sharesMeaningWithNext ? " \u2009\u2009" : null}
+                            </Text>
+                            {!sharesMeaningWithNext ? " \u2009\u2009" : null}
+                            </React.Fragment>
+                          );
+                        })}
+                      </Text>
+                    </Pressable>
                   );
                 })()
               ))}
+              {(index < visibleReviewGroups.length - 1 ||
+                visibleReviewGroups.length === 1) && (
+                <Pressable
+                  accessibilityRole={hasMoreAyahs ? "button" : undefined}
+                  accessibilityLabel={
+                    hasMoreAyahs
+                      ? `${isExpanded ? "إخفاء" : "إظهار"} بقية مجموعة المراجعة ${englishToArabicNumber(item.groupIndex + 1)}`
+                      : undefined
+                  }
+                  accessibilityState={
+                    hasMoreAyahs ? { expanded: isExpanded } : undefined
+                  }
+                  disabled={!hasMoreAyahs}
+                  onPress={() => toggleRuku(item.groupIndex)}
+                  style={({ pressed }) => [
+                    styles.groupDivider,
+                    pressed && styles.groupDividerPressed,
+                  ]}
+                >
+                  <View style={styles.groupDividerLine} />
+                  {hasMoreAyahs && (
+                    <View style={styles.groupDividerIcon}>
+                      <MaterialIcons
+                        name={isExpanded ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+                        size={14}
+                        color="rgba(255, 255, 255, 0.82)"
+                      />
+                    </View>
+                  )}
+                  <View style={styles.groupDividerLine} />
+                </Pressable>
+              )}
             </View>
           );
         }}
@@ -489,10 +592,11 @@ const styles = StyleSheet.create({
     end: 12,
     bottom: 12,
   },
-  rukuHelpButton: {
+  rukuHeaderActions: {
     position: "absolute",
     start: 12,
     bottom: 12,
+    flexDirection: "row",
   },
   headerButtonPressed: {
     opacity: 0.65,
@@ -523,33 +627,53 @@ const styles = StyleSheet.create({
     textAlign: "justify",
     writingDirection: "rtl",
   },
+  groupDivider: {
+    width: "100%",
+    marginTop: 10,
+    marginBottom: 10,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+  },
+  groupDividerLine: {
+    flex: 1,
+    height: 1.2,
+    backgroundColor: "rgba(255, 255, 255, 0.35)",
+  },
+  groupDividerIcon: {
+    width: 18,
+    height: 18,
+    borderWidth: 1,
+    borderRadius: 12,
+    borderColor: "rgba(255, 255, 255, 0.5)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  groupDividerPressed: {
+    opacity: 0.6,
+  },
   ayahRow: {
     flexDirection: "row-reverse",
     alignItems: "flex-end",
     gap: 8,
   },
+  ayahRowPressed: {
+    opacity: 0.65,
+  },
   ayahText: {
     flex: 1,
+  },
+  meaningWord: {
+    backgroundColor: "rgba(255, 255, 255, 0.055)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.14)",
+    borderRadius: 5,
   },
   reviewAyahMarker: {
     fontFamily: "UthmanRegular",
     letterSpacing: 5,
     color: "white",
-  },
-  groupToggle: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "transparent",
-    borderWidth: 1.5,
-    borderColor: "rgba(255, 255, 255, 0.8)",
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-  },
-  groupTogglePressed: {
-    opacity: 0.7,
-    transform: [{ scale: 0.94 }],
   },
   listHeader: {
     width: "100%",
