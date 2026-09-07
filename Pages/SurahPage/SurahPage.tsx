@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { Platform, View } from "react-native";
-import { I18nManager } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 // Main Components
@@ -35,10 +34,6 @@ interface Props {
 }
 
 const SurahPage: React.FC<Props> = ({ audioList, key }) => {
-  // RTL
-  I18nManager.allowRTL(true);
-  I18nManager.forceRTL(true);
-
   // Basics
   const isWeb = Platform.OS === "web";
   const dispatch = useDispatch();
@@ -107,10 +102,10 @@ const SurahPage: React.FC<Props> = ({ audioList, key }) => {
         startAyahForJuz={startAyahForJuz}
         endAyahForJuz={endAyahForJuz}
       />
-      
+
       {!isWeb && (
-        <AudioPlayer key={key} 
-        audioList={audioList} display={!fullscreen}
+        <AudioPlayer key={key}
+          audioList={audioList} display={!fullscreen}
         />
       )}
     </View>

@@ -18,20 +18,7 @@ import Navigation from "./Navigation";
 import Toast from "react-native-toast-message";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-// RTL
-import { I18nManager } from "react-native";
-import RNRestart from 'react-native-restart';
-
 const AppWrapper = () => {
-  // RTL
-  I18nManager.allowRTL(true);
-  I18nManager.forceRTL(true);
-
-  if (!I18nManager.isRTL) {
-    I18nManager.forceRTL(true);
-    if (Platform.OS !== "web") RNRestart.restart();
-  }
-
   //Ignore app screen warnings (still show in terminal)
   React.useEffect(() => {
     LogBox.ignoreAllLogs(true);

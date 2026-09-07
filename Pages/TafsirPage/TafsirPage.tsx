@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { Platform, View } from "react-native";
-import { I18nManager } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 // Main Components
@@ -27,10 +26,6 @@ import { colorize } from "../../helpers";
 
 
 const TafsirPage: React.FC = () => {
-  // RTL
-  I18nManager.allowRTL(true);
-  I18nManager.forceRTL(true);
-
   // Basics
   const isWeb = Platform.OS === "web";
   const dispatch = useDispatch();
@@ -49,7 +44,7 @@ const TafsirPage: React.FC = () => {
   const juzMode = useSelector(JuzMode);
   const currentJuzInd = useSelector(CurrentJuzInd);
   const [startAyahForJuz, setStartAyahForJuz] = React.useState(0);
-  const [endAyahForJuz, setEndAyahForJuz] = React.useState(currentSurah.length-1)
+  const [endAyahForJuz, setEndAyahForJuz] = React.useState(currentSurah.length - 1)
 
   // Refresh states
   const justEnteredNewSurah = useSelector(JustEnteredNewSurah);
@@ -59,8 +54,8 @@ const TafsirPage: React.FC = () => {
   // increment key whenever navigation changes
 
   useEffect(() => {
-      setKey(key + 1);
-    }, [navigation, currentSurahInd, currentJuzInd]);
+    setKey(key + 1);
+  }, [navigation, currentSurahInd, currentJuzInd]);
 
   // Handle setting the Juz slice when user enters new surah or new part of surah (in another Juz)
   React.useEffect(() => {
@@ -78,10 +73,10 @@ const TafsirPage: React.FC = () => {
       setEndAyahForJuz(currentSurah.length - 1);
     }
     setKey(key + 1);
-  }, [ justEnteredNewSurah, justEnteredNewSurahJuz,  currentSurahInd, currentJuzInd]);
+  }, [justEnteredNewSurah, justEnteredNewSurahJuz, currentSurahInd, currentJuzInd]);
 
   return (
-    <View style={{backgroundColor: colorize(+0.7, appColor), height:'100%'}}>
+    <View style={{ backgroundColor: colorize(+0.7, appColor), height: '100%' }}>
       <SurahTextList
         currentSurahInd={currentSurahInd}
         currentSurah={currentSurah}
